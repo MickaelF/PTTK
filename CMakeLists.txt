@@ -13,5 +13,3 @@ set(PTTK_SRC
 set(PTTK_INCLUDE_DIR include/)
 
 add_library(${LIB_NAME} PTTK_SRC)
-
-add_subdirectory(extra)
