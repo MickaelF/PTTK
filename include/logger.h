@@ -25,7 +25,7 @@ public:
     void append(std::string_view str, std::queue<std::string>& queue);
     static void close();
 
-    static void setFolderPath(std::string_view path);
+    static void setFolderPath(std::filesystem::path executableName);
 
 private:
     static std::string m_defaultPath; 

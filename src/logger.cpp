@@ -39,9 +39,9 @@ constexpr std::string_view executionFileName {"execution.txt"};
 constexpr std::string_view companyName {"PotatoThunder"};
 } // namespace
 
-void Logger::setFolderPath(std::string_view path) 
+void Logger::setFolderPath(std::filesystem::path executableName) 
 {
-    m_defaultPath = std::move(std::string(companyName) + '/' + std::string(path));
+    m_defaultPath = std::move(std::string(companyName) + '/' + executableName.stem().string());
 }
 
 std::string Logger::m_defaultPath; 
