@@ -12,6 +12,7 @@ constexpr std::string_view errorArg {"-E"};
 constexpr std::string_view warningArg {"-W"};
 constexpr std::string_view fatalArg {"-F"};
 constexpr std::string_view infoArg {"-I"};
+constexpr std::string_view executionArg {"-E"};
 constexpr std::string_view debugArg {"-D"};
 constexpr std::string_view dateStartArg {"--dateStart"};
 constexpr std::string_view dateEndArg {"--dateEnd"};
@@ -32,7 +33,8 @@ void displayHelp()
               << "\t-h\n"
               << "\t\tDisplay help\n"
               << "\t-i path_to_log_file\n"
-              << "\t\tWhere to find the log file to parse. By default, it look for the default path where log are written.\n"
+              << "\t\tWhere to find the log file to parse. By default, it look for the default "
+                 "path where log are written.\n"
               << "\t-o path_to_output_file\n"
               << "\t\tWhere to write result file. By default, it's created in the same folder of "
                  "the parsed file.\n"
@@ -48,6 +50,8 @@ void displayHelp()
               << "\t\tSelect info logs\n"
               << "\t-D\n"
               << "\t\tSelect debug logs\n"
+              << "\t-E\n"
+              << "\t\tSelect execution logs\n"
               << "\t-f {filenames;seperated;by;semicolon}\n"
               << "\t\tSelect only the logs from files specified in this option\n"
               << "\t--dateStart MM/DD/YY\n"
@@ -57,7 +61,6 @@ void displayHelp()
               << "\t--sort {type/date/files}\n"
               << "\t\tSort logs by type, by date or by files. By default, they are sorted by date\n"
               << std::endl;
-    
 }
 
 int main(int argc, char *argv[])
@@ -82,7 +85,7 @@ int main(int argc, char *argv[])
         else if (argv[i] == inputArg)
             inputFile = argv[++i];
         else if (argv[i] == outputArg)
-           outputFile = argv[++i];
+            outputFile = argv[++i];
         else if (argv[i] == rememberArg)
             priorities.push_back("Remember");
         else if (argv[i] == errorArg)
@@ -95,6 +98,8 @@ int main(int argc, char *argv[])
             priorities.push_back("Info");
         else if (argv[i] == debugArg)
             priorities.push_back("Debug");
+        else if (argv[i] == executionArg)
+            priorities.push_back("Execution");
         else if (argv[i] == dateStartArg)
             dateStart = argv[++i];
         else if (argv[i] == dateEndArg)

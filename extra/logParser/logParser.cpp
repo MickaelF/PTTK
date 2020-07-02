@@ -1,11 +1,13 @@
 #include "logparser.h"
+#include "stringtools.h"
+#include "loglineinfo.h"
 #include <filesystem>
 #include <fstream>
 #include <sstream>
 
 LogParser::LogParser(std::string inputPath) : m_input(std::move(inputPath))
 {
-    std::filesystem::path userPath {inputPath};
+    std::filesystem::path userPath {m_input};
     if (!std::filesystem::exists(userPath)) throw std::runtime_error("Cannot parse a file that does not exists : " + inputPath);
 }
 
@@ -47,7 +49,7 @@ void LogParser::setSortTechnique(Sort sort)
 
 void LogParser::setFileNames(std::string fileNames)
 {
-    
+    m_fileNames = std::move(strTls::split(std::move(fileNames), ';'));
 }
 
 void LogParser::exec()
@@ -56,13 +58,13 @@ void LogParser::exec()
     stream.open(m_input);
     if (!stream.is_open())
         throw std::runtime_error("Failed to open the log file !");
-    if (m_startDate.has_value())
+    if (!m_startDate.has_value())
     {
         bool found = false; 
         std::string line; 
-        while (!found || std::getline(stream, line))
-        {
-            //if ()
+        while (!found && std::getline(stream, line)) { 
+            LogLineInfo info(line);
+
         }
     }
 }
