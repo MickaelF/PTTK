@@ -19,3 +19,8 @@ set(PTTK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include/ PARENT_SCOPE)
 
 add_library(${LIB_NAME} ${PTTK_SRC})
 target_include_directories(${LIB_NAME} PUBLIC ./include/)
+option(PTTK_BUILD_LOG_PARSER "Build the PTTK Log parser" ON)
+set (PTTK_BUILD_LOG_PARSER ON)
+if (PTTK_BUILD_LOG_PARSER)
+    add_subdirectory(extra/logParser/)
+endif()
