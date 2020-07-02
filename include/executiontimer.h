@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
 #include <string>
-#include "logger.h"
+#include "log.h"
 
 class ExecutionTimer
 {
@@ -26,7 +26,7 @@ public:
         }
         std::stringstream ss;
         ss << m_name << ": " << duration << unity;
-        Logger::appendExecutionLog(ss.str());
+        lExecution << ss.str();
     }
 
 private:

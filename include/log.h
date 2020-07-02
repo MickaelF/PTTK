@@ -14,7 +14,8 @@ public:
         Warning,
         Error,
         Fatal,
-        Remember
+        Remember,
+        Execution
     };
     Log(Priority p, std::string_view fileName, int lineNumber);
     ~Log();
@@ -88,3 +89,4 @@ private:
 #define lWarning Log(Log::Priority::Warning, __FILE__, __LINE__)
 #define lDebug Log(Log::Priority::Debug, __FILE__, __LINE__)
 #define lRemember Log(Log::Priority::Remember, __FILE__, __LINE__)
+#define lExecution Log(Log::Priority::Execution, __FILE__, __LINE__)

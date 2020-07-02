@@ -1,5 +1,5 @@
 #include "logger.h"
-#ifdef LOG_TO_FILE || LOG_EXECUTION_TIMERS
+#ifdef LOG_TO_FILE 
 #include <filesystem>
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
     #include <ShlObj.h>
@@ -57,12 +57,6 @@ Logger::Logger()
     m_fileStream.open(logPath, std::ios_base::out | std::ios_base::app);
     isOpened = isOpened && m_fileStream.is_open();
 #endif
-#ifdef LOG_EXECUTION_TIMERS
-    auto executionLogPath = basePath;
-    executionLogPath.append(executionFileName);
-    m_executionFileStream.open(executionLogPath, std::ios_base::out | std::ios_base::app);
-    isOpened = isOpened && m_executionFileStream.is_open();
-#endif // LOG_EXECUTION_TIMERS
     if (isOpened)
     {
         m_loggingThread = std::thread{&Logger::flush, this};
@@ -78,13 +72,6 @@ Logger::~Logger()
 void Logger::appendLog(std::string_view str)
 {
     get().append(str, get().m_logQueue);
-}
-#endif
-
-#ifdef LOG_EXECUTION_TIMERS
-void Logger::appendExecutionLog(std::string_view str)
-{
-    get().append(str, get().m_executionLogQueue);
 }
 #endif
 
@@ -113,7 +100,7 @@ void Logger::flush()
 {
     while (m_isRunning)
     {
-    #ifdef LOG_TO_FILE
+#ifdef LOG_TO_FILE
         if (!m_logQueue.empty())
         {
             while (!m_logQueue.empty())
@@ -124,18 +111,6 @@ void Logger::flush()
             m_fileStream << std::flush;
         }
 #endif // LOG_TO_FILE
-
-#ifdef LOG_EXECUTION_TIMERS
-        if (!m_executionLogQueue.empty())
-        {
-            while (!m_executionLogQueue.empty())
-            {
-                m_executionFileStream << m_executionLogQueue.front();
-                m_executionLogQueue.pop();
-            }
-            m_executionFileStream << std::flush;
-        }
-#endif //LOG_EXECUTION_TIMERS
         std::this_thread::sleep_for(std::chrono::milliseconds {500});
     }
     m_fileStream.close();

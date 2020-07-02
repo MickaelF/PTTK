@@ -18,6 +18,7 @@ const char* enumToStr(Log::Priority p)
         case Log::Priority::Error: return "Error";
         case Log::Priority::Fatal: return "Fatal";
         case Log::Priority::Remember: return "Remember";
+        case Log::Priority::Execution: return "Execution";
         default: return "Unknown";
     }
 }
