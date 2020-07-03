@@ -4,7 +4,7 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
     #include <ShlObj.h>
 #endif
-#include <sstream>
+#include "stringtools.h"
 
 namespace
 {
@@ -20,18 +20,6 @@ std::filesystem::path getLogPath(std::string_view folderName)
     if (!std::filesystem::exists(programDataPath))
         std::filesystem::create_directories(programDataPath);
     return programDataPath;
-}
-
-// Borrowed from https://kjellkod.wordpress.com/2013/01/22/exploring-c11-part-2-localtime-and-time-again/
-std::tm threadSafeLocalTime(const std::time_t& time)
-{
-    std::tm tm_snapshot;
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-    localtime_s(&tm_snapshot, &time);
-#else
-    localtime_r(&time, &tm_snapshot); // POSIX
-#endif
-    return tm_snapshot;
 }
 
 constexpr std::string_view logFileName {"log.txt"};
@@ -77,10 +65,7 @@ void Logger::appendLog(std::string_view str)
 
 void Logger::append(std::string_view str, std::queue<std::string>& queue)
 {
-    std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::stringstream ss;
-    ss << std::put_time(&threadSafeLocalTime(end_time), "[%D-%T]");
-    queue.push(std::move(ss.str() + std::string(str)));
+    queue.push(std::move(strTls::dateTimeToString("[%D-%T]") + std::string(str)));
 }
 
 void Logger::close()

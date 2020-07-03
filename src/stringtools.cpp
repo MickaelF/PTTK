@@ -1,4 +1,24 @@
 #include "stringtools.h"
+#include <sstream>
+#include <iomanip>
+#include <chrono>
+
+namespace 
+{
+
+// Borrowed from
+// https://kjellkod.wordpress.com/2013/01/22/exploring-c11-part-2-localtime-and-time-again/
+    std::tm threadSafeLocalTime(const std::time_t& time)
+    {
+        std::tm tm_snapshot {};
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
+        localtime_s(&tm_snapshot, &time);
+#else
+        localtime_r(&time, &tm_snapshot); // POSIX
+#endif
+        return tm_snapshot;
+    }
+} // namespace
 
 namespace strTls
 {
@@ -17,6 +37,22 @@ std::vector<std::string> split(std::string str, char delimiter)
 	if (!str.empty())
 		result.push_back(str);
 	return result;
+}
+
+std::time_t toTimeT(std::string_view str, std::string_view dateFormat)
+{
+    struct std::tm tm{};
+    std::istringstream ss(str.data());
+    ss >> std::get_time(&tm, dateFormat.data());
+    return std::mktime(&tm);
+}
+
+std::string dateTimeToString(std::string_view dateFormat)
+{
+    std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::stringstream ss;
+    ss << std::put_time(&threadSafeLocalTime(end_time), dateFormat.data());
+    return std::move(ss.str());
 }
 }
 

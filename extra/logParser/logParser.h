@@ -1,38 +1,50 @@
 #pragma once
+#include <ctime>
+#include <functional>
+#include <optional>
 #include <string>
 #include <vector>
-#include <ctime>
-#include <optional>
+
+class LogLineInfo;
 
 class LogParser
 {
 public:
     enum class Sort
-    { 
-		Date, Type, Files
+    {
+        Date,
+        Type,
+        Files
     };
 
-	LogParser(std::string inputPath); 
-	void setParsedLogPriority(std::vector<std::string> priority);
+    LogParser(std::string inputPath);
+    void setParsedLogPriority(std::vector<std::string> priority);
 
-	void setOutputFilePath(std::string path); 
+    void setOutputFilePath(std::string path);
 
-	void setStartDate(std::string date); 
-	void setEndDate(std::string date);
+    void setStartDate(std::string date);
+    void setEndDate(std::string date);
 
-	void setSortTechnique(Sort sort);
-	void setFileNames(std::string fileNames);
+    void setSortTechnique(Sort sort);
+    void setFileNames(std::string fileNames);
 
-	void exec();
+    void exec();
 
-private: 
-	std::optional<std::vector<std::string>> m_parsedPriorities; 
-	std::string m_input; 
-	std::optional<std::string> m_output; 
+private:
+    bool comparaisonFunc(LogLineInfo& info) const;
+    void createComparaisonFunctions();
+    void execSortDate(std::ifstream& stream, std::ofstream& outStream) const;
+    void execSpecialSort(std::ifstream& stream, std::ofstream& outStream,
+                                 std::function<std::string_view(const LogLineInfo&)> func) const;
 
-	std::optional<std::time_t> m_startDate; 
-	std::optional<std::time_t> m_endDate; 
-	std::optional<std::vector<std::string>> m_fileNames; 
+    std::optional<std::vector<std::string>> m_parsedPriorities;
+    std::string m_inputFile;
+    std::optional<std::string> m_outputFile;
 
-	Sort m_sort {Sort::Date};
+    std::optional<std::time_t> m_startDate;
+    std::optional<std::time_t> m_endDate;
+    std::optional<std::vector<std::string>> m_fileNames;
+    std::vector<std::function<bool(LogLineInfo&)>> m_logTests;
+
+    Sort m_sort {Sort::Date};
 };
