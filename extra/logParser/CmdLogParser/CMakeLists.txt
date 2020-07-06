@@ -1,4 +1,4 @@
-set(PROJECT_NAME LogParser)
+set(PROJECT_NAME CmdLogParser)
 
 project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 20)
@@ -9,10 +9,12 @@ set(PTTK_DIR ${CMAKE_SOURCE_DIR}/include)
 message(${PTTK_DIR})
 
 set(SRCS main.cpp
-	logparser.cpp
-	logparser.h 
-	loglineinfo.h 
-	loglineinfo.cpp)
+	cmdlogparser.cpp
+	cmdlogparser.h
+	../logparser.cpp
+	../logparser.h 
+	../loglineinfo.h 
+	../loglineinfo.cpp)
 
 add_executable(${PROJECT_NAME} ${SRCS})
 target_link_libraries(${PROJECT_NAME} PTTK)

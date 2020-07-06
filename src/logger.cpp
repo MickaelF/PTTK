@@ -32,20 +32,21 @@ void Logger::setFolderPath(std::filesystem::path executableName)
     m_defaultPath = std::move(std::string(companyName) + '/' + executableName.stem().string());
 }
 
+void Logger::swapStream(std::ofstream& other) 
+{
+   get().m_fileStream.swap(other);
+}
+
 std::string Logger::m_defaultPath; 
 
 Logger::Logger()
 {
     auto basePath {getLogPath(m_defaultPath)};
 
-    bool isOpened {true};
-#ifdef LOG_TO_FILE
     auto logPath = basePath; 
     logPath.append(logFileName);
     m_fileStream.open(logPath, std::ios_base::out | std::ios_base::app);
-    isOpened = isOpened && m_fileStream.is_open();
-#endif
-    if (isOpened)
+    if (m_fileStream.is_open())
     {
         m_loggingThread = std::thread{&Logger::flush, this};
     }
@@ -56,12 +57,10 @@ Logger::~Logger()
     close();
 }
 
-#ifdef LOG_TO_FILE
 void Logger::appendLog(std::string_view str)
 {
     get().append(str, get().m_logQueue);
 }
-#endif
 
 void Logger::append(std::string_view str, std::queue<std::string>& queue)
 {
@@ -85,7 +84,6 @@ void Logger::flush()
 {
     while (m_isRunning)
     {
-#ifdef LOG_TO_FILE
         if (!m_logQueue.empty())
         {
             while (!m_logQueue.empty())
@@ -95,7 +93,6 @@ void Logger::flush()
             }
             m_fileStream << std::flush;
         }
-#endif // LOG_TO_FILE
         std::this_thread::sleep_for(std::chrono::milliseconds {500});
     }
     m_fileStream.close();

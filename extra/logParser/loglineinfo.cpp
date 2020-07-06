@@ -10,7 +10,7 @@ constexpr int timeCloseBracket {18};
 constexpr int infoOpenBracket {19}; 
 }
 
-LogLineInfo::LogLineInfo(std::string_view line) : m_test(line)
+LogLineInfo::LogLineInfo(std::string_view line) 
 {
     if (line.empty() || line[timeOpenBracket] != '[' || line[timeCloseBracket] != ']' ||
         line[infoOpenBracket] != '[')
@@ -28,5 +28,10 @@ LogLineInfo::LogLineInfo(std::string_view line) : m_test(line)
 std::time_t LogLineInfo::date() const
 {
     return strTls::toTimeT(m_date, "[%D-%T]");
+}
+
+std::string_view LogLineInfo::dateStr() const
+{
+    return m_date.substr(1, 8);
 }
 

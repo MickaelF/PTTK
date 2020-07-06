@@ -1,5 +1,4 @@
 #pragma once
-#include <mutex>
 #include <sstream>
 #include <string_view>
 //#include <source_location> As soon as it is available, use this instead of defined macros

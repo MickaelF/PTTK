@@ -1,6 +1,9 @@
 #include "log.h"
-#include "macro.h"
+
+#include <mutex>
+
 #include "logger.h"
+#include "macro.h"
 
 #ifdef DISPLAY_LOG
     #include <iostream>
@@ -43,7 +46,7 @@ Log::~Log()
     std::lock_guard<std::mutex> lock {m_mutex};
     std::cout << m_stream.str() << std::endl;
 #endif
-#if defined(LOG_TO_FILE) || defined(LOG_EXECUTION_TIMERS)
-    Logger::appendLog(m_stream.str()+"\n");
+#if defined(LOG_TO_FILE)
+    Logger::appendLog(m_stream.str() + "\n");
 #endif
 }
