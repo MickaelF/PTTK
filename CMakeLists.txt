@@ -12,7 +12,9 @@ set(PTTK_SRC
     include/log.h
     include/logger.h
     include/macro.h
-    include/stringtools.h)
+    include/stringtools.h 
+    include/numbergenerator.h 
+    src/numbergenerator.cpp)
 
 set(PTTK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include/ PARENT_SCOPE)
 

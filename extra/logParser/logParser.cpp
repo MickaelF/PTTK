@@ -27,6 +27,7 @@ std::map<std::string, std::vector<std::string>> LogParser::exec(
     std::map<std::string, std::vector<std::string>> logs;
     std::string line;
     std::string current;
+    int j = 0;
     while (std::getline(m_stream, line))
     {
         LogLineInfo info {line};
@@ -35,7 +36,11 @@ std::map<std::string, std::vector<std::string>> LogParser::exec(
             if (!comparaisonFunc(info)) continue;
             current = compFunc(info);
         }
+        else if (current.empty())
+            continue;
+
         logs[current].push_back(line);
+        j++;
     }
     m_stream.close();
     return std::move(logs);
@@ -47,9 +52,10 @@ bool LogParser::comparaisonFunc(LogLineInfo& info) const
                         [&](auto func) { return !func(info); });
 }
 
-void LogParser::createComparaisonFunctions(std::optional<std::vector<std::string>>& priorities,
-                                           std::optional<std::time_t>& endDate,
-                                           std::optional<std::vector<std::string>>& fileName)
+void LogParser::createComparaisonFunctions(
+    const std::optional<std::vector<std::string>>& priorities,
+    const std::optional<std::time_t>& endDate,
+    const std::optional<std::vector<std::string>>& fileName)
 {
     if (priorities.has_value())
     {

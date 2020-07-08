@@ -9,12 +9,11 @@ set(PTTK_DIR ${CMAKE_SOURCE_DIR}/include)
 message(${PTTK_DIR})
 
 set(SRCS main.cpp
-	cmdlogparser.cpp
-	cmdlogparser.h
-	../logparser.cpp
-	../logparser.h 
-	../loglineinfo.h 
-	../loglineinfo.cpp)
+	parserarguments.cpp
+	parserarguments.h
+	parserexecution.h 
+	parserexecution.cpp
+)
 
 add_executable(${PROJECT_NAME} ${SRCS})
 target_link_libraries(${PROJECT_NAME} PTTK)

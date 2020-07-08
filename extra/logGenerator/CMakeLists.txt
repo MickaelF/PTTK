@@ -7,9 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(PTTK_DIR ${CMAKE_SOURCE_DIR}/include)
 message(${PTTK_DIR})
 
-set(SRCS main.cpp
-loggenerator.h
-loggenerator.cpp)
+set(SRCS 
+    main.cpp
+    loggenerator.h
+    loggenerator.cpp
+    generatorarguments.h
+    generatorarguments.cpp)
 
 add_executable(${PROJECT_NAME} ${SRCS})
 target_link_libraries(${PROJECT_NAME} PTTK)

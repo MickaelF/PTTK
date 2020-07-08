@@ -6,9 +6,9 @@
 class LogGenerator
 {
 public: 
-	LogGenerator(std::filesystem::path outputPath, int nbLines);
-
+	LogGenerator(const std::filesystem::path& outputPath, int nbLines);
 	void exec(); 
+
 private: 
 	std::ofstream m_outStream; 
 	const int m_nbLines;

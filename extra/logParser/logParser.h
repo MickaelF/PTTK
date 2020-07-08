@@ -12,6 +12,12 @@ class LogLineInfo;
 class LogParser
 {
 public:
+    enum class Sort
+    {
+        Date,
+        Type,
+        Files
+    };
     LogParser() = default;
 
     void setInputFile(std::string_view file);
@@ -19,9 +25,10 @@ public:
 
     std::map<std::string, std::vector<std::string>> exec(
         std::function<std::string_view(const LogLineInfo&)> compFunc);
-    void createComparaisonFunctions(std::optional<std::vector<std::string>>& priorities,
-                                    std::optional<std::time_t>& endDate,
-                                    std::optional<std::vector<std::string>>& fileName);
+
+    void createComparaisonFunctions(const std::optional<std::vector<std::string>>& priorities,
+                                    const std::optional<std::time_t>& endDate,
+                                    const std::optional<std::vector<std::string>>& fileName);
 
 private:
     bool comparaisonFunc(LogLineInfo& info) const;
