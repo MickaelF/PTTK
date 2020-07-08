@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(PTTK_SRC 
-    src/log.cpp
     src/logger.cpp
     src/stringtools.cpp
     include/executiontimer.h

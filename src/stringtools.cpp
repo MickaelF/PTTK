@@ -47,11 +47,18 @@ std::time_t toTimeT(std::string_view str, std::string_view dateFormat)
     return std::mktime(&tm);
 }
 
-std::string dateTimeToString(std::string_view dateFormat)
+std::string currentDateTimeToString(std::string_view dateFormat)
 {
-    std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::stringstream ss;
-    ss << std::put_time(&threadSafeLocalTime(end_time), dateFormat.data());
+    ss << std::put_time(&threadSafeLocalTime(now), dateFormat.data());
+    return std::move(ss.str());
+}
+
+std::string timeTToString(std::time_t time, std::string_view dateFormat)
+{
+    std::stringstream ss;
+    ss << std::put_time(&threadSafeLocalTime(time), dateFormat.data());
     return std::move(ss.str());
 }
 }

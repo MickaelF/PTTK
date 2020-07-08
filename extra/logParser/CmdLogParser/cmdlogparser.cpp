@@ -29,7 +29,7 @@ constexpr std::string_view fileNameArg {"-f"};
 
 std::string outputDefaultFileName(std::string_view input)
 {
-    auto dateTime = std::move(strTls::dateTimeToString("%m%d%Y_%H%M%S"));
+    auto dateTime = std::move(strTls::currentDateTimeToString("%m%d%Y_%H%M%S"));
     auto fileName {"/log-parsed-" + dateTime + ".txt"};
 
     auto path {std::filesystem::path(input)};

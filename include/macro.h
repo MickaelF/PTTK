@@ -1,7 +1,4 @@
 #pragma once
 
-#define DISPLAY_LOG
-#define LOG_TO_FILE
-
+#define DISPLAY_LOG 
 //#undef DISPLAY_LOG
-//#undef LOG_TO_FILE
