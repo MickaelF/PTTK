@@ -2,7 +2,6 @@
 #include "parserexecution.h"
 #include "logger.h"
 #include "log.h"
-#include <filesystem>
 
 int main(int argc, char *argv[])
 {

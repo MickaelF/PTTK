@@ -2,9 +2,16 @@
 
 #include <QMainWindow>
 
-class MainWindow: public QMainWindow
+#include "ui_MainWindow.h"
+
+class MainWindow : public QMainWindow, public Ui_MainWindow
 {
     Q_OBJECT
-public: 
+public:
+    MainWindow();
+
+private slots:
+    void onLogGeneratorActionPressed();
+
 private:
-}
+};

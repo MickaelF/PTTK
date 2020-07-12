@@ -1,7 +1,7 @@
 #include "parserexecution.h"
 #include "parserarguments.h"
-#include "../logParser.h"
-#include "../loglineinfo.h"
+#include "logParser.h"
+#include "loglineinfo.h"
 
 ParserExecution::ParserExecution(const ParserArguments& arguments) : m_args(arguments) 
 {

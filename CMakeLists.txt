@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_CURRENT_LIST_DIR};")
+
 set(LIB_NAME PTTK)
 project(${LIB_NAME})
 set(CMAKE_CXX_STANDARD 20)
@@ -8,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(PTTK_SRC 
     src/logger.cpp
     src/stringtools.cpp
+    src/stringtools.cpp
     include/executiontimer.h
     include/log.h
     include/logger.h
@@ -15,6 +18,7 @@ set(PTTK_SRC
     include/stringtools.h 
     include/numbergenerator.h 
     src/numbergenerator.cpp
+    include/iprogress.h
 )
 
 option(PTTK_BUILD_CMD_LOG_PARSER "Build the PTTK Log parser command line executable" ON)
@@ -24,9 +28,9 @@ option(PTTK_BUILD_QT_WIDGET_LOG_PARSER "Build the PTTK Log parser with Qt Widget
 if (NOT ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
     set(PTTK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include/ PARENT_SCOPE)
 else()    
-    set (PTTK_BUILD_CMD_LOG_PARSER ON)
-    set (PTTK_BUILD_LOG_GENERATOR ON)
-    set (PTTK_BUILD_QT_WIDGET_LOG_PARSER OFF)
+    set (PTTK_BUILD_CMD_LOG_PARSER OFF)
+    set (PTTK_BUILD_LOG_GENERATOR OFF)
+    set (PTTK_BUILD_QT_WIDGET_LOG_PARSER ON)
 endif()
 
 add_library(${LIB_NAME} ${PTTK_SRC})

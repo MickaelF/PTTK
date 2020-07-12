@@ -31,9 +31,10 @@ namespace
 	static std::mutex fileStreamMutex;
 } // namespace
 
-void Logger::setFolderPath(std::filesystem::path executableName)
+void Logger::setFolderPath(const char* executableName)
 {
-	m_defaultPath = std::move(std::string(companyName) + '/' + executableName.stem().string());
+    std::filesystem::path path {executableName};
+    m_defaultPath = std::move(std::string(companyName) + '/' + path.stem().string());
 }
 
 void Logger::swapStream(std::ofstream& other)

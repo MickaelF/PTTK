@@ -22,7 +22,7 @@ public:
     }
     
     static void close();
-    static void setFolderPath(std::filesystem::path executableName);
+    static void setFolderPath(const char* executableName);
 
     static void swapStream(std::ofstream& other);
     static void stopUsingSpecificLogDate(); 
