@@ -14,16 +14,23 @@ set(PTTK_SRC
     include/macro.h
     include/stringtools.h 
     include/numbergenerator.h 
-    src/numbergenerator.cpp)
+    src/numbergenerator.cpp
+)
 
-set(PTTK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include/ PARENT_SCOPE)
+option(PTTK_BUILD_CMD_LOG_PARSER "Build the PTTK Log parser command line executable" ON)
+option(PTTK_BUILD_LOG_GENERATOR "Build the PTTK Log generator (for parser tests)" OFF)
+option(PTTK_BUILD_QT_WIDGET_LOG_PARSER "Build the PTTK Log parser with Qt Widget GUI executable" OFF)
+
+if (NOT ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+    set(PTTK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include/ PARENT_SCOPE)
+else()    
+    set (PTTK_BUILD_CMD_LOG_PARSER ON)
+    set (PTTK_BUILD_LOG_GENERATOR ON)
+    set (PTTK_BUILD_QT_WIDGET_LOG_PARSER OFF)
+endif()
 
 add_library(${LIB_NAME} ${PTTK_SRC})
-target_include_directories(${LIB_NAME} PUBLIC ./include/)
-option(PTTK_BUILD_CMD_LOG_PARSER "Build the PTTK Log parser command line executable" ON)
-option(PTTK_BUILD_LOG_GENERATOR "Build the PTTK Log generator (for parser tests)" ON)
-set (PTTK_BUILD_CMD_LOG_PARSER ON)
-set (PTTK_BUILD_LOG_GENERATOR ON)
+target_include_directories(${LIB_NAME} PUBLIC include/)
 
 if(PTTK_BUILD_CMD_LOG_PARSER) 
     add_subdirectory(extra/logParser/CmdLogParser)
@@ -31,4 +38,8 @@ endif()
 
 if(PTTK_BUILD_LOG_GENERATOR) 
     add_subdirectory(extra/logGenerator)
+endif()
+
+if(PTTK_BUILD_QT_WIDGET_LOG_PARSER) 
+    add_subdirectory(extra/logParser/qtWidgetLogParser)
 endif()

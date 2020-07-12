@@ -3,10 +3,9 @@ set(PROJECT_NAME CmdLogParser)
 project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+find_library(PTTK_LIB PTTK PATH ${CMAKE_BINARY_DIR})
 
-
-set(PTTK_DIR ${CMAKE_SOURCE_DIR}/include)
-message(${PTTK_DIR})
+include ("../parserSrcs.cmake")
 
 set(SRCS main.cpp
 	parserarguments.cpp
@@ -15,6 +14,6 @@ set(SRCS main.cpp
 	parserexecution.cpp
 )
 
-add_executable(${PROJECT_NAME} ${SRCS})
+add_executable(${PROJECT_NAME} ${SRCS} ${ParserSrc})
 target_link_libraries(${PROJECT_NAME} PTTK)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PTTK_DIR})
