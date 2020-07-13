@@ -1,41 +1,23 @@
 #pragma once
-
-#include <QDialog>
-#include <QThread>
-#include <functional>
-
-#include "ui_ProgressDialog.h"
+#include <QProgressDialog>
+#include <QTimer>
+#include <QObject>
 
 class IProgress;
 
-class ProgressDialog : public QDialog, public Ui_ProgressDialog
+class ProgressDialog : public QObject
 {
+    Q_OBJECT
 public:
-    ProgressDialog(QWidget* parent = nullptr);
-    ~ProgressDialog();
+    ProgressDialog(const QString& title, int min, int max, const IProgress& progress);
+    ~ProgressDialog() = default;
+    void start();
 
-    void setProgressObject(IProgress* progress);
-    void run(int start, int max);
-
-    void stopExecution();
+private slots:
+    void onTimerKicked();
 
 private:
-    class UpdateProgress : public QThread
-    {
-        Q_OBJECT
-    public:
-        UpdateProgress(IProgress* p, QObject* parent = nullptr)
-            : QThread(parent),
-              m_progress(p),
-              m_dialog(qobject_cast<ProgressDialog*>(parent))
-        {
-        }
-        void run();
-
-    private:
-        IProgress* m_progress {nullptr};
-        ProgressDialog* m_dialog {nullptr};
-    };
-
-    UpdateProgress* m_executionThread {nullptr};
+    QProgressDialog m_progressDialog;
+    QTimer m_timer;
+    const IProgress& m_progress;
 };

@@ -3,8 +3,8 @@
 #include <QDateTime>
 #include <QFileDialog>
 #include <QStandardItemModel>
+#include <QMessageBox>
 
-#include "alertdialog.h"
 #include "loggenerator.h"
 #include "executiontimer.h"
 #include "progressdialog.h"
@@ -26,21 +26,16 @@ void LogGeneratorDialog::onGenerateBtnPressed()
     {
         LogGenerator generator {path.toStdString(), g_lineNumberSP->value()};
 
-        ProgressDialog progress; 
-        progress.setProgressObject(&generator);
-        progress.run(0, g_lineNumberSP->value());
-
-        generator.exec(g_dateStart->dateTime().toTime_t());
-        progress.stopExecution();
+        ProgressDialog progress(tr("Generating log file..."), 0, g_lineNumberSP->value(), generator);
+        progress.start();
+        generator.exec(g_dateStart->dateTime().toTime_t());;
     }
     catch (std::exception& e)
     {
-        AlertDialog alert(AlertDialog::Level::Error, AlertDialog::Option::Ok, tr(e.what()));
+        QMessageBox::critical(this, tr("Log generation error"), e.what());
         close();
         return;
     }
-
-    AlertDialog generationEnded(AlertDialog::Level::Info, AlertDialog::Option::Ok,
-                                tr("Log file generated"));
+    QMessageBox::information(this,tr("Log generation ended"), tr("Log file generated!"));
     close();
 }

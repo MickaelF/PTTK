@@ -3,36 +3,29 @@
 #include "iprogress.h"
 #include "log.h"
 
-ProgressDialog::ProgressDialog(QWidget* parent) : QDialog(parent)
+ProgressDialog::ProgressDialog(const QString& title, int min, int max, const IProgress& progress):
+    m_progress(progress)
 {
-    setupUi(this);
+    using namespace std::chrono_literals;
+    m_progressDialog.setAutoClose(true);
+    m_progressDialog.setLabelText(title);
+    m_progressDialog.setMinimum(min);
+    m_progressDialog.setMaximum(max);
+
+    m_timer.setSingleShot(false);
+    m_timer.setInterval(50ms);
+    m_timer.start();
+    connect(&m_timer, &QTimer::timeout, this, &ProgressDialog::onTimerKicked);
 }
 
-ProgressDialog::~ProgressDialog()
+void ProgressDialog::start()
 {
-    stopExecution();
+    m_progressDialog.show();
+    m_timer.start();
 }
 
-void ProgressDialog::setProgressObject(IProgress* progress)
+void ProgressDialog::onTimerKicked()
 {
-    m_executionThread = new UpdateProgress(progress, this);
+    m_progressDialog.setValue(m_progress.progress());
 }
 
-void ProgressDialog::run(int start, int max)
-{
-    show();
-    g_progress->setMinimum(start);
-    g_progress->setMaximum(max);
-    m_executionThread->run();
-}
-
-void ProgressDialog::stopExecution()
-{
-    if (m_executionThread->isRunning()) m_executionThread->terminate();
-    close();
-}
-
-void ProgressDialog::UpdateProgress::run() 
-{
-    m_dialog->g_progress->setValue(m_progress->progress());
-}

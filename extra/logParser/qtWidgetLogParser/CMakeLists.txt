@@ -25,8 +25,6 @@ set(SRCS_FILES
     logviewerwidget.cpp
     loggeneratordialog.h
     loggeneratordialog.cpp
-    alertdialog.h
-    alertdialog.cpp
     progressdialog.h
     progressdialog.cpp
 )
@@ -38,6 +36,7 @@ set(RSC_FILES
 set(UI_FILES
     ui/MainWindow.ui
     ui/LogGeneratorDialog.ui
+    ui/ProgressDialog.ui
 )
 message("dsde" ${GeneratorSrcs})
 
