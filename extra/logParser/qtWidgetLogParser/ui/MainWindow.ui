@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QGroupBox" name="groupBox">
+     <widget class="QGroupBox" name="g_sortOptions">
       <property name="title">
        <string>Parameters</string>
       </property>
@@ -31,7 +31,23 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="g_sortCB"/>
+          <widget class="QComboBox" name="g_sortCB">
+           <item>
+            <property name="text">
+             <string>Date</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Priority</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>File name</string>
+            </property>
+           </item>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_2">
@@ -41,7 +57,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="g_priorityCB"/>
+          <widget class="PriorityComboBox" name="g_priorityCB">
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+           <property name="currentText">
+            <string>6 priorities selected</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_3">
@@ -128,7 +151,6 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
-    <addaction name="actionNew"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -144,7 +166,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
    <property name="text">
-    <string>Opeb</string>
+    <string>Open</string>
    </property>
   </action>
   <action name="actionNew">
@@ -169,6 +191,11 @@
    <extends>QWidget</extends>
    <header>logviewerwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PriorityComboBox</class>
+   <extends>QComboBox</extends>
+   <header>prioritycombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

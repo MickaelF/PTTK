@@ -1,5 +1,6 @@
 #include "loggeneratordialog.h"
 
+#include <QCheckBox>
 #include <QDateTime>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -15,29 +16,32 @@ LogGeneratorDialog::LogGeneratorDialog(QWidget* parent) : QDialog(parent)
     g_dateStart->setDateTime(QDateTime::currentDateTime());
     connect(g_cancelBtn, &QPushButton::clicked, this, [&]() { close(); });
     connect(g_generateBtn, &QPushButton::clicked, this, &LogGeneratorDialog::onGenerateBtnPressed);
+    connect(g_open, &QCheckBox::stateChanged, this,
+            [&](int state) { m_openInEditor = (state == Qt::Checked); });
 }
 
 void LogGeneratorDialog::onGenerateBtnPressed()
 {
-    auto path = QFileDialog::getSaveFileName(this, tr("Generated file path"), QString(),
-                                             "Text file (*.txt)");
-    if (path.isEmpty()) return;
-    try
-    {
-        LogGenerator generator {path.toStdString(), g_lineNumberSP->value(),
-                                g_dateStart->dateTime().toTime_t()};
-        ProgressDialog progress(tr("Generating log file..."), 0, g_lineNumberSP->value(),
-                                generator);
-        std::thread thread = std::thread {&LogGenerator::exec, &generator};
-        progress.start();
-        thread.join();
-    }
-    catch (std::exception& e)
-    {
-        QMessageBox::critical(this, tr("Log generation error"), e.what());
+        auto path = QFileDialog::getSaveFileName(this, tr("Generated file path"), QString(),
+                                                 "Text file (*.txt)");
+        if (path.isEmpty()) return;
+        m_path = path;
+        try
+        {
+            LogGenerator generator {path.toStdString(), g_lineNumberSP->value(),
+                                    g_dateStart->dateTime().toTime_t()};
+            ProgressDialog progress(tr("Generating log file..."), 0, g_lineNumberSP->value(),
+                                    generator);
+            std::thread thread = std::thread {&LogGenerator::exec, &generator};
+            progress.start();
+            thread.join();
+        }
+        catch (std::exception& e)
+        {
+            QMessageBox::critical(this, tr("Log generation error"), e.what());
+            close();
+            return;
+        }
+        QMessageBox::information(this, tr("Log generation ended"), tr("Log file generated!"));
         close();
-        return;
-    }
-    QMessageBox::information(this, tr("Log generation ended"), tr("Log file generated!"));
-    close();
 }

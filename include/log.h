@@ -11,22 +11,24 @@
     #include <iostream>
 #endif
 
-template <bool Specific = false>
+
+enum class LogPriority
+{
+    Debug = 0,
+    Info,
+    Warning,
+    Error,
+    Fatal,
+    Remember,
+    Execution
+};
+
+
+template <bool Generator, bool Console>
 class Log
 {
 public:
-    enum class Priority
-    {
-        Debug,
-        Info,
-        Warning,
-        Error,
-        Fatal,
-        Remember,
-        Execution
-    };
-
-    Log(Priority p, std::string_view fileName, int lineNumber)
+    Log(LogPriority p, std::string_view fileName, int lineNumber)
     {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
         constexpr char delimiter {'\\'};
@@ -40,10 +42,13 @@ public:
 
     ~Log()
     {
-        static std::mutex m_mutex;
-        std::lock_guard<std::mutex> lock {m_mutex};
-        std::cout << m_stream.str() << std::endl;
-        Logger::appendLog<Specific>(m_stream.str() + "\n");
+        if constexpr (Console)
+        {
+            static std::mutex m_mutex;
+            std::lock_guard<std::mutex> lock {m_mutex};
+            std::cout << m_stream.str() << std::endl;
+        }
+        Logger::appendLog<Generator>(m_stream.str() + "\n");
     }
 
     Log(Log& o) = delete;
@@ -105,17 +110,17 @@ public:
         return *this;
     }
 
-    static constexpr char* enumToStr(Log::Priority p)
+    static constexpr char* enumToStr(LogPriority p)
     {
         switch (p)
         {
-            case Log::Priority::Debug: return "Debug";
-            case Log::Priority::Info: return "Info";
-            case Log::Priority::Warning: return "Warning";
-            case Log::Priority::Error: return "Error";
-            case Log::Priority::Fatal: return "Fatal";
-            case Log::Priority::Remember: return "Remember";
-            case Log::Priority::Execution: return "Execution";
+            case LogPriority::Debug: return "Debug";
+            case LogPriority::Info: return "Info";
+            case LogPriority::Warning: return "Warning";
+            case LogPriority::Error: return "Error";
+            case LogPriority::Fatal: return "Fatal";
+            case LogPriority::Remember: return "Remember";
+            case LogPriority::Execution: return "Execution";
             default: return "Unknown";
         }
     }
@@ -124,10 +129,7 @@ private:
     std::ostringstream m_stream;
 };
 
-#define LogPriority Log<false>::Priority
-#define LogGeneratorPriority Log<true>::Priority
-
-#define BasicLog Log<false>
+#define BasicLog Log<false, true>
 #define lFatal BasicLog(LogPriority::Fatal, __FILE__, __LINE__)
 #define lError BasicLog(LogPriority::Error, __FILE__, __LINE__)
 #define lInfo BasicLog(LogPriority::Info, __FILE__, __LINE__)

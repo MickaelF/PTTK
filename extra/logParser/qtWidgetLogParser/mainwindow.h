@@ -12,6 +12,7 @@ public:
 
 private slots:
     void onLogGeneratorActionPressed();
+    void onOpenActionPressed();
 
 private:
 };

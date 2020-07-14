@@ -27,6 +27,8 @@ set(SRCS_FILES
     loggeneratordialog.cpp
     progressdialog.h
     progressdialog.cpp
+    prioritycombobox.h
+    prioritycombobox.cpp
 )
 
 set(RSC_FILES
@@ -38,7 +40,6 @@ set(UI_FILES
     ui/LogGeneratorDialog.ui
     ui/ProgressDialog.ui
 )
-message("dsde" ${GeneratorSrcs})
 
 add_executable(${PROJECT_NAME} ${SRCS_FILES} ${RSC_FILES} ${UI_FILES} ${ParserSrc} ${GeneratorSrcs})
 target_link_libraries(${PROJECT_NAME} Qt::Widgets Qt::Core PTTK)
