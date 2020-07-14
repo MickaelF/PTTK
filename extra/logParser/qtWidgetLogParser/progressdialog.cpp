@@ -11,6 +11,7 @@ ProgressDialog::ProgressDialog(const QString& title, int min, int max, const IPr
     m_progressDialog.setLabelText(title);
     m_progressDialog.setMinimum(min);
     m_progressDialog.setMaximum(max);
+    m_progressDialog.setCancelButtonText(QString());
 
     m_timer.setSingleShot(false);
     m_timer.setInterval(50ms);
@@ -20,8 +21,8 @@ ProgressDialog::ProgressDialog(const QString& title, int min, int max, const IPr
 
 void ProgressDialog::start()
 {
-    m_progressDialog.show();
     m_timer.start();
+    m_progressDialog.exec();
 }
 
 void ProgressDialog::onTimerKicked()

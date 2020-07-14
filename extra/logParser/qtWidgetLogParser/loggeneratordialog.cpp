@@ -2,11 +2,11 @@
 
 #include <QDateTime>
 #include <QFileDialog>
-#include <QStandardItemModel>
 #include <QMessageBox>
+#include <QStandardItemModel>
 
-#include "loggenerator.h"
 #include "executiontimer.h"
+#include "loggenerator.h"
 #include "progressdialog.h"
 
 LogGeneratorDialog::LogGeneratorDialog(QWidget* parent) : QDialog(parent)
@@ -19,16 +19,18 @@ LogGeneratorDialog::LogGeneratorDialog(QWidget* parent) : QDialog(parent)
 
 void LogGeneratorDialog::onGenerateBtnPressed()
 {
-    auto path = QFileDialog::getSaveFileName(this, tr("Generated file path"), QString(), "Text file (*.txt)");
+    auto path = QFileDialog::getSaveFileName(this, tr("Generated file path"), QString(),
+                                             "Text file (*.txt)");
     if (path.isEmpty()) return;
-
     try
     {
-        LogGenerator generator {path.toStdString(), g_lineNumberSP->value()};
-
-        ProgressDialog progress(tr("Generating log file..."), 0, g_lineNumberSP->value(), generator);
+        LogGenerator generator {path.toStdString(), g_lineNumberSP->value(),
+                                g_dateStart->dateTime().toTime_t()};
+        ProgressDialog progress(tr("Generating log file..."), 0, g_lineNumberSP->value(),
+                                generator);
+        std::thread thread = std::thread {&LogGenerator::exec, &generator};
         progress.start();
-        generator.exec(g_dateStart->dateTime().toTime_t());;
+        thread.join();
     }
     catch (std::exception& e)
     {
@@ -36,6 +38,6 @@ void LogGeneratorDialog::onGenerateBtnPressed()
         close();
         return;
     }
-    QMessageBox::information(this,tr("Log generation ended"), tr("Log file generated!"));
+    QMessageBox::information(this, tr("Log generation ended"), tr("Log file generated!"));
     close();
 }

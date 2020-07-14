@@ -7,8 +7,10 @@
 #include "numbergenerator.h"
 #include "stringtools.h"
 
-LogGenerator::LogGenerator(const std::filesystem::path& outputPath, int nbLines)
-    : m_nbLines(nbLines)
+LogGenerator::LogGenerator(const std::filesystem::path& outputPath, int nbLines,
+                           std::optional<std::time_t> time)
+    : m_nbLines(nbLines),
+      m_time(time)
 {
     m_outStream.open(outputPath, std::ios_base::out);
     if (!m_outStream.is_open()) throw std::runtime_error("Cannot create output file.");
@@ -16,15 +18,15 @@ LogGenerator::LogGenerator(const std::filesystem::path& outputPath, int nbLines)
     Logger::swapStream(m_outStream);
 }
 
-void LogGenerator::exec(std::optional<std::time_t> time)
+void LogGenerator::exec()
 {
     const std::vector<std::string> randomFileName {"file1", "file2", "file3",
                                                    "file4", "file5", "file6"};
     const std::vector<std::string> logText {
         "This is a log on one line.", "This is \na log on two lines", "This\nis\ntoo\nmany\nlines"};
 
-    std::time_t now = (time.has_value())
-                          ? *time
+    std::time_t now = (m_time.has_value())
+                          ? *m_time
                           : std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     for (m_progress; m_progress < m_nbLines; ++m_progress)
     {
