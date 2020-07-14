@@ -8,6 +8,9 @@ void LogParser::setInputFile(std::string_view file)
 {
 	m_stream.open(file.data());
 	if (!m_stream.is_open()) throw std::runtime_error("Failed to open the log file !");
+	while (std::getline(m_stream, std::string())) m_numberOfLines++;
+	m_stream.clear();
+	m_stream.seekg(0);
 }
 
 void LogParser::startAtDate(std::time_t start)

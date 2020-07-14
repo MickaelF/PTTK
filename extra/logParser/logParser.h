@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "iprogress.h"
 class LogLineInfo;
 
 enum class LogSort
@@ -16,7 +17,7 @@ enum class LogSort
 	Files
 };
 
-class LogParser
+class LogParser : public IProgress
 {
 public:
 	LogParser() = default;
@@ -31,6 +32,8 @@ public:
 	void createComparaisonFunctions(const std::optional<std::vector<std::string>>& priorities,
 		const std::optional<std::time_t>& endDate,
 		const std::optional<std::vector<std::string>>& fileName);
+	int progress() const override { return m_progress; }
+	int numberOfLines() const { return m_numberOfLines; }
 
 private:
 	bool comparaisonFunc(LogLineInfo& info) const;
@@ -41,4 +44,6 @@ private:
 	std::vector<std::function<bool(LogLineInfo&)>> m_logTests;
 	std::ifstream m_stream;
 	LogSort m_sort{LogSort::Date};
+	int m_progress{ 0 };
+	int m_numberOfLines{ 0 };
 };
