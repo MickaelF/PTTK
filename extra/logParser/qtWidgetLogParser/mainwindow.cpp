@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "loggeneratordialog.h"
-#include <QFIleDialog>
+#include <QFileDialog>
+#include "logParser.h"
 
 MainWindow::MainWindow() : QMainWindow(nullptr)
 {
@@ -15,12 +16,19 @@ void MainWindow::onLogGeneratorActionPressed()
 {
     LogGeneratorDialog dialog;
     dialog.exec();
+    if (dialog.openInEditor())
+        open(dialog.path().toStdString());
 }
 
 void MainWindow::onOpenActionPressed()
 {
     auto path = QFileDialog::getOpenFileName(this, tr("Open log file"), QString(), "Logs (*.txt)");
     if (path.isEmpty()) return;
-
     
+}
+
+void MainWindow::open(const QString& path)
+{
+    LogParser parser;
+    parser.setInputFile(path.toStdString());
 }

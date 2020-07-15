@@ -3,17 +3,11 @@
 #include <vector>
 #include <string>
 #include <ctime>
+#include "logParser.h"
 
 class ParserArguments
 {
 public:
-    enum class Sort
-    {
-        Date,
-        Type,
-        Files
-    };
-
     ParserArguments(int argc, char* argv[]);
     ParserArguments() = delete;
     ParserArguments(const ParserArguments&) = delete;
@@ -26,7 +20,7 @@ public:
     
     const std::optional<std::vector<std::string>>& fileNames() const { return m_fileNames; }
     const std::optional<std::vector<std::string>>& priorities() const { return m_parsedPriorities; }
-    Sort sort() const { return m_sort; }
+    const std::optional<LogSort>& sort() const { return m_sort; }
 
 private:
     void pushPriorities(std::string_view p); 
@@ -41,5 +35,5 @@ private:
     std::optional<std::vector<std::string>> m_fileNames;
     std::optional<std::vector<std::string>> m_parsedPriorities;
 
-    Sort m_sort {Sort::Date};
+    std::optional<LogSort> m_sort;
 };

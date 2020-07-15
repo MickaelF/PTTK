@@ -78,11 +78,11 @@ ParserArguments::ParserArguments(int argc, char* argv[])
         {
             i++;
             if (argv[i] == sortDateArg)
-                m_sort = Sort::Date;
+                m_sort = LogSort::Date;
             else if (argv[i] == sortTypeArg)
-                m_sort = Sort::Type;
+                m_sort = LogSort::Type;
             else if (argv[i] == sortFilesArg)
-                m_sort = Sort::Files;
+                m_sort = LogSort::Files;
         }
     }
 

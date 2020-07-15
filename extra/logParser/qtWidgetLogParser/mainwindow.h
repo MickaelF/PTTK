@@ -15,4 +15,5 @@ private slots:
     void onOpenActionPressed();
 
 private:
+    void open(const QString& path);
 };

@@ -21,29 +21,8 @@ void ParserExecution::exec()
     parser.createComparaisonFunctions(m_args.priorities(), m_args.endDate(), m_args.fileNames());
     parser.setInputFile(m_args.input());
     if (m_args.startDate().has_value()) parser.startAtDate(*m_args.startDate());
-
-    std::function<std::string_view(const LogLineInfo& info)> compareFunction;
-    switch (m_args.sort())
-    {
-        case ParserArguments::Sort::Date :
-            compareFunction = [](const LogLineInfo& info) -> std::string_view {
-                return info.dateStr();
-            };
-            break;
-        case ParserArguments::Sort::Type:
-            compareFunction = [](const LogLineInfo& info) -> std::string_view {
-                return info.priority();
-            };
-            break;
-        case ParserArguments::Sort::Files:
-            compareFunction = [](const LogLineInfo& info) -> std::string_view {
-                return info.fileName();
-            };
-            break;
-        default: throw std::runtime_error("Cannot parse logs with unknown sort selected.");
-    }
-
-    auto logs = std::move(parser.exec(compareFunction));
+    if (m_args.sort().has_value()) parser.setSortType(*m_args.sort());
+    auto logs = std::move(parser.exec());
     for (auto& pair : logs)
     {
         m_outFile << pair.first << "\n";
