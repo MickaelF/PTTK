@@ -28,7 +28,7 @@ void LogGenerator::exec()
     std::time_t now = (m_time.has_value())
                           ? *m_time
                           : std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    for (m_progress; m_progress < m_nbLines; ++m_progress)
+    for (; m_progress < m_nbLines; ++m_progress)
     {
         LogPriority priority = static_cast<LogPriority>(NumberGenerator::generateBetween(
             static_cast<int>(LogPriority::Debug), static_cast<int>(LogPriority::Execution)));
@@ -42,5 +42,7 @@ void LogGenerator::exec()
 
         Log<true, false>(priority, randomFileName[fileId], lineNumber) << logText[logTextId];
     }
+    Logger::waitForEmpty();
     Logger::swapStream(m_outStream);
+    m_outStream.close();
 }

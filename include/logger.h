@@ -20,6 +20,8 @@ public:
     {
         get().m_mainThreadLogQueue.push(currentDate<Specific>() + std::string(str));
     }
+
+    static void waitForEmpty();
     
     static void close();
     static void setFolderPath(const char* executableName);

@@ -17,13 +17,14 @@ void MainWindow::onLogGeneratorActionPressed()
     LogGeneratorDialog dialog;
     dialog.exec();
     if (dialog.openInEditor())
-        open(dialog.path().toStdString());
+        open(dialog.path());
 }
 
 void MainWindow::onOpenActionPressed()
 {
     auto path = QFileDialog::getOpenFileName(this, tr("Open log file"), QString(), "Logs (*.txt)");
     if (path.isEmpty()) return;
+    open(path);
     
 }
 
@@ -31,4 +32,5 @@ void MainWindow::open(const QString& path)
 {
     LogParser parser;
     parser.setInputFile(path.toStdString());
+    g_parsedLogWidget->setModel(parser.exec());
 }

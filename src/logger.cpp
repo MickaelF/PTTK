@@ -74,8 +74,15 @@ Logger::~Logger()
 void Logger::close()
 {
 	Logger& logger{ get() };
+    waitForEmpty();
 	logger.m_isRunning = false;
 	logger.m_loggingThread.join();
+}
+
+void Logger::waitForEmpty()
+{
+    Logger& log = get();
+    while (!log.m_mainThreadLogQueue.empty() || !log.m_logQueue.empty()) {std::this_thread::sleep_for(10ms);}
 }
 
 Logger& Logger::get()
