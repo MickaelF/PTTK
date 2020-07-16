@@ -22,8 +22,7 @@ LogGeneratorDialog::LogGeneratorDialog(QWidget* parent) : QDialog(parent)
 
 void LogGeneratorDialog::onGenerateBtnPressed()
 {
-        auto path = QFileDialog::getSaveFileName(this, tr("Generated file path"), QString(),
-                                                 "Text file (*.txt)");
+        auto path = QFileDialog::getExistingDirectory(this, tr("Generated file path"), QString());
         if (path.isEmpty()) return;
         m_path = path;
         try

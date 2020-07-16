@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <filesystem>
 #include <queue>
 #include <string>
 #include <string_view>
@@ -7,9 +8,23 @@
 #include "macro.h"
 #include "stringtools.h"
 
+constexpr std::string_view logFileName{ "log.ptLog" };
 class Logger
 {
 public:
+    class LogDataFile
+    {
+    public:
+        LogDataFile(const std::filesystem::path& path);
+
+        void write() const;
+
+    private:
+        const std::string m_filePath;
+        std::string m_logFileName;
+        std::string m_lastModification;
+        int m_nbLines;
+    }
     ~Logger();
     Logger(const Logger&) = delete;
     Logger(Logger&&) = delete;
@@ -26,7 +41,7 @@ public:
     static void close();
     static void setFolderPath(const char* executableName);
 
-    static void swapStream(std::ofstream& other);
+    static void swapStream(std::ofstream& other, std::filesystem::path& outputPath);
     static void stopUsingSpecificLogDate(); 
     static void setSpecificLogDate(std::string_view date); 
 
@@ -43,6 +58,7 @@ private:
     static Logger& get();
     Logger();
     void flush();
+    void updateData(int nbNewLines);
     std::ofstream m_fileStream;
     std::queue<std::string> m_mainThreadLogQueue; 
     std::queue<std::string> m_logQueue;
@@ -50,4 +66,5 @@ private:
     bool m_isRunning {true};
 
     std::string m_specificDate; 
+    std::filesystem::path m_logPath;
 };

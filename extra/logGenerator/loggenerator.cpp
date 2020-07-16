@@ -9,13 +9,17 @@
 
 LogGenerator::LogGenerator(const std::filesystem::path& outputPath, int nbLines,
                            std::optional<std::time_t> time)
-    : m_nbLines(nbLines),
-      m_time(time)
+    :
+      m_outPath(outputPath),m_nbLines(nbLines), m_time(time)
 {
-    m_outStream.open(outputPath, std::ios_base::out);
+    if (!std::filesystem::exists(m_outPath))
+        std::filesystem::create_directories(m_outPath);
+    std::filesystem::path logFile = m_outPath;
+    logFile.append(logFileName);
+    m_outStream.open(logFile, std::ios_base::out);
     if (!m_outStream.is_open()) throw std::runtime_error("Cannot create output file.");
 
-    Logger::swapStream(m_outStream);
+    Logger::swapStream(m_outStream, m_outPath);
 }
 
 void LogGenerator::exec()
@@ -43,6 +47,7 @@ void LogGenerator::exec()
         Log<true, false>(priority, randomFileName[fileId], lineNumber) << logText[logTextId];
     }
     Logger::waitForEmpty();
-    Logger::swapStream(m_outStream);
+    lDebug << "Generation Ended successfully.";
+    Logger::swapStream(m_outStream, m_outPath);
     m_outStream.close();
 }

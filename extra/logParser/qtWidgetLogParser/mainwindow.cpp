@@ -22,7 +22,7 @@ void MainWindow::onLogGeneratorActionPressed()
 
 void MainWindow::onOpenActionPressed()
 {
-    auto path = QFileDialog::getOpenFileName(this, tr("Open log file"), QString(), "Logs (*.txt)");
+    auto path = QFileDialog::getOpenFileName(this, tr("Open log folder"), QString());
     if (path.isEmpty()) return;
     open(path);
     

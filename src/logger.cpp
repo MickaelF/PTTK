@@ -23,8 +23,7 @@ namespace
 		return programDataPath;
 	}
 
-	constexpr std::string_view logFileName{ "log.txt" };
-	constexpr std::string_view executionFileName{ "execution.txt" };
+    constexpr std::string_view logDataFileName{ "data.ptlData" };
 	constexpr std::string_view companyName{ "PotatoThunder" };
 	constexpr auto waitDuration {500ms};
 
@@ -34,13 +33,14 @@ namespace
 void Logger::setFolderPath(const char* executableName)
 {
     std::filesystem::path path {executableName};
-    m_defaultPath = std::move(std::string(companyName) + '/' + path.stem().string());
+    m_defaultPath = std::string(companyName) + '/' + path.stem().string();
 }
 
-void Logger::swapStream(std::ofstream& other)
+void Logger::swapStream(std::ofstream& other, std::filesystem::path& outputPath)
 {
 	std::lock_guard<std::mutex> lock(fileStreamMutex);
 	get().m_fileStream.swap(other);
+    get().m_logPath.swap(outputPath);
 }
 
 void Logger::stopUsingSpecificLogDate()
@@ -55,11 +55,9 @@ void Logger::setSpecificLogDate(std::string_view date)
 
 std::string Logger::m_defaultPath;
 
-Logger::Logger()
+Logger::Logger() :m_logPath(getLogPath(m_defaultPath))
 {
-	auto basePath{ getLogPath(m_defaultPath) };
-
-	auto logPath = basePath;
+    auto logPath = m_logPath;
 	logPath.append(logFileName);
 	m_fileStream.open(logPath, std::ios_base::out | std::ios_base::app);
 	if (m_fileStream.is_open())
@@ -98,6 +96,7 @@ void Logger::flush()
 		if (!m_mainThreadLogQueue.empty())
 		{
 			m_logQueue.swap(m_mainThreadLogQueue);
+            int nbNewLines = m_logQueue.size();
 			std::lock_guard<std::mutex> lock(fileStreamMutex);
 			while (!m_logQueue.empty())
 			{
@@ -105,8 +104,53 @@ void Logger::flush()
 				m_logQueue.pop();
 			}
 			m_fileStream << std::flush;
+            updateData(nbNewLines);
 		}
 		std::this_thread::sleep_for(waitDuration);
 	}
-	m_fileStream.close();
+    m_fileStream.close();
+}
+
+void Logger::updateData(int nbLines)
+{
+    auto logPath = m_logPath;
+    logPath.append(logDataFileName);
+    if (std::filesystem::exists(logPath))
+    {
+
+    }
+    auto lastModification = currentDate<false>();
+}
+
+Logger::LogDataFile::LogDataFile(const std::filesystem::path &path) : m_filePath(path.c_str())
+{
+    constexpr std::string_view fileNameLabel {"fileName"};
+    constexpr std::string_view lineNumberLabel{"lines"};
+    constexpr std::string_view lastModificationLabel{"lastModification"};
+    std::ifstream dataFile(m_filePath);
+    std::string line;
+    std::getline(dataFile, line);
+    size_t nextEqualSign = line.find('=');
+    while(nextEqualSign != std::string::npos)
+    {
+        auto startId = line.rfind(' ', nextEqualSign);
+        auto endValue = line.find('\"', nextEqualSign + 1);
+        auto id = line.substr(startId, nextEqualSign - startId);
+        auto value = line.substr(nextEqualSign + 1, endValue - nextEqualSign + 1);
+        if (id == fileNameLabel)
+            m_logFileName = value;
+        else if (id == lineNumberLabel)
+            m_nbLines = std::stoi(value);
+        else if (id == lastModificationLabel)
+            m_lastModification = value;
+    }
+    auto indexLine = line.find("lines") + 7;
+    auto substr = line.substr(indexLine, line.find('\"', indexLine) - indexLine);
+    m_nbLines = std::stoi(substr);
+}
+
+void Logger::LogDataFile::write() const
+{
+    std::ofstream out(m_filePath);
+    out << "<info file=" << m_filePath << " lines=\"" << m_nbLines << "\" lastModification=\"" << currentDate<false>() << "\"/>";
 }

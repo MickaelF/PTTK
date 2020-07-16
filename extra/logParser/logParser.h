@@ -22,7 +22,7 @@ class LogParser : public IProgress
 public:
 	LogParser() = default;
 
-	void setInputFile(std::string_view file);
+    void setInputFolder(std::string_view folder);
 	void startAtDate(std::time_t start);
 	void setSortType(LogSort sort);
 	std::function<std::string_view(const LogLineInfo& info)> createRetrieveFunc() const;

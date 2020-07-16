@@ -3,14 +3,13 @@
 #include <algorithm>
 
 #include "loglineinfo.h"
+#include "log.h"
+#include "executiontimer.h"
 
-void LogParser::setInputFile(std::string_view file)
+void LogParser::setInputFolder(std::string_view folder)
 {
-	m_stream.open(file.data());
+     m_stream.open(std::string(file));
 	if (!m_stream.is_open()) throw std::runtime_error("Failed to open the log file !");
-	while (std::getline(m_stream, std::string())) m_numberOfLines++;
-	m_stream.clear();
-	m_stream.seekg(0);
 }
 
 void LogParser::startAtDate(std::time_t start)
