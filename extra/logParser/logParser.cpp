@@ -8,8 +8,8 @@
 
 void LogParser::setInputFolder(std::string_view folder)
 {
-     m_stream.open(std::string(file));
-	if (!m_stream.is_open()) throw std::runtime_error("Failed to open the log file !");
+    //m_stream.open(std::string(file));
+    //if (!m_stream.is_open()) throw std::runtime_error("Failed to open the log file !");
 }
 
 void LogParser::startAtDate(std::time_t start)

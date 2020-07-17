@@ -9,22 +9,39 @@
 #include "stringtools.h"
 
 constexpr std::string_view logFileName{ "log.ptLog" };
-class Logger
+
+struct LogInfo
+{
+    std::filesystem::path filePath;
+    int numberLines;
+};
+
+class LogDataFile
 {
 public:
-    class LogDataFile
-    {
-    public:
-        LogDataFile(const std::filesystem::path& path);
 
-        void write() const;
+    LogDataFile(const std::filesystem::path& folder);
 
-    private:
-        const std::string m_filePath;
-        std::string m_logFileName;
-        std::string m_lastModification;
-        int m_nbLines;
-    }
+    void write() const;
+    std::ofstream& stream();
+    void incrementLineNumber(int nbNewLines);
+
+private:
+    void parseDataLogInfo(std::string_view line);
+    LogInfo parseLogInfo(std::string_view line) const;
+    void createNewFile();
+
+    int m_totalLineNumber{0};
+    int m_numberOfFiles{0};
+    std::vector<LogInfo> m_filesInfo;
+    std::filesystem::path m_baseFolder;
+    const std::filesystem::path m_dataFilePath;
+    std::ofstream m_currentLog;
+};
+
+class Logger
+{
+public:    
     ~Logger();
     Logger(const Logger&) = delete;
     Logger(Logger&&) = delete;
@@ -54,17 +71,15 @@ private:
     else
         return strTls::currentDateTimeToString("[%D-%T]");
     }
-    static std::string m_defaultPath; 
+    static std::string m_projectName;
     static Logger& get();
     Logger();
     void flush();
-    void updateData(int nbNewLines);
-    std::ofstream m_fileStream;
     std::queue<std::string> m_mainThreadLogQueue; 
     std::queue<std::string> m_logQueue;
     std::thread m_loggingThread; 
     bool m_isRunning {true};
 
-    std::string m_specificDate; 
-    std::filesystem::path m_logPath;
+    std::string m_specificDate;
+    LogDataFile m_data;
 };

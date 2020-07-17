@@ -33,14 +33,12 @@ namespace
 void Logger::setFolderPath(const char* executableName)
 {
     std::filesystem::path path {executableName};
-    m_defaultPath = std::string(companyName) + '/' + path.stem().string();
+    m_projectName = std::string(companyName) + '/' + path.stem().string();
 }
 
 void Logger::swapStream(std::ofstream& other, std::filesystem::path& outputPath)
 {
-	std::lock_guard<std::mutex> lock(fileStreamMutex);
-	get().m_fileStream.swap(other);
-    get().m_logPath.swap(outputPath);
+    // TODO
 }
 
 void Logger::stopUsingSpecificLogDate()
@@ -53,15 +51,11 @@ void Logger::setSpecificLogDate(std::string_view date)
 	get().m_specificDate = date;
 }
 
-std::string Logger::m_defaultPath;
+std::string Logger::m_projectName;
 
-Logger::Logger() :m_logPath(getLogPath(m_defaultPath))
+Logger::Logger() : m_data(getLogPath(m_projectName))
 {
-    auto logPath = m_logPath;
-	logPath.append(logFileName);
-	m_fileStream.open(logPath, std::ios_base::out | std::ios_base::app);
-	if (m_fileStream.is_open())
-		m_loggingThread = std::thread{ &Logger::flush, this };
+    m_loggingThread = std::thread{ &Logger::flush, this };
 }
 
 Logger::~Logger()
@@ -100,57 +94,112 @@ void Logger::flush()
 			std::lock_guard<std::mutex> lock(fileStreamMutex);
 			while (!m_logQueue.empty())
 			{
-				m_fileStream << m_logQueue.front();
+                m_data.stream() << m_logQueue.front();
 				m_logQueue.pop();
 			}
-			m_fileStream << std::flush;
-            updateData(nbNewLines);
+            m_data.stream() << std::flush;
+            m_data.incrementLineNumber(nbNewLines);
 		}
 		std::this_thread::sleep_for(waitDuration);
-	}
-    m_fileStream.close();
-}
-
-void Logger::updateData(int nbLines)
-{
-    auto logPath = m_logPath;
-    logPath.append(logDataFileName);
-    if (std::filesystem::exists(logPath))
-    {
-
     }
-    auto lastModification = currentDate<false>();
 }
 
-Logger::LogDataFile::LogDataFile(const std::filesystem::path &path) : m_filePath(path.c_str())
+LogDataFile::LogDataFile(const std::filesystem::path &folder) : m_baseFolder(folder), m_dataFilePath(folder.string() + "/" + logDataFileName.data())
 {
-    constexpr std::string_view fileNameLabel {"fileName"};
+    constexpr std::string_view endLine {"</logs>"};
+    if (std::filesystem::exists(m_dataFilePath))
+    {
+        std::ifstream dataFile(m_dataFilePath.c_str());
+        std::string line;
+        std::getline(dataFile, line);
+        parseDataLogInfo(line);
+        m_filesInfo.reserve(m_numberOfFiles);
+        while(std::getline(dataFile, line) && line != endLine)
+        {
+            m_filesInfo.emplace_back(parseLogInfo(line));
+        }
+        m_currentLog.open(m_filesInfo.back().filePath.c_str(), std::ios_base::out | std::ios_base::app);
+    }
+    else
+    {
+        createNewFile();
+        write();
+    }
+}
+
+void LogDataFile::write() const
+{
+    std::ofstream outFile(m_dataFilePath.c_str());
+    outFile << "<logs totalLines=\"" <<m_totalLineNumber<<"\" files=\""<<m_numberOfFiles<<"\">\n";
+    for (const auto& file : m_filesInfo)
+        outFile<<"\t<file name=" <<file.filePath.filename() <<" lines=\""<<file.numberLines<<"\"/>\n";
+    outFile <<"</logs>";
+    outFile.close();
+}
+
+std::ofstream &LogDataFile::stream() { return m_currentLog; }
+
+void LogDataFile::incrementLineNumber(int nbNewLines)
+{
+    constexpr uintmax_t maxFileSize{5000000}; // 5Mo // TODO make this calibrable
+    m_totalLineNumber += nbNewLines;
+    auto& currentFile = m_filesInfo.back();
+    currentFile.numberLines += nbNewLines;
+    if (std::filesystem::file_size(currentFile.filePath) >= maxFileSize)
+        createNewFile();
+    write();
+}
+
+LogInfo LogDataFile::parseLogInfo(std::string_view line) const
+{
+    constexpr std::string_view fileNameLabel {"name"};
     constexpr std::string_view lineNumberLabel{"lines"};
-    constexpr std::string_view lastModificationLabel{"lastModification"};
-    std::ifstream dataFile(m_filePath);
-    std::string line;
-    std::getline(dataFile, line);
+    size_t nextEqualSign = line.find('=');
+    LogInfo info{};
+    while(nextEqualSign != std::string::npos)
+    {
+        auto startId = line.rfind(' ', nextEqualSign) + 1;
+        auto endValue = line.find('\"', nextEqualSign + 2);
+        auto id = line.substr(startId, nextEqualSign - startId);
+        auto value = line.substr(nextEqualSign + 2, endValue - nextEqualSign - 2);
+
+        if (id == fileNameLabel)
+            info.filePath = std::filesystem::path(m_baseFolder.string() + "/" + std::string(value));
+        else if (id == lineNumberLabel)
+            info.numberLines = std::stoi(value.data());
+        nextEqualSign = line.find('=', endValue);
+    }
+    return info;
+}
+
+void LogDataFile::createNewFile()
+{
+    constexpr std::string_view baseFileName{"part"};
+    constexpr std::string_view fileStem{".ptLog"};
+    std::filesystem::path path = m_baseFolder;
+    path.append(baseFileName.data() + std::to_string(++m_numberOfFiles) + fileStem.data());
+    m_filesInfo.push_back(LogInfo{path,0});
+    if (m_currentLog.is_open())
+        m_currentLog.close();
+    m_currentLog.open(path.c_str());
+}
+
+void LogDataFile::parseDataLogInfo(std::string_view line)
+{
+    constexpr std::string_view lineNumberLabel{"totalLines"};
+    constexpr std::string_view fileNumber{"files"};
+
     size_t nextEqualSign = line.find('=');
     while(nextEqualSign != std::string::npos)
     {
-        auto startId = line.rfind(' ', nextEqualSign);
-        auto endValue = line.find('\"', nextEqualSign + 1);
+        auto startId = line.rfind(' ', nextEqualSign) + 1;
+        auto endValue = line.find('\"', nextEqualSign + 2);
         auto id = line.substr(startId, nextEqualSign - startId);
-        auto value = line.substr(nextEqualSign + 1, endValue - nextEqualSign + 1);
-        if (id == fileNameLabel)
-            m_logFileName = value;
-        else if (id == lineNumberLabel)
-            m_nbLines = std::stoi(value);
-        else if (id == lastModificationLabel)
-            m_lastModification = value;
+        auto value = line.substr(nextEqualSign + 2, endValue - nextEqualSign - 2);
+        if (id == lineNumberLabel)
+            m_totalLineNumber = std::stoi(value.data());
+        else if (id == fileNumber)
+            m_numberOfFiles = std::stoi(value.data());
+        nextEqualSign = line.find('=', endValue);
     }
-    auto indexLine = line.find("lines") + 7;
-    auto substr = line.substr(indexLine, line.find('\"', indexLine) - indexLine);
-    m_nbLines = std::stoi(substr);
-}
-
-void Logger::LogDataFile::write() const
-{
-    std::ofstream out(m_filePath);
-    out << "<info file=" << m_filePath << " lines=\"" << m_nbLines << "\" lastModification=\"" << currentDate<false>() << "\"/>";
 }
