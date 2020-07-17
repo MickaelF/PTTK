@@ -1,14 +1,12 @@
 #pragma once
 #include <fstream>
-#include <filesystem>
 #include <queue>
 #include <string>
 #include <string_view>
 #include <thread>
 #include "macro.h"
 #include "stringtools.h"
-
-constexpr std::string_view logFileName{ "log.ptLog" };
+#include <filesystem>
 
 struct LogInfo
 {
@@ -19,12 +17,15 @@ struct LogInfo
 class LogDataFile
 {
 public:
-
     LogDataFile(const std::filesystem::path& folder);
+    LogDataFile& operator=(const LogDataFile& data);
+    LogDataFile& operator=(LogDataFile&& data); 
 
     void write() const;
     std::ofstream& stream();
     void incrementLineNumber(int nbNewLines);
+    const std::vector<LogInfo> files() const { return m_filesInfo; }
+    typedef std::vector<LogInfo>::const_iterator LogIterator;
 
 private:
     void parseDataLogInfo(std::string_view line);
@@ -35,51 +36,84 @@ private:
     int m_numberOfFiles{0};
     std::vector<LogInfo> m_filesInfo;
     std::filesystem::path m_baseFolder;
-    const std::filesystem::path m_dataFilePath;
+    std::filesystem::path m_dataFilePath;
     std::ofstream m_currentLog;
 };
 
 class Logger
 {
 public:    
-    ~Logger();
+    Logger(const std::filesystem::path& logFilePath) : m_data(logFilePath)
+    {
+        m_loggingThread = std::thread{ &Logger::flush, this };
+    }
+
+    ~Logger()
+    {
+        close();
+    }
+
     Logger(const Logger&) = delete;
     Logger(Logger&&) = delete;
     Logger& operator=(const Logger&) = delete;
-    
-    template<bool Specific>
-    static void appendLog(std::string_view str)
+
+    template <bool SpecificDate>
+    void appendLog(std::string_view str)
     {
-        get().m_mainThreadLogQueue.push(currentDate<Specific>() + std::string(str));
+        if constexpr(SpecificDate)
+            m_mainThreadLogQueue.push(currentDate() + std::string(str));
+        else
+            m_mainThreadLogQueue.push(m_specificDate + std::string(str));
     }
 
-    static void waitForEmpty();
-    
-    static void close();
-    static void setFolderPath(const char* executableName);
-
-    static void swapStream(std::ofstream& other, std::filesystem::path& outputPath);
-    static void stopUsingSpecificLogDate(); 
-    static void setSpecificLogDate(std::string_view date); 
-
-private:
-    template<bool Specific>
-    static std::string currentDate()
+    void waitForEmpty()
     {
-    if constexpr (Specific)
-        return get().m_specificDate; 
-    else
+        using namespace std::chrono_literals;
+        while (!m_mainThreadLogQueue.empty() || !m_logQueue.empty()) {std::this_thread::sleep_for(10ms);}
+    }
+    
+    void close()
+    {
+        waitForEmpty();
+        m_isRunning = false;
+        m_loggingThread.join();
+    }
+
+    std::string currentDate()
+    {
         return strTls::currentDateTimeToString("[%D-%T]");
     }
-    static std::string m_projectName;
-    static Logger& get();
-    Logger();
-    void flush();
+
+    void setSpecificLogDate(const std::string& date)
+    {
+        m_specificDate = date;
+    }
+
+private:
+    void flush(){
+        using namespace std::chrono_literals;
+        constexpr auto waitDuration {500ms};
+        while (m_isRunning)
+        {
+            if (!m_mainThreadLogQueue.empty())
+            {
+                m_logQueue.swap(m_mainThreadLogQueue);
+                int nbNewLines = m_logQueue.size();
+                while (!m_logQueue.empty())
+                {
+                    m_data.stream() << m_logQueue.front();
+                    m_logQueue.pop();
+                }
+                m_data.stream() << std::flush;
+                m_data.incrementLineNumber(nbNewLines);
+            }
+            std::this_thread::sleep_for(waitDuration);
+        }
+    }
     std::queue<std::string> m_mainThreadLogQueue; 
     std::queue<std::string> m_logQueue;
     std::thread m_loggingThread; 
     bool m_isRunning {true};
-
-    std::string m_specificDate;
     LogDataFile m_data;
+    std::string m_specificDate;
 };

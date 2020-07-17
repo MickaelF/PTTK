@@ -17,12 +17,11 @@ ParserExecution::~ParserExecution()
 
 void ParserExecution::exec()
 {
-    LogParser parser;
+    LogParser parser{m_args.input()};
     parser.createComparaisonFunctions(m_args.priorities(), m_args.endDate(), m_args.fileNames());
-    parser.setInputFile(m_args.input());
     if (m_args.startDate().has_value()) parser.startAtDate(*m_args.startDate());
     if (m_args.sort().has_value()) parser.setSortType(*m_args.sort());
-    auto logs = std::move(parser.exec());
+    auto logs = parser.exec();
     for (auto& pair : logs)
     {
         m_outFile << pair.first << "\n";

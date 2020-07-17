@@ -16,7 +16,7 @@ PriorityComboBox::PriorityComboBox(QWidget* parent) : QComboBox(parent)
     QStandardItemModel* model = new QStandardItemModel {nbPriorities, 1, this};
     for (int r = 0; r < nbPriorities; ++r)
     {
-        QStandardItem* item = new QStandardItem(BasicLog::enumToStr(static_cast<LogPriority>(r)));
+        QStandardItem* item = new QStandardItem(BasicLog::enumToStr(static_cast<LogPriority>(r)).data());
         item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
         item->setData(Qt::Checked, Qt::CheckStateRole);
         model->setItem(r, 0, item);

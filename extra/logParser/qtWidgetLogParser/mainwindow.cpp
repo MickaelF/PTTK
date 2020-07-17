@@ -30,7 +30,7 @@ void MainWindow::onOpenActionPressed()
 
 void MainWindow::open(const QString& path)
 {
-    LogParser parser;
-    //parser.setInputFile(path.toStdString());
-    g_parsedLogWidget->setModel(parser.exec());
+//    LogParser parser;
+//    //parser.setInputFile(path.toStdString());
+//    g_parsedLogWidget->setModel(parser.exec());
 }

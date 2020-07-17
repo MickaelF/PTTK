@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "iprogress.h"
+#include "logger.h"
 class LogLineInfo;
 
 enum class LogSort
@@ -20,9 +21,9 @@ enum class LogSort
 class LogParser : public IProgress
 {
 public:
-	LogParser() = default;
+    LogParser(const std::filesystem::path& folder);
 
-    void setInputFolder(std::string_view folder);
+    void setInputFolder();
 	void startAtDate(std::time_t start);
 	void setSortType(LogSort sort);
 	std::function<std::string_view(const LogLineInfo& info)> createRetrieveFunc() const;
@@ -44,6 +45,8 @@ private:
 	std::vector<std::function<bool(LogLineInfo&)>> m_logTests;
 	std::ifstream m_stream;
 	LogSort m_sort{LogSort::Date};
+    LogDataFile m_logData;
 	int m_progress{ 0 };
 	int m_numberOfLines{ 0 };
+    LogDataFile::LogIterator m_it;
 };

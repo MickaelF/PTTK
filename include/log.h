@@ -7,9 +7,7 @@
 #include "logger.h"
 #include "macro.h"
 
-#ifdef DISPLAY_LOG
-    #include <iostream>
-#endif
+#include <iostream>
 
 
 enum class LogPriority
@@ -24,7 +22,7 @@ enum class LogPriority
 };
 
 
-template <bool Generator, bool Console>
+template <bool Console, bool Generator>
 class Log
 {
 public:
@@ -48,7 +46,7 @@ public:
             std::lock_guard<std::mutex> lock {m_mutex};
             std::cout << m_stream.str() << std::endl;
         }
-        Logger::appendLog<Generator>(m_stream.str() + "\n");
+        m_logger->appendLog<Generator>(m_stream.str() + "\n");
     }
 
     Log(Log& o) = delete;
@@ -110,7 +108,7 @@ public:
         return *this;
     }
 
-    static constexpr char* enumToStr(LogPriority p)
+    static constexpr std::string_view enumToStr(LogPriority p)
     {
         switch (p)
         {
@@ -125,11 +123,20 @@ public:
         }
     }
 
+    static void setLogger(Logger& logger)
+    {
+        m_logger = &logger;
+    }
+
 private:
     std::ostringstream m_stream;
+    static Logger* m_logger;
 };
 
-#define BasicLog Log<false, true>
+template<bool Console, bool Generator>
+Logger* Log<Console, Generator>::m_logger{nullptr};
+
+#define BasicLog Log<true, false>
 #define lFatal BasicLog(LogPriority::Fatal, __FILE__, __LINE__)
 #define lError BasicLog(LogPriority::Error, __FILE__, __LINE__)
 #define lInfo BasicLog(LogPriority::Info, __FILE__, __LINE__)

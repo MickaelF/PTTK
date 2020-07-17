@@ -3,23 +3,14 @@
 #include <vector>
 
 #include "log.h"
-#include "logger.h"
 #include "numbergenerator.h"
 #include "stringtools.h"
 
 LogGenerator::LogGenerator(const std::filesystem::path& outputPath, int nbLines,
                            std::optional<std::time_t> time)
     :
-      m_outPath(outputPath),m_nbLines(nbLines), m_time(time)
+      m_outPath(outputPath),m_nbLines(nbLines), m_time(time), m_logger(outputPath)
 {
-    if (!std::filesystem::exists(m_outPath))
-        std::filesystem::create_directories(m_outPath);
-    std::filesystem::path logFile = m_outPath;
-    logFile.append(logFileName);
-    m_outStream.open(logFile, std::ios_base::out);
-    if (!m_outStream.is_open()) throw std::runtime_error("Cannot create output file.");
-
-    Logger::swapStream(m_outStream, m_outPath);
 }
 
 void LogGenerator::exec()
@@ -32,6 +23,7 @@ void LogGenerator::exec()
     std::time_t now = (m_time.has_value())
                           ? *m_time
                           : std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    Log<false, true>::setLogger(m_logger);
     for (; m_progress < m_nbLines; ++m_progress)
     {
         LogPriority priority = static_cast<LogPriority>(NumberGenerator::generateBetween(
@@ -42,12 +34,10 @@ void LogGenerator::exec()
         int lineNumber = NumberGenerator::generateBetween(0, 300);
         now += NumberGenerator::generateBetween(2, 3600);
 
-        Logger::setSpecificLogDate(strTls::timeTToString(now, "[%D-%T]"));
+        m_logger.setSpecificLogDate(strTls::timeTToString(now, "[%D-%T]"));
 
-        Log<true, false>(priority, randomFileName[fileId], lineNumber) << logText[logTextId];
+        Log<false, true>(priority, randomFileName[fileId], lineNumber) << logText[logTextId];
     }
-    Logger::waitForEmpty();
     lDebug << "Generation Ended successfully.";
-    Logger::swapStream(m_outStream, m_outPath);
     m_outStream.close();
 }

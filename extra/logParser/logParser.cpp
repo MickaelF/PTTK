@@ -6,21 +6,22 @@
 #include "log.h"
 #include "executiontimer.h"
 
-void LogParser::setInputFolder(std::string_view folder)
+LogParser::LogParser(const std::filesystem::path &folder) : m_logData(folder)
 {
-    //m_stream.open(std::string(file));
-    //if (!m_stream.is_open()) throw std::runtime_error("Failed to open the log file !");
+
 }
 
 void LogParser::startAtDate(std::time_t start)
 {
-	bool notFound = true;
 	std::string line;
-	while (notFound && std::getline(m_stream, line))
-	{
-		LogLineInfo info{ line };
-		if (info.hasInfo() && info.date() > start) notFound = false;
-	}
+    for (m_it = m_logData.files().cbegin(); m_it != m_logData.files().cend(); ++m_it)
+    {
+        while (std::getline(m_stream, line))
+        {
+            LogLineInfo info{ line };
+            if (info.hasInfo() && info.date() > start) return;
+        }
+    }
 }
 
 void LogParser::setSortType(LogSort sort)
@@ -56,25 +57,28 @@ std::map<std::string, std::vector<std::string>> LogParser::exec()
 {
 	auto retrieveInfoFunc = createRetrieveFunc();
 	std::map<std::string, std::vector<std::string>> logs;
-	std::string line;
-	std::string current;
-	int j = 0;
-	while (std::getline(m_stream, line))
-	{
-		LogLineInfo info{ line };
-		if (info.hasInfo())
-		{
-			if (!comparaisonFunc(info)) continue;
-			current = retrieveInfoFunc(info);
-		}
-		else if (current.empty())
-			continue;
+    std::string line;
+    std::string current;
+    for (; m_it != m_logData.files().cend(); ++m_it)
+    {
+        if (!m_stream.is_open())
+            m_stream.open(m_it->filePath.c_str());
+        while (std::getline(m_stream, line))
+        {
+            LogLineInfo info {line};
+            if (info.hasInfo())
+            {
+                if (!comparaisonFunc(info)) continue;
+                current = retrieveInfoFunc(info);
+            }
+            else if (current.empty())
+                continue;
 
-		logs[current].push_back(line);
-		j++;
-	}
-	m_stream.close();
-	return std::move(logs);
+            logs[current].push_back(line);
+        }
+        m_stream.close();
+    }
+    return logs;
 }
 
 bool LogParser::comparaisonFunc(LogLineInfo& info) const

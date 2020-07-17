@@ -1,107 +1,8 @@
 #include "logger.h"
-#include <filesystem>
-#if defined (WIN32) || defined(_WIN32) || defined(__WIN32__)
-#include <ShlObj.h>
-#endif
-#include "stringtools.h"
-#include <mutex>
 
 namespace
-{	
-	using namespace std::chrono_literals;
-	std::filesystem::path getLogPath(std::string_view folderName)
-	{
-		std::filesystem::path programDataPath;
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-		PWSTR path{ NULL };
-		HRESULT hr = SHGetKnownFolderPath(FOLDERID_ProgramData, KF_FLAG_DEFAULT, NULL, &path);
-		if (SUCCEEDED(hr)) programDataPath = path;
-#endif
-		programDataPath.append(folderName);
-		if (!std::filesystem::exists(programDataPath))
-			std::filesystem::create_directories(programDataPath);
-		return programDataPath;
-	}
-
-    constexpr std::string_view logDataFileName{ "data.ptlData" };
-	constexpr std::string_view companyName{ "PotatoThunder" };
-	constexpr auto waitDuration {500ms};
-
-	static std::mutex fileStreamMutex;
-} // namespace
-
-void Logger::setFolderPath(const char* executableName)
 {
-    std::filesystem::path path {executableName};
-    m_projectName = std::string(companyName) + '/' + path.stem().string();
-}
-
-void Logger::swapStream(std::ofstream& other, std::filesystem::path& outputPath)
-{
-    // TODO
-}
-
-void Logger::stopUsingSpecificLogDate()
-{
-	get().m_specificDate.clear();
-}
-
-void Logger::setSpecificLogDate(std::string_view date)
-{
-	get().m_specificDate = date;
-}
-
-std::string Logger::m_projectName;
-
-Logger::Logger() : m_data(getLogPath(m_projectName))
-{
-    m_loggingThread = std::thread{ &Logger::flush, this };
-}
-
-Logger::~Logger()
-{
-	close();
-}
-
-void Logger::close()
-{
-	Logger& logger{ get() };
-    waitForEmpty();
-	logger.m_isRunning = false;
-	logger.m_loggingThread.join();
-}
-
-void Logger::waitForEmpty()
-{
-    Logger& log = get();
-    while (!log.m_mainThreadLogQueue.empty() || !log.m_logQueue.empty()) {std::this_thread::sleep_for(10ms);}
-}
-
-Logger& Logger::get()
-{
-	static Logger log;
-	return log;
-}
-
-void Logger::flush()
-{
-	while (m_isRunning)
-	{
-		if (!m_mainThreadLogQueue.empty())
-		{
-			m_logQueue.swap(m_mainThreadLogQueue);
-            int nbNewLines = m_logQueue.size();
-			std::lock_guard<std::mutex> lock(fileStreamMutex);
-			while (!m_logQueue.empty())
-			{
-                m_data.stream() << m_logQueue.front();
-				m_logQueue.pop();
-			}
-            m_data.stream() << std::flush;
-            m_data.incrementLineNumber(nbNewLines);
-		}
-		std::this_thread::sleep_for(waitDuration);
-    }
+constexpr std::string_view logDataFileName{ "data.ptlData" };
 }
 
 LogDataFile::LogDataFile(const std::filesystem::path &folder) : m_baseFolder(folder), m_dataFilePath(folder.string() + "/" + logDataFileName.data())
@@ -125,6 +26,29 @@ LogDataFile::LogDataFile(const std::filesystem::path &folder) : m_baseFolder(fol
         createNewFile();
         write();
     }
+}
+
+LogDataFile& LogDataFile::operator=(const LogDataFile& data)
+{
+    m_baseFolder = data.m_baseFolder;
+    m_totalLineNumber = data.m_totalLineNumber;
+    m_numberOfFiles = data.m_numberOfFiles;
+    m_filesInfo = data.m_filesInfo;
+    m_dataFilePath = data.m_dataFilePath;
+    return *this;
+}
+
+LogDataFile& LogDataFile::operator=(LogDataFile&& data)
+{
+    m_baseFolder = std::move(data.m_baseFolder);
+    m_totalLineNumber = data.m_totalLineNumber;
+    m_numberOfFiles = data.m_numberOfFiles;
+    m_filesInfo = std::move(data.m_filesInfo);
+    m_dataFilePath = std::move(data.m_dataFilePath);
+
+    data.m_totalLineNumber = 0;
+    data.m_numberOfFiles = 0;
+    return *this;
 }
 
 void LogDataFile::write() const
