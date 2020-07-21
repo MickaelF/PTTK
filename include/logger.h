@@ -25,7 +25,7 @@ public:
     std::ofstream& stream();
     void incrementLineNumber(int nbNewLines);
     const std::vector<LogInfo> files() const { return m_filesInfo; }
-    typedef std::vector<LogInfo>::const_iterator LogIterator;
+    int totalNumberOfLines() const { return m_totalLineNumber;}
 
 private:
     void parseDataLogInfo(std::string_view line);

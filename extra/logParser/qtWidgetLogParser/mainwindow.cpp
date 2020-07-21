@@ -22,7 +22,7 @@ void MainWindow::onLogGeneratorActionPressed()
 
 void MainWindow::onOpenActionPressed()
 {
-    auto path = QFileDialog::getOpenFileName(this, tr("Open log folder"), QString());
+    auto path = QFileDialog::getExistingDirectory(this, tr("Open log folder"));
     if (path.isEmpty()) return;
     open(path);
     
@@ -30,7 +30,6 @@ void MainWindow::onOpenActionPressed()
 
 void MainWindow::open(const QString& path)
 {
-//    LogParser parser;
-//    //parser.setInputFile(path.toStdString());
-//    g_parsedLogWidget->setModel(parser.exec());
+    LogParser parser(path.toStdString());
+     g_parsedLogWidget->setModel(parser.exec(parser.numberOfLines() > 1000 ? ParsingType::FileByFile :ParsingType::CompleteLogs));
 }

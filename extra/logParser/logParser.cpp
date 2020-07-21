@@ -11,19 +11,6 @@ LogParser::LogParser(const std::filesystem::path &folder) : m_logData(folder)
 
 }
 
-void LogParser::startAtDate(std::time_t start)
-{
-	std::string line;
-    for (m_it = m_logData.files().cbegin(); m_it != m_logData.files().cend(); ++m_it)
-    {
-        while (std::getline(m_stream, line))
-        {
-            LogLineInfo info{ line };
-            if (info.hasInfo() && info.date() > start) return;
-        }
-    }
-}
-
 void LogParser::setSortType(LogSort sort)
 {
 	if (m_sort != sort)
@@ -53,30 +40,33 @@ std::function<std::string_view(const LogLineInfo& info)> LogParser::createRetrie
 	}
 }
 
-std::map<std::string, std::vector<std::string>> LogParser::exec()
+std::map<std::string, std::vector<std::string>> LogParser::exec(ParsingType type)
 {
 	auto retrieveInfoFunc = createRetrieveFunc();
 	std::map<std::string, std::vector<std::string>> logs;
     std::string line;
     std::string current;
-    for (; m_it != m_logData.files().cend(); ++m_it)
+    if (type == ParsingType::CompleteLogs)
     {
-        if (!m_stream.is_open())
-            m_stream.open(m_it->filePath.c_str());
-        while (std::getline(m_stream, line))
+        for (const auto& file : m_logData.files())
         {
-            LogLineInfo info {line};
-            if (info.hasInfo())
+            std::ifstream stream(file.filePath.c_str());
+            while (std::getline(stream, line))
             {
-                if (!comparaisonFunc(info)) continue;
-                current = retrieveInfoFunc(info);
-            }
-            else if (current.empty())
-                continue;
+                LogLineInfo info {line};
+                if (info.hasInfo())
+                {
+                    if (!comparaisonFunc(info)) continue;
+                    current = retrieveInfoFunc(info);
+                    logs[current].push_back(line);
+                }
+                else if (current.empty())
+                    continue;
+                else
+                    logs[current].back() += "\n\t" + line;
 
-            logs[current].push_back(line);
+            }
         }
-        m_stream.close();
     }
     return logs;
 }
@@ -89,6 +79,7 @@ bool LogParser::comparaisonFunc(LogLineInfo& info) const
 
 void LogParser::createComparaisonFunctions(
 	const std::optional<std::vector<std::string>>& priorities,
+    const std::optional<std::time_t>& startDate,
 	const std::optional<std::time_t>& endDate,
 	const std::optional<std::vector<std::string>>& fileName)
 {
@@ -101,6 +92,13 @@ void LogParser::createComparaisonFunctions(
 		};
 		m_logTests.push_back(hasPriority);
 	}
+
+    if (startDate.has_value())
+    {
+        m_startDate = *startDate;
+        auto afterStartDate = [&](LogLineInfo& info) -> bool { return m_startDate < info.date(); };
+        m_logTests.push_back(afterStartDate);
+    }
 
 	if (endDate.has_value())
 	{
