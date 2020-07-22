@@ -12,6 +12,7 @@ public:
     std::string_view fileLineNumber() const { return m_fileLineNumber; }
 	std::time_t date() const;
     std::string_view dateStr() const; 
+    std::string_view dateTimeStr() const;
     std::string_view text() const;
 	const bool hasInfo() const { return m_hasInfo; }
 

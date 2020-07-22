@@ -1,24 +1,33 @@
 #include "logviewerwidget.h"
 #include "loglineinfo.h"
 #include <string_view>
+#include <QStandardItemModel>
 
-LogViewerWidget::LogViewerWidget(QWidget* parent) : QTreeWidget(parent) {}
+LogViewerWidget::LogViewerWidget(QWidget* parent) : QTreeView(parent) {}
 
-void LogViewerWidget::setModel(const std::map<std::string, std::vector<std::string>>& model)
+void LogViewerWidget::setData(const std::map<std::string, std::vector<std::string>>& data)
 {
-    for (const auto& pairInfo : model)
+    const QStringList columnNames {tr("Date"), tr("Priority"), tr("File"), tr("Text")};
+
+    QStandardItemModel* model = new QStandardItemModel(data.size(), columnNames.size(),this);
+    model->setHorizontalHeaderLabels(columnNames);
+    int i = 0;
+    for (const auto& pairInfo : data)
     {
-        QTreeWidgetItem* rootItem = new QTreeWidgetItem(this);
-        rootItem->setText(0, pairInfo.first.c_str());
+        QStandardItem* rootItem = new QStandardItem(pairInfo.second.size(), columnNames.size());
+        rootItem->setText(pairInfo.first.c_str());
+        int j = 0;
         for (const auto& logTxt : pairInfo.second) 
         {
             LogLineInfo logInfo{logTxt};
-            QTreeWidgetItem* log = new QTreeWidgetItem(rootItem);
-            log->setText(0, logInfo.text().data());/*
-            log->setText(1, logInfo.dateStr().data());
-            log->setText(2, logInfo.fileName().data());
-            log->setText(3, logInfo.fileLineNumber().data());
-            log->setText(4, logInfo.fileLineNumber().data());*/
+            rootItem->setChild(j, 0, new QStandardItem(std::string(logInfo.dateTimeStr()).c_str()));
+            rootItem->setChild(j, 1, new QStandardItem(std::string(logInfo.priority()).c_str()));
+            rootItem->setChild(j, 2, new QStandardItem(std::string(logInfo.fileLineNumber()).c_str()));
+            rootItem->setChild(j, 3, new QStandardItem(std::string(logInfo.text()).c_str()));
+            j++;
         }
+        model->setItem(i, 0, rootItem);
+        i++;
     }
+    setModel(model);
 }

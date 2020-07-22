@@ -31,5 +31,5 @@ void MainWindow::onOpenActionPressed()
 void MainWindow::open(const QString& path)
 {
     LogParser parser(path.toStdString());
-     g_parsedLogWidget->setModel(parser.exec(parser.numberOfLines() > 1000 ? ParsingType::FileByFile :ParsingType::CompleteLogs));
+     g_parsedLogWidget->setData(parser.exec(parser.numberOfLines() > 15000 ? ParsingType::FileByFile : ParsingType::CompleteLogs));
 }

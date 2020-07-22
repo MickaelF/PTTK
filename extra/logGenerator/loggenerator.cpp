@@ -18,7 +18,7 @@ void LogGenerator::exec()
     const std::vector<std::string> randomFileName {"file1", "file2", "file3",
                                                    "file4", "file5", "file6"};
     const std::vector<std::string> logText {
-        "This is a log on one line.", "This is \na log on two lines", "This\nis\ntoo\nmany\nlines"};
+        "This is a log on one line.","This is a log on one line too, but this one is pretty long. Since every other log are reaaaally shot, this seems like a good idea to have at least one long one, to see what it looks like.", "This is \na log on two lines", "This\nis\ntoo\nmany\nlines"};
 
     std::time_t now = (m_time.has_value())
                           ? *m_time
@@ -33,8 +33,9 @@ void LogGenerator::exec()
         int logTextId = NumberGenerator::generateBetween(0, static_cast<int>(logText.size() - 1));
         int lineNumber = NumberGenerator::generateBetween(0, 300);
         now += NumberGenerator::generateBetween(2, 3600);
-
-        m_logger.setSpecificLogDate(strTls::timeTToString(now, "[%D-%T]"));
+        std::string date = strTls::timeTToString(now, "[%D-%T]");
+        m_logger.setSpecificLogDate(date);
+        lDebug << "Logged date : " << date;
 
         Log<false, true>(priority, randomFileName[fileId], lineNumber) << logText[logTextId];
     }

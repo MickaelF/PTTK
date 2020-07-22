@@ -1,14 +1,14 @@
 #pragma once
 
-#include <QTreeWidget>
+#include <QTreeView>
 
-class LogViewerWidget : public QTreeWidget
+class LogViewerWidget : public QTreeView
 {
 	Q_OBJECT
 public: 
 	LogViewerWidget(QWidget* parent = nullptr);
 
-	void setModel(const std::map<std::string, std::vector<std::string>>& model);
+    void setData(const std::map<std::string, std::vector<std::string>>& data);
 
 private: 
 

@@ -63,7 +63,7 @@ std::map<std::string, std::vector<std::string>> LogParser::exec(ParsingType type
                 else if (current.empty())
                     continue;
                 else
-                    logs[current].back() += "\n\t" + line;
+                    logs[current].back() += "\n" + line;
 
             }
         }

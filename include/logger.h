@@ -61,9 +61,9 @@ public:
     void appendLog(std::string_view str)
     {
         if constexpr(SpecificDate)
-            m_mainThreadLogQueue.push(currentDate() + std::string(str));
-        else
             m_mainThreadLogQueue.push(m_specificDate + std::string(str));
+        else
+            m_mainThreadLogQueue.push(currentDate() + std::string(str));
     }
 
     void waitForEmpty()

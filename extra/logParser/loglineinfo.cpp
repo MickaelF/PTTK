@@ -23,8 +23,8 @@ LogLineInfo::LogLineInfo(std::string_view line)
     auto fileNameEnd = line.find(':', priorityEnd);
     m_fileName = line.substr(priorityEnd + 1, fileNameEnd - priorityEnd - 1);
     auto fileLineNumberEnd = line.find(']', fileNameEnd);
-    m_fileLineNumber = line.substr(fileNameEnd + 1, fileLineNumberEnd - fileNameEnd - 1);
-    m_text = line.substr(line.find_first_of("-", fileLineNumberEnd));
+    m_fileLineNumber = line.substr(priorityEnd + 1, fileLineNumberEnd - priorityEnd - 1);
+    m_text = line.substr(line.find_first_of("-", fileLineNumberEnd) + 2);
     m_hasInfo = true; 
 }
 
@@ -36,6 +36,11 @@ std::time_t LogLineInfo::date() const
 std::string_view LogLineInfo::dateStr() const
 {
     return m_date.substr(1, 8);
+}
+
+std::string_view LogLineInfo::dateTimeStr() const
+{
+    return m_date.substr(1, timeCloseBracket - 1);
 }
 
 std::string_view LogLineInfo::text() const
