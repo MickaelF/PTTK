@@ -15,6 +15,7 @@ public:
     void close(); 
 
 protected:
-    bool read(std::string_view str);
-	std::ifstream m_fileStream; 
+    bool openToRead(std::string_view str);
+    bool openToWrite(std::string_view str);
+	std::fstream m_fileStream; 
 };

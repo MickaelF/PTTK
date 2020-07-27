@@ -5,10 +5,17 @@ AbstractReader::~AbstractReader()
     close();
 }
 
-bool AbstractReader::read(std::string_view str)
+bool AbstractReader::openToRead(std::string_view str)
 {
     close();
-    m_fileStream.open(str.data());
+    m_fileStream.open(str.data(), std::ios_base::in);
+    return m_fileStream.is_open();
+}
+
+bool AbstractReader::openToWrite(std::string_view str)
+{
+    close();
+    m_fileStream.open(str.data(), std::ios_base::out);
     return m_fileStream.is_open();
 }
 

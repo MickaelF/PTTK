@@ -1,13 +1,14 @@
 #pragma once
-#include "abstractreader.h"
-#include "abstractinidefinition.h"
-#include <type_traits>
 #include <optional>
+#include <type_traits>
+
+#include "abstractinidefinition.h"
+#include "abstractreader.h"
 
 class IniFile : public AbstractReader
 {
 public:
-    IniFile() = default; 
+    IniFile() = default;
 
     template <typename T>
     std::optional<T> readIni(std::string_view path)
@@ -16,13 +17,13 @@ public:
                       "Templated type needs to be derived from AbstractIniDescription");
         if (!read(path)) return std::nullopt;
 
-        T definition; 
+        T definition;
         std::string line;
         while (std::getline(m_fileStream, line))
         {
             std::string_view lineView(line);
             auto separator = lineView.find('=');
-            auto name = lineView.substr(0, separator); 
+            auto name = lineView.substr(0, separator);
             if (!definition.contains(name)) continue;
             auto value = lineView.substr(separator + 1);
             definition.initValue(name, value);
@@ -32,10 +33,14 @@ public:
     }
 
     template <typename T>
-    bool save(const T& file) const 
+    bool save(std::string_view path, const T& file) const
     {
         static_assert(std::is_base_of<AbstractIniDescription, T>::value,
                       "Templated type needs to be derived from AbstractIniDescription");
-        
+        if (!openToWrite(path)) return false;
+
+        for (auto pair : file.values()) m_fileStream << pair.first << "=" << pair.second;
+
+        close();
     }
 };
