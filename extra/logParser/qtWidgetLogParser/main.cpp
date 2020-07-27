@@ -8,11 +8,13 @@ constexpr std::string_view companyName{ "PotatoThunder" };
 
 int main(int argc, char* argv[])
 {
-    Logger logger(path::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName));
+    const auto dataPath {
+        path::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName)};
+    Logger logger(dataPath);
     BasicLog::setLogger(logger);
     QApplication app(argc, argv);
 
-    MainWindow window;
+    MainWindow window {dataPath};
     window.show();
 
     return app.exec();

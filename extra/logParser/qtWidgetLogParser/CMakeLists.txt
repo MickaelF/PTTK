@@ -29,6 +29,8 @@ set(SRCS_FILES
     progressdialog.cpp
     prioritycombobox.h
     prioritycombobox.cpp
+    qtparserinifile.h
+    qtparserinifile.cpp
 )
 
 set(RSC_FILES

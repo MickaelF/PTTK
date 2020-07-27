@@ -15,7 +15,7 @@ public:
     {
         static_assert(std::is_base_of<AbstractIniDescription, T>::value,
                       "Templated type needs to be derived from AbstractIniDescription");
-        if (!read(path)) return std::nullopt;
+        if (!openToRead(path)) return std::nullopt;
 
         T definition;
         std::string line;
@@ -33,13 +33,13 @@ public:
     }
 
     template <typename T>
-    bool save(std::string_view path, const T& file) const
+    bool save(std::string_view path, const T& file) 
     {
         static_assert(std::is_base_of<AbstractIniDescription, T>::value,
                       "Templated type needs to be derived from AbstractIniDescription");
         if (!openToWrite(path)) return false;
 
-        for (auto pair : file.values()) m_fileStream << pair.first << "=" << pair.second;
+        for (auto pair : file.values()) m_fileStream << pair.first << "=" << pair.second<<"\n";
 
         close();
     }
