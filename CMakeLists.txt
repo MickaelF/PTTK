@@ -19,6 +19,15 @@ set(PTTK_SRC
     include/numbergenerator.h 
     src/numbergenerator.cpp
     include/iprogress.h
+	include/file/abstractinidefinition.h
+	include/file/abstractreader.h
+	include/file/inifile.h
+	include/file/plaintextfile.h
+	src/file/abstractreader.cpp
+	src/file/plaintextfile.cpp
+	include/path.h
+	src/path.cpp
+	
 )
 
 option(PTTK_BUILD_CMD_LOG_PARSER "Build the PTTK Log parser command line executable" ON)
@@ -26,7 +35,7 @@ option(PTTK_BUILD_LOG_GENERATOR "Build the PTTK Log generator (for parser tests)
 option(PTTK_BUILD_QT_WIDGET_LOG_PARSER "Build the PTTK Log parser with Qt Widget GUI executable" OFF)
 
 if (NOT ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-    set(PTTK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include/ PARENT_SCOPE)
+    set(PTTK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include/;${CMAKE_CURRENT_LIST_DIR}/include/file PARENT_SCOPE)
 else()    
     set (PTTK_BUILD_CMD_LOG_PARSER OFF)
     set (PTTK_BUILD_LOG_GENERATOR OFF)
@@ -34,7 +43,7 @@ else()
 endif()
 
 add_library(${LIB_NAME} ${PTTK_SRC})
-target_include_directories(${LIB_NAME} PUBLIC include/)
+target_include_directories(${LIB_NAME} PUBLIC include/ include/file)
 
 if(PTTK_BUILD_CMD_LOG_PARSER) 
     add_subdirectory(extra/logParser/CmdLogParser)
