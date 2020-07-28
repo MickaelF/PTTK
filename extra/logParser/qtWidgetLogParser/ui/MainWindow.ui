@@ -150,7 +150,13 @@
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menuOpenRecently">
+     <property name="title">
+      <string>Open recently</string>
+     </property>
+    </widget>
     <addaction name="actionOpen"/>
+    <addaction name="menuOpenRecently"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -166,7 +172,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Open...</string>
    </property>
   </action>
   <action name="actionNew">
@@ -182,6 +188,11 @@
   <action name="actionLogGenerator">
    <property name="text">
     <string>Log Generator</string>
+   </property>
+  </action>
+  <action name="actiondfds">
+   <property name="text">
+    <string>dfds</string>
    </property>
   </action>
  </widget>

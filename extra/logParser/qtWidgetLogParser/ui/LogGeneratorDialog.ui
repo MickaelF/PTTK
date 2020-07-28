@@ -19,6 +19,40 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
+     <item row="1" column="1">
+      <widget class="QDateTimeEdit" name="g_dateStart"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Open in log parser</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="g_open">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Number of lines</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Date start</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="1">
       <widget class="QSpinBox" name="g_lineNumberSP">
        <property name="prefix">
@@ -35,34 +69,17 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Number of lines</string>
+        <string>Output Path</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QDateTimeEdit" name="g_dateStart"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Date start</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Open in log parser</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QCheckBox" name="g_open">
-       <property name="text">
-        <string/>
+     <item row="3" column="1">
+      <widget class="ExplorerPathWidget" name="g_outputPath">
+       <property name="enabled">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -92,6 +109,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="g_generateBtn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Generate</string>
        </property>
@@ -101,6 +121,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ExplorerPathWidget</class>
+   <extends>QLineEdit</extends>
+   <header>explorerpathwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -64,15 +64,25 @@ std::vector<std::pair<std::string, std::string>> QtParserIniFile::values() const
         if (val.has_value()) stream << *val << ";";
     values.emplace_back(PreviousOpenedFolder, stream.str());
     if (m_lastOpenedFolder.has_value()) values.emplace_back(LastOpenedFolder, *m_lastOpenedFolder);
-    return values; 
+    return values;
 }
 
-void QtParserIniFile::setLastOpenedFolder(const std::string& folder) 
+const std::array<std::optional<std::string>, QtParserIniFile::MaxSizePreviousFolders>
+QtParserIniFile::previousFolders() const
 {
-    if (folder == *m_lastOpenedFolder) return;
+    return m_previousFolders;
+}
 
-    m_lastOpenedFolder = folder; 
+bool QtParserIniFile::setLastOpenedFolder(const std::string& folder)
+{
+    if (folder == *m_lastOpenedFolder) return false;
+
+    m_lastOpenedFolder = folder;
+    if (std::find(m_previousFolders.cbegin(), m_previousFolders.cend(), folder) !=
+        m_previousFolders.cend())
+        return false;
     for (int i = MaxSizePreviousFolders - 1; i > 0; --i)
         if (m_previousFolders[i - 1].has_value()) m_previousFolders[i] = m_previousFolders[i - 1];
     m_previousFolders[0] = folder;
+    return true;
 }

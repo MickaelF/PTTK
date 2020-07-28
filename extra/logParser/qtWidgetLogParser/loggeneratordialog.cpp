@@ -13,21 +13,23 @@
 LogGeneratorDialog::LogGeneratorDialog(QWidget* parent) : QDialog(parent)
 {
     setupUi(this);
+
+    g_outputPath->setCaption("Select output folder");
+    g_outputPath->setExplorerType(ExplorerPathWidget::ExplorerType::ExistingFolder);
     g_dateStart->setDateTime(QDateTime::currentDateTime());
     connect(g_cancelBtn, &QPushButton::clicked, this, [&]() { close(); });
     connect(g_generateBtn, &QPushButton::clicked, this, &LogGeneratorDialog::onGenerateBtnPressed);
+    connect(g_outputPath, &ExplorerPathWidget::textChanged, this,
+            &LogGeneratorDialog::onOutputPathChanged);
     connect(g_open, &QCheckBox::stateChanged, this,
             [&](int state) { m_openInEditor = (state == Qt::Checked); });
 }
 
 void LogGeneratorDialog::onGenerateBtnPressed()
 {
-        auto path = QFileDialog::getExistingDirectory(this, tr("Generated file path"), QString());
-        if (path.isEmpty()) return;
-        m_path = path;
         try
         {
-            LogGenerator generator {path.toStdString(), g_lineNumberSP->value(),
+            LogGenerator generator {g_outputPath->text().toStdString(), g_lineNumberSP->value(),
                                     g_dateStart->dateTime().toTime_t()};
             ProgressDialog progress(tr("Generating log file..."), 0, g_lineNumberSP->value(),
                                     generator);
@@ -43,4 +45,20 @@ void LogGeneratorDialog::onGenerateBtnPressed()
         }
         QMessageBox::information(this, tr("Log generation ended"), tr("Log file generated!"));
         close();
+}
+
+void LogGeneratorDialog::onOutputPathChanged(const QString& path) 
+{
+    bool pathExists = QDir(path).exists();
+    g_generateBtn->setEnabled(pathExists);
+
+    if (!pathExists)
+    {
+        QMessageBox::warning(
+            this, tr("Output Path Error"),
+            tr("The selected folder does not seems to exists. Please correct output path."));
+        g_outputPath->blockSignals(true);
+        g_outputPath->setText(QString());    
+        g_outputPath->blockSignals(false);
+    }
 }

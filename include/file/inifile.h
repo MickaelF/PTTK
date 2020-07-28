@@ -42,5 +42,6 @@ public:
         for (auto pair : file.values()) m_fileStream << pair.first << "=" << pair.second<<"\n";
 
         close();
+        return true;
     }
 };

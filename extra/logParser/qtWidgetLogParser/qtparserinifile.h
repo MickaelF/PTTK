@@ -1,13 +1,14 @@
 #pragma once
-#include <string_view>
-#include <optional>
 #include <array>
+#include <optional>
+#include <string_view>
 
 #include "abstractinidefinition.h"
 
 class QtParserIniFile : public AbstractIniDescription
 {
 public:
+    static constexpr unsigned int MaxSizePreviousFolders {5};
     QtParserIniFile() = default;
     ~QtParserIniFile() = default;
     QtParserIniFile(const QtParserIniFile& other) noexcept;
@@ -21,11 +22,11 @@ public:
     std::vector<std::pair<std::string, std::string>> values() const override;
 
     const std::optional<std::string>& lastFolder() const { return m_lastOpenedFolder; }
+    const std::array<std::optional<std::string>, MaxSizePreviousFolders> previousFolders() const;
 
-    void setLastOpenedFolder(const std::string& folder); 
+    bool setLastOpenedFolder(const std::string& folder);
 
 private:
-    static constexpr unsigned int MaxSizePreviousFolders {5};
     std::array<std::optional<std::string>, MaxSizePreviousFolders> m_previousFolders {std::nullopt};
-    std::optional<std::string> m_lastOpenedFolder; 
+    std::optional<std::string> m_lastOpenedFolder;
 };

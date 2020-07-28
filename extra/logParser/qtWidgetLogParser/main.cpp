@@ -12,10 +12,12 @@ int main(int argc, char* argv[])
         path::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName)};
     Logger logger(dataPath);
     BasicLog::setLogger(logger);
+    lInfo << "Starting application"; 
     QApplication app(argc, argv);
 
     MainWindow window {dataPath};
     window.show();
-
-    return app.exec();
+    auto execRet = app.exec();
+    lInfo << "End execution";
+    return execRet;
 }

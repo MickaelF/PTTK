@@ -31,6 +31,8 @@ set(SRCS_FILES
     prioritycombobox.cpp
     qtparserinifile.h
     qtparserinifile.cpp
+    explorerpathwidget.h
+    explorerpathwidget.cpp
 )
 
 set(RSC_FILES

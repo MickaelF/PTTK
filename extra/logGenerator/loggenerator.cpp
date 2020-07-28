@@ -35,8 +35,6 @@ void LogGenerator::exec()
         now += NumberGenerator::generateBetween(2, 3600);
         std::string date = strTls::timeTToString(now, "[%D-%T]");
         m_logger.setSpecificLogDate(date);
-        lDebug << "Logged date : " << date;
-
         Log<false, true>(priority, randomFileName[fileId], lineNumber) << logText[logTextId];
     }
     lDebug << "Generation Ended successfully.";
