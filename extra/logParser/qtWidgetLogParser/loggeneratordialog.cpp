@@ -21,8 +21,6 @@ LogGeneratorDialog::LogGeneratorDialog(QWidget* parent) : QDialog(parent)
     connect(g_generateBtn, &QPushButton::clicked, this, &LogGeneratorDialog::onGenerateBtnPressed);
     connect(g_outputPath, &ExplorerPathWidget::textChanged, this,
             &LogGeneratorDialog::onOutputPathChanged);
-    connect(g_open, &QCheckBox::stateChanged, this,
-            [&](int state) { m_openInEditor = (state == Qt::Checked); });
 }
 
 void LogGeneratorDialog::onGenerateBtnPressed()
@@ -40,11 +38,11 @@ void LogGeneratorDialog::onGenerateBtnPressed()
         catch (std::exception& e)
         {
             QMessageBox::critical(this, tr("Log generation error"), e.what());
-            close();
+            reject();
             return;
         }
         QMessageBox::information(this, tr("Log generation ended"), tr("Log file generated!"));
-        close();
+        accept();
 }
 
 void LogGeneratorDialog::onOutputPathChanged(const QString& path) 

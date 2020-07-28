@@ -1,9 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
-    <file>resources/fatal.png</file>
-    <file>resources/error.png</file>
-    <file>resources/info.png</file>
-    <file>resources/warning.png</file>
-    <file>resources/empty.png</file>
+    <file>resources/dropdown.png</file>
 </qresource>
 </RCC>

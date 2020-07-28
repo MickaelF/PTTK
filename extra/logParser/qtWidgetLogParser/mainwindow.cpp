@@ -18,6 +18,7 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
       m_programDataPath(programDataPath)
 {
     setupUi(this);
+    m_startDialog.setModal(true);
     m_programDataPath.append(iniFileName);
     if (std::filesystem::exists(m_programDataPath))
     {
@@ -31,13 +32,15 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
 
     if (m_ini.lastFolder().has_value() && QDir(m_ini.lastFolder().value().c_str()).exists())
         open(m_ini.lastFolder().value().c_str());
-    //else
-        // TODO Display folder selection screen.
+    else
+        displayStartUpDialog();
 
     g_sortOptions->setHidden(true);
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onOpenActionPressed);
     connect(actionLogGenerator, &QAction::triggered, this,
             &MainWindow::onLogGeneratorActionPressed);
+    connect(&m_startDialog, &QDialog::accepted, this, &MainWindow::onStartUpDialogAccepted);
+    connect(&m_startDialog, &QDialog::rejected, [&]() { close(); });
 }
 
 void MainWindow::onLogGeneratorActionPressed()
@@ -62,10 +65,25 @@ void MainWindow::onOpenRecentlyPressed()
                              tr("The selected folder could not be found."));
         m_ini.removeFolder(action->text().toStdString());
         IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
-        // TODO Display folder selection screen.
-        return; 
+        displayStartUpDialog();
+        return;
     }
     open(action->text());
+}
+
+void MainWindow::onStartUpDialogAccepted()
+{
+    m_startDialog.hide();
+    open(m_startDialog.pathOpened());
+}
+
+void MainWindow::displayStartUpDialog()
+{
+    QStringList recents;
+    for (auto folder : m_ini.previousFolders())
+        if (folder.has_value()) recents << folder->c_str();
+    m_startDialog.updateRecentComboBox(recents);
+    m_startDialog.show();
 }
 
 void MainWindow::updateOpenRecently()
@@ -73,11 +91,18 @@ void MainWindow::updateOpenRecently()
     menuOpenRecently->clear();
     for (auto folder : m_ini.previousFolders())
     {
-        if (!folder.has_value() || !QDir(folder.value().c_str()).exists()) return;
+        if (!folder.has_value()) continue;
+        if (!QDir(folder.value().c_str()).exists())
+        {
+            m_ini.removeFolder(*folder);
+            continue;
+        }
         QAction* action = new QAction(folder.value().c_str());
         menuOpenRecently->addAction(action);
         connect(action, &QAction::triggered, this, &MainWindow::onOpenRecentlyPressed);
     }
+
+    IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
 }
 
 void MainWindow::open(const QString& path)
@@ -91,10 +116,12 @@ void MainWindow::open(const QString& path)
         IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
         setWindowTitle(QString(windowName.data()).arg(path));
     }
-    catch(std::exception& e)
+    catch (std::exception& e)
     {
         QMessageBox::critical(this, tr("Parser error"),
                               tr("Could not open log file.\nError : %1").arg(e.what()));
-        // TODO Display folder selection screen.
+        m_ini.removeFolder(path.toStdString());
+        IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
+        displayStartUpDialog();
     }
 }

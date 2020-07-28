@@ -33,6 +33,8 @@ set(SRCS_FILES
     qtparserinifile.cpp
     explorerpathwidget.h
     explorerpathwidget.cpp
+	startupdialog.h
+	startupdialog.cpp
 )
 
 set(RSC_FILES
@@ -43,6 +45,7 @@ set(UI_FILES
     ui/MainWindow.ui
     ui/LogGeneratorDialog.ui
     ui/ProgressDialog.ui
+	ui/StartUpDialog.ui
 )
 
 add_executable(${PROJECT_NAME} ${SRCS_FILES} ${RSC_FILES} ${UI_FILES} ${ParserSrc} ${GeneratorSrcs})
