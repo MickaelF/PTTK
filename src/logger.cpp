@@ -5,7 +5,7 @@ namespace
 constexpr std::string_view logDataFileName {"data.ptlData"};
 }
 
-LogDataFile::LogDataFile(const std::filesystem::path& folder)
+LogDataFile::LogDataFile(const std::filesystem::path& folder, bool createIfNotExisting)
     : m_baseFolder(folder),
       m_dataFilePath(folder.string() + "/" + logDataFileName.data())
 {
@@ -23,10 +23,14 @@ LogDataFile::LogDataFile(const std::filesystem::path& folder)
         m_currentLog.open(m_filesInfo.back().filePath.c_str(),
                           std::ios_base::out | std::ios_base::app);
     }
-    else
+    else if (createIfNotExisting)
     {
         createNewFile();
         write();
+    }
+    else
+    {
+        throw std::runtime_error("Could not found log files in specified folder");
     }
 }
 

@@ -27,6 +27,7 @@ set(PTTK_SRC
 	src/file/plaintextfile.cpp
 	include/path.h
 	src/path.cpp
+	include/contiguousarray.h
 	
 )
 

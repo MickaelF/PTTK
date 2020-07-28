@@ -1,9 +1,8 @@
 #pragma once
-#include <array>
-#include <optional>
 #include <string_view>
 
 #include "abstractinidefinition.h"
+#include "contiguousarray.h"
 
 class QtParserIniFile : public AbstractIniDescription
 {
@@ -22,11 +21,12 @@ public:
     std::vector<std::pair<std::string, std::string>> values() const override;
 
     const std::optional<std::string>& lastFolder() const { return m_lastOpenedFolder; }
-    const std::array<std::optional<std::string>, MaxSizePreviousFolders> previousFolders() const;
+    const ContigousArray<std::string, MaxSizePreviousFolders>& previousFolders() const;
+    void removeFolder(const std::string& folder);
 
     bool setLastOpenedFolder(const std::string& folder);
 
 private:
-    std::array<std::optional<std::string>, MaxSizePreviousFolders> m_previousFolders {std::nullopt};
+    ContigousArray<std::string, MaxSizePreviousFolders> m_previousFolders;
     std::optional<std::string> m_lastOpenedFolder;
 };

@@ -18,7 +18,7 @@ struct LogInfo
 class LogDataFile
 {
 public:
-    LogDataFile(const std::filesystem::path& folder);
+    LogDataFile(const std::filesystem::path& folder, bool createIfNotExisting = true);
     LogDataFile& operator=(const LogDataFile& data);
     LogDataFile& operator=(LogDataFile&& data);
 
