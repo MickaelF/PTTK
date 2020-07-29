@@ -1,21 +1,30 @@
 #include "logviewerwidget.h"
-#include "loglineinfo.h"
-#include <string_view>
+
 #include <QStandardItemModel>
+#include <string_view>
+
+#include "loglineinfo.h"
 
 namespace
 {
-    QColor priorityColor(std::string_view priority) {
-        if (priority == "Info") return QColor {255, 0, 0};
-        else if (priority == "Debug") return QColor {255, 255, 0};
-        else if (priority == "Warning") return QColor {255, 0, 255};
-        else if (priority == "Error") return QColor {0, 255, 0};
-        else if (priority == "Fatal") return QColor {0, 255, 255};
-        else if (priority == "Remember") return QColor {0, 0, 255};
-        else if (priority == "Execution") return QColor {0, 0, 0};
-    
-    }
+QColor priorityColor(std::string_view priority)
+{
+    if (priority == "Info")
+        return QColor {36, 191, 78};
+    else if (priority == "Debug")
+        return QColor {36, 46, 191};
+    else if (priority == "Warning")
+        return QColor {229, 235, 63};
+    else if (priority == "Error")
+        return QColor {235, 183, 63};
+    else if (priority == "Fatal")
+        return QColor {214, 0, 0};
+    else if (priority == "Remember")
+        return QColor {240, 29, 240};
+    else if (priority == "Execution")
+        return QColor {0, 0, 0};
 }
+} // namespace
 
 LogViewerWidget::LogViewerWidget(QWidget* parent) : QTreeView(parent) {}
 

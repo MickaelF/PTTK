@@ -12,7 +12,7 @@
 
 enum class LogPriority
 {
-    Debug = 0,
+    Debug,
     Info,
     Warning,
     Error,

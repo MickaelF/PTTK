@@ -24,33 +24,13 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Sort by</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="g_sortCB">
-           <item>
-            <property name="text">
-             <string>Date</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Priority</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>File name</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item>
           <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Priority</string>
            </property>
@@ -67,28 +47,13 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Files</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="g_filesCB"/>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Date:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QLabel" name="label_5">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>From</string>
            </property>
@@ -99,6 +64,12 @@
          </item>
          <item>
           <widget class="QLabel" name="label_6">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>To</string>
            </property>
@@ -108,17 +79,20 @@
           <widget class="QDateTimeEdit" name="g_endDate"/>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+          <widget class="QLabel" name="label_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
+           <property name="text">
+            <string>Files</string>
            </property>
-          </spacer>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="g_filesCB"/>
          </item>
         </layout>
        </item>
@@ -157,17 +131,23 @@
     </widget>
     <addaction name="actionOpen"/>
     <addaction name="menuOpenRecently"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionTextColoration"/>
-    <addaction name="separator"/>
     <addaction name="actionLogGenerator"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -175,24 +155,14 @@
     <string>Open...</string>
    </property>
   </action>
-  <action name="actionNew">
-   <property name="text">
-    <string>New</string>
-   </property>
-  </action>
-  <action name="actionTextColoration">
-   <property name="text">
-    <string>Text coloration</string>
-   </property>
-  </action>
   <action name="actionLogGenerator">
    <property name="text">
     <string>Log Generator</string>
    </property>
   </action>
-  <action name="actiondfds">
+  <action name="actionQuit">
    <property name="text">
-    <string>dfds</string>
+    <string>Quit</string>
    </property>
   </action>
  </widget>

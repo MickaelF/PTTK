@@ -64,7 +64,7 @@ void LogDataFile::write() const
             << "\">\n";
     for (const auto& file : m_filesInfo)
         outFile << "\t<file name=" << file.filePath.filename() << " lines=\"" << file.numberLines
-                << "\"/>\n";
+                << "\" date=\"" << file.date << "\"/>\n";
     outFile << "</logs>";
     outFile.close();
 }
@@ -76,11 +76,13 @@ std::ofstream& LogDataFile::stream()
 
 void LogDataFile::incrementLineNumber(int nbNewLines)
 {
-    constexpr uintmax_t maxFileSize {5000000}; // 5Mo // TODO make this calibrable
+    constexpr uintmax_t maxFileSize {5000000}; // 5Mo 
     m_totalLineNumber += nbNewLines;
     auto& currentFile = m_filesInfo.back();
     currentFile.numberLines += nbNewLines;
-    if (std::filesystem::file_size(currentFile.filePath) >= maxFileSize) createNewFile();
+    if (std::filesystem::file_size(currentFile.filePath) >= maxFileSize || 
+        strTls::toTimeT(currentFile.date, "%D") < strTls::toTimeT(currentDate(), "%D"))
+        createNewFile();
     write();
 }
 
@@ -88,6 +90,7 @@ LogInfo LogDataFile::parseLogInfo(std::string_view line) const
 {
     constexpr std::string_view fileNameLabel {"name"};
     constexpr std::string_view lineNumberLabel {"lines"};
+    constexpr std::string_view dateLabel {"date"};
     size_t nextEqualSign = line.find('=');
     LogInfo info {};
     while (nextEqualSign != std::string::npos)
@@ -101,6 +104,8 @@ LogInfo LogDataFile::parseLogInfo(std::string_view line) const
             info.filePath = std::filesystem::path(m_baseFolder.string() + "/" + std::string(value));
         else if (id == lineNumberLabel)
             info.numberLines = std::stoi(value.data());
+        else if (id == dateLabel)
+            info.date = value.data();
         nextEqualSign = line.find('=', endValue);
     }
     return info;
@@ -112,7 +117,7 @@ void LogDataFile::createNewFile()
     constexpr std::string_view fileStem {".ptLog"};
     std::filesystem::path path = m_baseFolder;
     path.append(baseFileName.data() + std::to_string(++m_numberOfFiles) + fileStem.data());
-    m_filesInfo.push_back(LogInfo {path, 0});
+    m_filesInfo.push_back(LogInfo {path, currentDate(), 0});
     if (m_currentLog.is_open()) m_currentLog.close();
     m_currentLog.open(path.c_str());
 }

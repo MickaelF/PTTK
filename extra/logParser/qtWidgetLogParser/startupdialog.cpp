@@ -11,7 +11,6 @@ StartUpDialog::StartUpDialog(QWidget* parent) : QDialog(parent)
     setupUi(this);
     g_recent->setMenu(new QMenu());
     connect(g_open, &QPushButton::pressed, this, &StartUpDialog::onOpenPressed);
-    connect(g_close, &QPushButton::pressed, [&]() { reject(); });
     connect(g_generate, &QPushButton::pressed, this, &StartUpDialog::onGeneratePressed);
 }
 

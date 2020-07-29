@@ -35,7 +35,6 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
     else
         displayStartUpDialog();
 
-    g_sortOptions->setHidden(true);
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onOpenActionPressed);
     connect(actionLogGenerator, &QAction::triggered, this,
             &MainWindow::onLogGeneratorActionPressed);
@@ -73,6 +72,7 @@ void MainWindow::onOpenRecentlyPressed()
 
 void MainWindow::onStartUpDialogAccepted()
 {
+    g_sortOptions->setHidden(true);
     m_startDialog.hide();
     open(m_startDialog.pathOpened());
 }
@@ -82,6 +82,7 @@ void MainWindow::displayStartUpDialog()
     QStringList recents;
     for (auto folder : m_ini.previousFolders())
         if (folder.has_value()) recents << folder->c_str();
+    setWindowTitle("Qt Log Parser");
     m_startDialog.updateRecentComboBox(recents);
     m_startDialog.show();
 }
@@ -124,4 +125,6 @@ void MainWindow::open(const QString& path)
         IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
         displayStartUpDialog();
     }
+
+    g_sortOptions->setVisible(true);
 }
