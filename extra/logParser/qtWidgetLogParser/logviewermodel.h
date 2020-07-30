@@ -9,15 +9,17 @@ public:
     enum class ColumnType
     {
         PriorityColor = 0,
+        Priority,
         Date,
         File,
-        Priority,
         Data
     };
     LogViewerModel(QObject* parent = nullptr);
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;
+
+    Qt::ItemFlags flags(const QModelIndex& index) const override; 
 
     bool insertColumns(int column, int count, const QModelIndex& parent = QModelIndex()) override;
     bool removeColumns(int column, int count, const QModelIndex& parent = QModelIndex()) override;

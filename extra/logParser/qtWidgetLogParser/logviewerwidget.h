@@ -12,6 +12,9 @@ public:
 
     void open(const QString& openPath);
 
+private slots:
+    void onSliderMoved(int value);
+
 private:
     LogViewerModel m_model;
 };

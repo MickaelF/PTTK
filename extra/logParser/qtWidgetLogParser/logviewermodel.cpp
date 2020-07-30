@@ -26,16 +26,22 @@ QColor priorityColor(std::string_view priority)
 }
 } // namespace
 
-LogViewerModel::LogViewerModel(QObject* parent) : QAbstractTableModel(parent) {}
+LogViewerModel::LogViewerModel(QObject* parent) : QAbstractTableModel(parent) {
+}
 
 int LogViewerModel::rowCount(const QModelIndex&) const
 {
-    return 0;
+    return m_data.size();
 }
 
 int LogViewerModel::columnCount(const QModelIndex&) const
 {
     return 5;
+}
+
+Qt::ItemFlags LogViewerModel::flags(const QModelIndex& index) const
+{
+    return Qt::ItemIsEnabled;
 }
 
 bool LogViewerModel::insertColumns(int column, int count, const QModelIndex& parent)
@@ -62,22 +68,31 @@ bool LogViewerModel::insertRows(int row, int count, const QModelIndex& parent)
 
 bool LogViewerModel::removeRows(int row, int count, const QModelIndex& parent)
 {
+    if (count <= 0) return true;
+    if (count > rowCount()) return false;
     beginRemoveRows(parent, row, row + count);
     endRemoveRows();
-    return false;
+    return true;
 }
 
 QVariant LogViewerModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    const QStringList columnNames {tr("Color"), tr("Date"), tr("Priority"), tr("File"), tr("Text")};
-    if (orientation == Qt::Horizontal) return columnNames[section];
+    const QStringList columnNames {"", tr("Priority"), tr("Date"),tr("File"), tr("Text")};
+    if (role == Qt::DisplayRole) 
+    {
+        if (orientation == Qt::Horizontal)
+            return columnNames[section];
+        else
+            return section;
+    }
     return QVariant();
 }
 
 void LogViewerModel::setLogData(const std::vector<std::string>& data)
 {
-    m_data = data;
     removeRows(0, rowCount());
+
+    m_data = data;
     insertRows(0, m_data.size());
 }
 
@@ -87,7 +102,7 @@ QVariant LogViewerModel::data(const QModelIndex& index, int role) const
     if (role == Qt::BackgroundColorRole &&
         index.column() == static_cast<int>(ColumnType::PriorityColor))
         return priorityColor(logInfo.priority());
-    else
+    else if (role == Qt::DisplayRole)
     {
         switch (static_cast<ColumnType>(index.column()))
         {
@@ -98,4 +113,7 @@ QVariant LogViewerModel::data(const QModelIndex& index, int role) const
             default: return QVariant();
         }
     }
+    else if (role == Qt::TextAlignmentRole && index.column() != static_cast<int>(ColumnType::Data))
+        return Qt::AlignCenter;
+    return QVariant(QVariant::Invalid);
 }
