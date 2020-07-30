@@ -1,4 +1,5 @@
 #include "logger.h"
+#include "log.h"
 
 namespace
 {
@@ -10,7 +11,7 @@ LogDataFile::LogDataFile(const std::filesystem::path& folder, bool createIfNotEx
       m_dataFilePath(folder.string() + "/" + logDataFileName.data())
 {
     constexpr std::string_view endLine {"</logs>"};
-    if (std::filesystem::exists(m_dataFilePath))
+    if (std::filesystem::exists(m_dataFilePath) && !std::filesystem::is_empty(m_dataFilePath))
     {
         std::ifstream dataFile(m_dataFilePath.c_str());
         std::string line;
@@ -22,6 +23,17 @@ LogDataFile::LogDataFile(const std::filesystem::path& folder, bool createIfNotEx
 
         m_currentLog.open(m_filesInfo.back().filePath.c_str(),
                           std::ios_base::out | std::ios_base::app);
+    }
+    else if (std::filesystem::exists(m_dataFilePath) && std::filesystem::is_empty(m_dataFilePath))
+    {
+        /*lError << "An error occured while trying to read the log file. Every existing logs are "
+                  "moved to a backup folder.";*/
+        std::filesystem::rename(
+            m_baseFolder, m_baseFolder.string() + "--backup" + strTls::currentDateTimeToString("%F-%T"));
+        std::filesystem::create_directories(m_baseFolder);
+        createNewFile();
+        write();
+
     }
     else if (createIfNotExisting)
     {
@@ -44,7 +56,7 @@ LogDataFile& LogDataFile::operator=(const LogDataFile& data)
     return *this;
 }
 
-LogDataFile& LogDataFile::operator=(LogDataFile&& data)
+LogDataFile& LogDataFile::operator=(LogDataFile&& data) 
 {
     m_baseFolder = std::move(data.m_baseFolder);
     m_totalLineNumber = data.m_totalLineNumber;
@@ -64,7 +76,7 @@ void LogDataFile::write() const
             << "\">\n";
     for (const auto& file : m_filesInfo)
         outFile << "\t<file name=" << file.filePath.filename() << " lines=\"" << file.numberLines
-                << "\" date=\"" << file.date << "\"/>\n";
+                << "\"/>\n";
     outFile << "</logs>";
     outFile.close();
 }
@@ -76,12 +88,11 @@ std::ofstream& LogDataFile::stream()
 
 void LogDataFile::incrementLineNumber(int nbNewLines)
 {
-    constexpr uintmax_t maxFileSize {5000000}; // 5Mo 
+    constexpr uintmax_t maxFileSize {5000000}; // 5Mo
     m_totalLineNumber += nbNewLines;
     auto& currentFile = m_filesInfo.back();
     currentFile.numberLines += nbNewLines;
-    if (std::filesystem::file_size(currentFile.filePath) >= maxFileSize || 
-        strTls::toTimeT(currentFile.date, "%D") < strTls::toTimeT(currentDate(), "%D"))
+    if (std::filesystem::file_size(currentFile.filePath) >= maxFileSize)
         createNewFile();
     write();
 }
@@ -90,7 +101,6 @@ LogInfo LogDataFile::parseLogInfo(std::string_view line) const
 {
     constexpr std::string_view fileNameLabel {"name"};
     constexpr std::string_view lineNumberLabel {"lines"};
-    constexpr std::string_view dateLabel {"date"};
     size_t nextEqualSign = line.find('=');
     LogInfo info {};
     while (nextEqualSign != std::string::npos)
@@ -104,8 +114,6 @@ LogInfo LogDataFile::parseLogInfo(std::string_view line) const
             info.filePath = std::filesystem::path(m_baseFolder.string() + "/" + std::string(value));
         else if (id == lineNumberLabel)
             info.numberLines = std::stoi(value.data());
-        else if (id == dateLabel)
-            info.date = value.data();
         nextEqualSign = line.find('=', endValue);
     }
     return info;
@@ -117,7 +125,7 @@ void LogDataFile::createNewFile()
     constexpr std::string_view fileStem {".ptLog"};
     std::filesystem::path path = m_baseFolder;
     path.append(baseFileName.data() + std::to_string(++m_numberOfFiles) + fileStem.data());
-    m_filesInfo.push_back(LogInfo {path, currentDate(), 0});
+    m_filesInfo.push_back(LogInfo {path, 0});
     if (m_currentLog.is_open()) m_currentLog.close();
     m_currentLog.open(path.c_str());
 }
@@ -168,7 +176,7 @@ void Logger::close()
 
 std::string Logger::currentDate()
 {
-    return strTls::currentDateTimeToString("[%D-%T]");
+    return strTls::currentDateTimeToString("[%F %T]");
 }
 
 void Logger::setSpecificLogDate(const std::string& date)

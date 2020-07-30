@@ -30,34 +30,56 @@ std::function<std::string_view(const LogLineInfo& info)> LogParser::createRetrie
     }
 }
 
-std::map<std::string, std::vector<std::string>> LogParser::exec(ParsingType type)
+std::map<std::string, std::vector<std::string>> LogParser::exec()
 {
     auto retrieveInfoFunc = createRetrieveFunc();
     std::map<std::string, std::vector<std::string>> logs;
     std::string line;
     std::string current;
-    if (type == ParsingType::CompleteLogs)
+    for (const auto& file : m_logData.files())
     {
-        for (const auto& file : m_logData.files())
+        std::ifstream stream(file.filePath.c_str());
+        while (std::getline(stream, line))
         {
-            std::ifstream stream(file.filePath.c_str());
-            while (std::getline(stream, line))
+            LogLineInfo info {line};
+            if (info.hasInfo())
             {
-                LogLineInfo info {line};
-                if (info.hasInfo())
-                {
-                    if (!comparaisonFunc(info)) continue;
-                    current = retrieveInfoFunc(info);
-                    logs[current].push_back(line);
-                }
-                else if (current.empty())
-                    continue;
-                else
-                    logs[current].back() += "\n" + line;
+                if (!comparaisonFunc(info)) continue;
+                current = retrieveInfoFunc(info);
+                logs[current].push_back(line);
             }
+            else if (current.empty())
+                continue;
+            else
+                logs[current].back() += "\n" + line;
         }
     }
+    m_progress = m_logData.totalNumberOfLines();
     return logs;
+}
+
+void LogParser::execToFilesNoParam(const std::string& outPath)
+{
+    lInfo << "Generating parsed log file to path " << outPath;
+    std::map<std::string, std::ofstream> logs;
+    std::string line;
+    std::string current;
+    auto retrieveInfoFunc = createRetrieveFunc();
+    for (const auto& file : m_logData.files())
+    {
+        std::ifstream stream(file.filePath.c_str());
+        while (std::getline(stream, line))
+        {
+            LogLineInfo info {line};
+            if (info.hasInfo())
+            {
+                m_progress++;
+                current = retrieveInfoFunc(info);
+                if (logs.find(current) == logs.cend()) logs[current].open(outPath + "/" + current);
+            }
+            if (!current.empty()) logs[current] << line << "\n";
+        }
+    }
 }
 
 bool LogParser::comparaisonFunc(LogLineInfo& info) const

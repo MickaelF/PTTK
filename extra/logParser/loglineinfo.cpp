@@ -4,10 +4,10 @@
 namespace 
 {
 constexpr int timeOpenBracket {0};
-constexpr int dateStringSize {19};
-constexpr int timeCloseBracket {18};
+constexpr int dateStringSize {21};
+constexpr int timeCloseBracket {20};
 
-constexpr int infoOpenBracket {19}; 
+constexpr int infoOpenBracket {21}; 
 }
 
 LogLineInfo::LogLineInfo(std::string_view line) 
@@ -30,7 +30,7 @@ LogLineInfo::LogLineInfo(std::string_view line)
 
 std::time_t LogLineInfo::date() const
 {
-    return strTls::toTimeT(m_date, "[%D-%T]");
+    return strTls::toTimeT(m_date, "[%F %T]");
 }
 
 std::string_view LogLineInfo::dateStr() const

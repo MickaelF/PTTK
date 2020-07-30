@@ -33,7 +33,7 @@ void LogGenerator::exec()
         int logTextId = NumberGenerator::generateBetween(0, static_cast<int>(logText.size() - 1));
         int lineNumber = NumberGenerator::generateBetween(0, 300);
         now += NumberGenerator::generateBetween(2, 3600);
-        std::string date = strTls::timeTToString(now, "[%D-%T]");
+        std::string date = strTls::timeTToString(now, "[%F %T]");
         m_logger.setSpecificLogDate(date);
         Log<false, true>(priority, randomFileName[fileId], lineNumber) << logText[logTextId];
     }

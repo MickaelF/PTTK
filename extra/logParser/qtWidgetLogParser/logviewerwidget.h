@@ -1,15 +1,17 @@
 #pragma once
 
-#include <QTreeView>
+#include <QTableView>
 
-class LogViewerWidget : public QTreeView
+#include "logviewermodel.h"
+
+class LogViewerWidget : public QTableView
 {
-	Q_OBJECT
-public: 
-	LogViewerWidget(QWidget* parent = nullptr);
+    Q_OBJECT
+public:
+    LogViewerWidget(QWidget* parent = nullptr);
 
-    void setData(const std::map<std::string, std::vector<std::string>>& data);
+    void open(const QString& openPath);
 
-private: 
-
+private:
+    LogViewerModel m_model;
 };

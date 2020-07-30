@@ -18,7 +18,7 @@
     <item>
      <widget class="QGroupBox" name="g_sortOptions">
       <property name="title">
-       <string>Parameters</string>
+       <string>Sort parameters</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>

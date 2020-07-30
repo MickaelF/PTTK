@@ -21,8 +21,8 @@ set(SRCS_FILES
     mainwindow.h
     mainwindow.cpp
     main.cpp
-    logviewerwidget.h
-    logviewerwidget.cpp
+    logviewermodel.h
+    logviewermodel.cpp
     loggeneratordialog.h
     loggeneratordialog.cpp
     progressdialog.h
@@ -35,6 +35,8 @@ set(SRCS_FILES
     explorerpathwidget.cpp
 	startupdialog.h
 	startupdialog.cpp
+	logviewerwidget.h
+	logviewerwidget.cpp
 )
 
 set(RSC_FILES

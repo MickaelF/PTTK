@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "progressdialog.h"
 #include "inifile.h"
 #include "logParser.h"
 #include "loggeneratordialog.h"
@@ -110,9 +111,15 @@ void MainWindow::open(const QString& path)
 {
     try
     {
+        if (m_tempDir)
+            delete m_tempDir;
+        m_tempDir = new QTemporaryDir();
         LogParser parser(path.toStdString());
-        g_parsedLogWidget->setData(parser.exec(
-            parser.numberOfLines() > 15000 ? ParsingType::FileByFile : ParsingType::CompleteLogs));
+        ProgressDialog progress(tr("Parsing log files..."), 0, parser.numberOfLines(), parser);
+        std::thread thread =
+            std::thread {&LogParser::execToFilesNoParam, &parser, m_tempDir->path().toStdString()};
+        progress.start();
+        thread.join();
         if (m_ini.setLastOpenedFolder(path.toStdString())) updateOpenRecently();
         IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
         setWindowTitle(QString(windowName.data()).arg(path));

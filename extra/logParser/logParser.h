@@ -18,22 +18,17 @@ enum class LogSort
 	Files
 };
 
-enum class ParsingType
-{
-    FileByFile,
-    CompleteLogs
-};
 
 class LogParser : public IProgress
 {
 public:
     LogParser(const std::filesystem::path& folder);
 
-    void setInputFolder();
 	void setSortType(LogSort sort);
 	std::function<std::string_view(const LogLineInfo& info)> createRetrieveFunc() const;
 
-    std::map<std::string, std::vector<std::string>> exec(ParsingType type);
+    std::map<std::string, std::vector<std::string>> exec();
+    void execToFilesNoParam(const std::string& outPath);
 
 	void createComparaisonFunctions(const std::optional<std::vector<std::string>>& priorities,
                                     const std::optional<std::time_t>& startDate,

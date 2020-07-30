@@ -12,7 +12,6 @@
 struct LogInfo
 {
     std::filesystem::path filePath;
-    std::string date;
     int numberLines;
 };
 
@@ -28,7 +27,6 @@ public:
     void incrementLineNumber(int nbNewLines);
     const std::vector<LogInfo> files() const { return m_filesInfo; }
     int totalNumberOfLines() const { return m_totalLineNumber; }
-    std::string currentDate() const { return strTls::currentDateTimeToString("%D"); }
 
 private:
     void parseDataLogInfo(std::string_view line);
