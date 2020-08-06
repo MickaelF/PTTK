@@ -27,8 +27,6 @@ set(SRCS_FILES
     loggeneratordialog.cpp
     progressdialog.h
     progressdialog.cpp
-    prioritycombobox.h
-    prioritycombobox.cpp
     qtparserinifile.h
     qtparserinifile.cpp
     explorerpathwidget.h
