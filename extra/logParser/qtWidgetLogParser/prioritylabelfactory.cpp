@@ -42,6 +42,7 @@ PriorityLabel::PriorityLabel(const QColor& backgroundColor, const QString& text,
 void PriorityLabel::paintEvent(QPaintEvent* event) 
 {
     QPainter painter {this};
+    painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(QBrush(m_isSelected ? m_backgroundColor : m_unselectedColor));
     painter.drawRoundedRect(rect(), 25, 25);
     QLabel::paintEvent(event);

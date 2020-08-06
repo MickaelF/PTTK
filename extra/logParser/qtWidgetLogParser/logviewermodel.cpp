@@ -82,7 +82,7 @@ QVariant LogViewerModel::data(const QModelIndex& index, int role) const
         {
             case ColumnType::Data: return std::string(logInfo.text()).c_str();
             case ColumnType::Date:
-                return ("<b>" + std::string(logInfo.dateStr()) + "</b>\n" +
+                return ("<b>" + std::string(logInfo.dateStr()) + "</b><br/>" +
                         std::string(logInfo.timeStr()))
                     .c_str();
             case ColumnType::Priority: return std::string(logInfo.priority()).c_str();
