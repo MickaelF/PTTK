@@ -4,6 +4,13 @@
 #include <QScrollBar>
 
 #include "log.h"
+#include "logstyledelegate.h"
+
+namespace
+{
+constexpr int cPriorityColumnWidth {100};
+constexpr int cRowHeight {60};
+} // namespace
 
 LogViewerWidget::LogViewerWidget(QWidget* parent) : QTableView(parent)
 {
@@ -11,24 +18,38 @@ LogViewerWidget::LogViewerWidget(QWidget* parent) : QTableView(parent)
     auto header = horizontalHeader();
     header->setSectionResizeMode(0, QHeaderView::Fixed);
     header->setSectionResizeMode(1, QHeaderView::Fixed);
-    header->setSectionResizeMode(2, QHeaderView::Fixed);
-    header->setSectionResizeMode(3, QHeaderView::Interactive);
-    header->setSectionResizeMode(4, QHeaderView::Stretch);
-    setColumnWidth(0, 10);
-    setColumnWidth(1, 70);
-    setColumnWidth(2, 120);
-    setColumnWidth(3, 100);
-    setColumnWidth(4, 600);
+    header->setSectionResizeMode(2, QHeaderView::Interactive);
+    header->setSectionResizeMode(3, QHeaderView::Stretch);
+    setColumnWidth(0, cPriorityColumnWidth);
+    setColumnWidth(1, 120);
+    setColumnWidth(2, 100);
+    setColumnWidth(3, 600);
 
+    auto vHeader = verticalHeader();
+    vHeader->setSectionResizeMode(QHeaderView::Fixed);
+    vHeader->setDefaultSectionSize(cRowHeight);
+
+    setItemDelegate(new LogStyleDelegate(cPriorityColumnWidth, cRowHeight, this));
+
+    setShowGrid(false);
     connect(verticalScrollBar(), &QScrollBar::sliderMoved, this, &LogViewerWidget::onSliderMoved);
 }
 
 void LogViewerWidget::open(const QString& openPath)
 {
     std::vector<std::string> bla;
-    for (int i = 0; i< 3000; i++)
     bla.push_back(
         "[2077-09-01 12:19:26][Warning-file1:62] - This is a log on one lineThis is a log on ");
+    bla.push_back(
+        "[2077-09-01 12:19:26][Error-file1:62] - This is a log on one lineThis is a log on ");
+    bla.push_back(
+        "[2077-09-01 12:19:26][Info-file1:62] - This is a log on one lineThis is a log on ");
+    bla.push_back(
+        "[2077-09-01 12:19:26][Execution-file1:62] - This is a log on one lineThis is a log on ");
+    bla.push_back(
+        "[2077-09-01 12:19:26][Remember-file1:62] - This is a log on one lineThis is a log on ");
+    bla.push_back(
+        "[2077-09-01 12:19:26][Debug-file1:62] - This is a log on one lineThis is a log on ");
     m_model.setLogData(bla);
 }
 

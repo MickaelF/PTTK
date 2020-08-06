@@ -37,6 +37,10 @@ set(SRCS_FILES
 	startupdialog.cpp
 	logviewerwidget.h
 	logviewerwidget.cpp
+	logstyledelegate.h
+	logstyledelegate.cpp
+	prioritylabelfactory.cpp
+	prioritylabelfactory.h
 )
 
 set(RSC_FILES

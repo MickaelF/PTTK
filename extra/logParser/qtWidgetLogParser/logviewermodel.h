@@ -8,7 +8,6 @@ class LogViewerModel: public QAbstractTableModel
 public:
     enum class ColumnType
     {
-        PriorityColor = 0,
         Priority,
         Date,
         File,
