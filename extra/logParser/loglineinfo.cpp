@@ -35,12 +35,17 @@ std::time_t LogLineInfo::date() const
 
 std::string_view LogLineInfo::dateStr() const
 {
-    return m_date.substr(1, 8);
+    return m_date.substr(1, 10);
 }
 
 std::string_view LogLineInfo::dateTimeStr() const
 {
     return m_date.substr(1, timeCloseBracket - 1);
+}
+
+std::string_view LogLineInfo::timeStr() const
+{
+    return m_date.substr(12, 8);
 }
 
 std::string_view LogLineInfo::text() const

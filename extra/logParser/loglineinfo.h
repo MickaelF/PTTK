@@ -13,6 +13,7 @@ public:
 	std::time_t date() const;
     std::string_view dateStr() const; 
     std::string_view dateTimeStr() const;
+    std::string_view timeStr() const; 
     std::string_view text() const;
 	const bool hasInfo() const { return m_hasInfo; }
 
