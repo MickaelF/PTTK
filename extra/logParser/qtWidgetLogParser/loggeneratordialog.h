@@ -9,12 +9,12 @@ class LogGeneratorDialog : public QDialog, public Ui_LogGeneratorDialog
 public: 
 	LogGeneratorDialog(QWidget* parent = nullptr); 
 	bool openInEditor() const { return g_open->isChecked(); }
-    QString path() const { return g_outputPath->text(); }
+    const QString& path() const { return m_path; }
 
 private slots: 
 	void onGenerateBtnPressed();
-    void onOutputPathChanged(const QString& path);
 
 private: 
-	int m_nbLines {};
+	int m_nbLines {0};
+    QString m_path;
 };

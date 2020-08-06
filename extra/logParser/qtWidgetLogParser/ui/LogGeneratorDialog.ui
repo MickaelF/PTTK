@@ -13,29 +13,48 @@
   <property name="windowTitle">
    <string>Log Generator</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton
+{ 
+	border: 1px solid #2077bc;
+     border-radius: 15px;
+}
+
+QPushButton#g_generateBtn 
+{
+     background-color: #2077bc;
+	color: #FFFFFF;
+}
+
+
+</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
-     <item row="1" column="1">
-      <widget class="QDateTimeEdit" name="g_dateStart"/>
+     <item row="0" column="1">
+      <widget class="QSpinBox" name="g_lineNumberSP">
+       <property name="prefix">
+        <string/>
+       </property>
+       <property name="minimum">
+        <number>100</number>
+       </property>
+       <property name="maximum">
+        <number>1000000</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Open in log parser</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QCheckBox" name="g_open">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -53,32 +72,15 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QSpinBox" name="g_lineNumberSP">
-       <property name="prefix">
+     <item row="1" column="1">
+      <widget class="QDateTimeEdit" name="g_dateStart"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="g_open">
+       <property name="text">
         <string/>
        </property>
-       <property name="minimum">
-        <number>100</number>
-       </property>
-       <property name="maximum">
-        <number>1000000</number>
-       </property>
-       <property name="singleStep">
-        <number>10</number>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Output Path</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="ExplorerPathWidget" name="g_outputPath">
-       <property name="enabled">
+       <property name="checked">
         <bool>true</bool>
        </property>
       </widget>
@@ -102,6 +104,23 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="g_cancelBtn">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Cancel</string>
        </property>
@@ -110,7 +129,26 @@
      <item>
       <widget class="QPushButton" name="g_generateBtn">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
        </property>
        <property name="text">
         <string>Generate</string>
@@ -121,13 +159,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>ExplorerPathWidget</class>
-   <extends>QLineEdit</extends>
-   <header>explorerpathwidget.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
