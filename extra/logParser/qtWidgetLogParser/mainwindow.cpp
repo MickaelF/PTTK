@@ -3,10 +3,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "progressdialog.h"
 #include "inifile.h"
 #include "logParser.h"
 #include "loggeneratordialog.h"
+#include "prioritylabelfactory.h"
+#include "progressdialog.h"
 
 namespace
 {
@@ -35,6 +36,8 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
         open(m_ini.lastFolder().value().c_str());
     else
         displayStartUpDialog();
+
+    setupDisplayPrioritiesBox();
 
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onOpenActionPressed);
     connect(actionLogGenerator, &QAction::triggered, this,
@@ -88,6 +91,22 @@ void MainWindow::displayStartUpDialog()
     m_startDialog.show();
 }
 
+void MainWindow::setupDisplayPrioritiesBox()
+{
+    using namespace LogPriority;
+    const QSize widgetSize(60, 30);
+
+    auto layout = new QGridLayout();
+    for (int i = 0; i < enumMaxNumber(); ++i)
+    { 
+        const QString name {enumToStr(static_cast<Priorities>(i)).data()};
+        auto label {PriorityLabelFactory::makePriorityLabel(name, widgetSize)};
+        m_prioritySelection.insert(static_cast<Priorities>(i), label);
+        layout->addWidget(label, i / 2, i % 2);
+    }
+    g_displayedPriorities->setLayout(layout);
+}
+
 void MainWindow::updateOpenRecently()
 {
     menuOpenRecently->clear();
@@ -111,8 +130,7 @@ void MainWindow::open(const QString& path)
 {
     try
     {
-        if (m_tempDir)
-            delete m_tempDir;
+        if (m_tempDir) delete m_tempDir;
         m_tempDir = new QTemporaryDir();
         LogParser parser(path.toStdString());
         ProgressDialog progress(tr("Parsing log files..."), 0, parser.numberOfLines(), parser);

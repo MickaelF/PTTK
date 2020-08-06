@@ -6,6 +6,8 @@ class PriorityLabel : public QLabel
     Q_OBJECT
 public:
     PriorityLabel(const QColor& backgroundColor, const QString& text, QWidget* parent);
+    bool isSelected() const { return m_isSelected; }
+    QString priority() const { return text(); }
 
 protected:
     void paintEvent(QPaintEvent* event) override;
@@ -21,5 +23,6 @@ private:
 class PriorityLabelFactory
 {
 public:
-    static PriorityLabel* makePriorityLabel(const QString& name, QWidget* parent = nullptr);
+    static PriorityLabel* makePriorityLabel(const QString& name, const QSize& size, 
+                                            QWidget* parent = nullptr);
 };

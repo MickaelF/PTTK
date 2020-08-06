@@ -28,6 +28,7 @@ set(PTTK_SRC
 	include/path.h
 	src/path.cpp
 	include/contiguousarray.h
+	include/logpriority.h
 	
 )
 

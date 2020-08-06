@@ -2,11 +2,13 @@
 
 #include <QMainWindow>
 #include <QTemporaryDir>
+#include <filesystem>
 
-#include "ui_MainWindow.h"
+#include "logpriority.h"
 #include "qtparserinifile.h"
 #include "startupdialog.h"
-#include <filesystem>
+#include "ui_MainWindow.h"
+class PriorityLabel;
 
 class MainWindow : public QMainWindow, public Ui_MainWindow
 {
@@ -21,11 +23,13 @@ private slots:
     void onStartUpDialogAccepted();
 
 private:
-    void displayStartUpDialog(); 
-    void updateOpenRecently(); 
+    void displayStartUpDialog();
+    void setupDisplayPrioritiesBox();
+    void updateOpenRecently();
     void open(const QString& path);
     QtParserIniFile m_ini;
-    StartUpDialog m_startDialog; 
+    StartUpDialog m_startDialog;
     std::filesystem::path m_programDataPath;
     QTemporaryDir* m_tempDir {nullptr};
+    QMap<LogPriority::Priorities, PriorityLabel*> m_prioritySelection;
 };

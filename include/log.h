@@ -2,38 +2,25 @@
 #include <sstream>
 #include <string_view>
 //#include <source_location> As soon as it is available, use this instead of defined macros
+#include <iostream>
 #include <mutex>
 
 #include "logger.h"
 #include "macro.h"
-
-#include <iostream>
-
-
-enum class LogPriority
-{
-    Debug,
-    Info,
-    Warning,
-    Error,
-    Fatal,
-    Remember,
-    Execution
-};
-
+#include "logpriority.h"
 
 template <bool Console, bool Generator>
 class Log
 {
 public:
-    Log(LogPriority p, std::string_view fileName, int lineNumber)
+    Log(LogPriority::Priorities p, std::string_view fileName, int lineNumber)
     {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
         constexpr char delimiter {'\\'};
 #else
         constexpr char delimiter {'/'};
 #endif
-        m_stream << "[" << enumToStr(p) << "-"
+        m_stream << "[" << LogPriority::enumToStr(p) << "-"
                  << fileName.substr(fileName.find_last_of(delimiter) + 1) << ":" << lineNumber
                  << "] - ";
     }
@@ -108,39 +95,21 @@ public:
         return *this;
     }
 
-    static constexpr std::string_view enumToStr(LogPriority p)
-    {
-        switch (p)
-        {
-            case LogPriority::Debug: return "Debug";
-            case LogPriority::Info: return "Info";
-            case LogPriority::Warning: return "Warning";
-            case LogPriority::Error: return "Error";
-            case LogPriority::Fatal: return "Fatal";
-            case LogPriority::Remember: return "Remember";
-            case LogPriority::Execution: return "Execution";
-            default: return "Unknown";
-        }
-    }
-
-    static void setLogger(Logger& logger)
-    {
-        m_logger = &logger;
-    }
+    static void setLogger(Logger& logger) { m_logger = &logger; }
 
 private:
     std::ostringstream m_stream;
     static Logger* m_logger;
 };
 
-template<bool Console, bool Generator>
-Logger* Log<Console, Generator>::m_logger{nullptr};
+template <bool Console, bool Generator>
+Logger* Log<Console, Generator>::m_logger {nullptr};
 
 #define BasicLog Log<true, false>
-#define lFatal BasicLog(LogPriority::Fatal, __FILE__, __LINE__)
-#define lError BasicLog(LogPriority::Error, __FILE__, __LINE__)
-#define lInfo BasicLog(LogPriority::Info, __FILE__, __LINE__)
-#define lWarning BasicLog(LogPriority::Warning, __FILE__, __LINE__)
-#define lDebug BasicLog(LogPriority::Debug, __FILE__, __LINE__)
-#define lRemember BasicLog(LogPriority::Remember, __FILE__, __LINE__)
-#define lExecution BasicLog(LogPriority::Execution, __FILE__, __LINE__)
+#define lFatal BasicLog(LogPriority::Priorities::Fatal, __FILE__, __LINE__)
+#define lError BasicLog(LogPriority::Priorities::Error, __FILE__, __LINE__)
+#define lInfo BasicLog(LogPriority::Priorities::Info, __FILE__, __LINE__)
+#define lWarning BasicLog(LogPriority::Priorities::Warning, __FILE__, __LINE__)
+#define lDebug BasicLog(LogPriority::Priorities::Debug, __FILE__, __LINE__)
+#define lRemember BasicLog(LogPriority::Priorities::Remember, __FILE__, __LINE__)
+#define lExecution BasicLog(LogPriority::Priorities::Execution, __FILE__, __LINE__)

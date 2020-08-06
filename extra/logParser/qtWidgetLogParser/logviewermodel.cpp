@@ -5,8 +5,6 @@
 
 #include "loglineinfo.h"
 
-
-
 LogViewerModel::LogViewerModel(QObject* parent) : QAbstractTableModel(parent) {}
 
 int LogViewerModel::rowCount(const QModelIndex&) const

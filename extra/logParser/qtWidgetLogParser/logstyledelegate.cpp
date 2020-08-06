@@ -20,8 +20,8 @@ void LogStyleDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
     // TODO Remove use of magic number, replace them by their meaning
     if (index.column() == 0)
     {
-        auto label = PriorityLabelFactory::makePriorityLabel(index.data().toString());
-        label->setFixedSize(m_priorityLabelWidth, m_priorityLabelHeight);
+        auto label = PriorityLabelFactory::makePriorityLabel(
+            index.data().toString(), QSize(m_priorityLabelWidth, m_priorityLabelHeight));
         painter->drawPixmap(option.rect.x() + m_priorityCellHorizontalMargin,
                             option.rect.y() + m_cellVerticalMargin, m_priorityLabelWidth,
                             m_priorityLabelHeight, label->grab());
