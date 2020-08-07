@@ -18,10 +18,12 @@ struct LogInfo
 class LogDataFile
 {
 public:
+    LogDataFile() = default;
     LogDataFile(const std::filesystem::path& folder, bool createIfNotExisting = true);
     LogDataFile& operator=(const LogDataFile& data);
     LogDataFile& operator=(LogDataFile&& data);
 
+    void load(const std::filesystem::path& folder, bool createIfNotExisting = true); 
     void write() const;
     std::ofstream& stream();
     void incrementLineNumber(int nbNewLines);

@@ -21,6 +21,7 @@ QColor priorityColor(const QString& priority)
         return QColor {155, 143, 235};
     else if (priority == QString(enumToStr(Priorities::Execution).data()))
         return QColor {156, 39, 84};
+    return QColor();
 }
 
 } // namespace

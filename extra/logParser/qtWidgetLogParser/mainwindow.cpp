@@ -4,10 +4,8 @@
 #include <QMessageBox>
 
 #include "inifile.h"
-#include "logParser.h"
 #include "loggeneratordialog.h"
 #include "prioritylabelfactory.h"
-#include "progressdialog.h"
 
 namespace
 {
@@ -128,19 +126,7 @@ void MainWindow::open(const QString& path)
 {
     try
     {
-        if (m_tempDir) delete m_tempDir;
-        m_tempDir = new QTemporaryDir();
-        LogParser parser(path.toStdString());
-        ProgressDialog progress(tr("Parsing log files..."), 0, parser.numberOfLines(), parser);
-        std::thread thread =
-            std::thread {&LogParser::execToFilesNoParam, &parser, m_tempDir->path().toStdString()};
-        progress.start();
-        thread.join();
-
-        g_parsedLogWidget->open(m_tempDir->path());
-        if (m_ini.setLastOpenedFolder(path.toStdString())) updateOpenRecently();
-        IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
-        setWindowTitle(QString(windowName.data()).arg(path));
+        g_parsedLogWidget->open(path);
     }
     catch (std::exception& e)
     {
@@ -150,6 +136,9 @@ void MainWindow::open(const QString& path)
         IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
         displayStartUpDialog();
     }
+    if (m_ini.setLastOpenedFolder(path.toStdString())) updateOpenRecently();
+    IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
+    setWindowTitle(QString(windowName.data()).arg(path));
 
     g_sortOptions->setVisible(true);
 }

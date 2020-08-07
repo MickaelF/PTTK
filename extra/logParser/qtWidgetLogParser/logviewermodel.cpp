@@ -25,7 +25,6 @@ Qt::ItemFlags LogViewerModel::flags(const QModelIndex& index) const
 bool LogViewerModel::insertColumns(int column, int count, const QModelIndex& parent)
 {
     beginInsertColumns(parent, column, column + count);
-
     endInsertColumns();
     return false;
 }
@@ -48,7 +47,7 @@ bool LogViewerModel::removeRows(int row, int count, const QModelIndex& parent)
 {
     if (count <= 0) return true;
     if (count > rowCount()) return false;
-    beginRemoveRows(parent, row, row + count);
+    beginRemoveRows(parent, row, row + count - 1);
     endRemoveRows();
     return true;
 }
@@ -71,8 +70,8 @@ QVariant LogViewerModel::headerData(int section, Qt::Orientation orientation, in
     }
     else if (role == Qt::FontRole)
     {
-        QFont font; 
-        font.setBold(true); 
+        QFont font;
+        font.setBold(true);
         font.setCapitalization(QFont::Capitalization::AllUppercase);
         font.setPixelSize(12);
         return font;
@@ -80,12 +79,12 @@ QVariant LogViewerModel::headerData(int section, Qt::Orientation orientation, in
     return QVariant();
 }
 
-void LogViewerModel::setLogData(const std::vector<std::string>& data)
+void LogViewerModel::setLogData(std::vector<std::string> data)
 {
     removeRows(0, rowCount());
 
     m_data = data;
-    insertRows(0, m_data.size());
+    insertRows(0, m_data.size() - 1);
 }
 
 QVariant LogViewerModel::data(const QModelIndex& index, int role) const

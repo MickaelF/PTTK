@@ -95,6 +95,12 @@ public:
         return *this;
     }
 
+    Log& operator<<(size_t message)
+    {
+        m_stream << message;
+        return *this;
+    }
+
     static void setLogger(Logger& logger) { m_logger = &logger; }
 
 private:

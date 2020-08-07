@@ -6,7 +6,10 @@
 #include "log.h"
 #include "loglineinfo.h"
 
-LogParser::LogParser(const std::filesystem::path& folder) : m_logData(folder, false) {}
+void LogParser::setInputPath(const std::filesystem::path& folder)
+{
+    m_logData = LogDataFile(folder, false);
+}
 
 void LogParser::setSortType(LogSort sort)
 {
@@ -32,6 +35,7 @@ std::function<std::string_view(const LogLineInfo& info)> LogParser::createRetrie
 
 std::map<std::string, std::vector<std::string>> LogParser::exec()
 {
+    m_progress = 0;
     auto retrieveInfoFunc = createRetrieveFunc();
     std::map<std::string, std::vector<std::string>> logs;
     std::string line;
@@ -60,6 +64,7 @@ std::map<std::string, std::vector<std::string>> LogParser::exec()
 
 void LogParser::execToFilesNoParam(const std::string& outPath)
 {
+    m_progress = 0;
     lInfo << "Generating parsed log file to path " << outPath;
     std::map<std::string, std::ofstream> logs;
     std::string line;
@@ -80,6 +85,32 @@ void LogParser::execToFilesNoParam(const std::string& outPath)
             if (!current.empty()) logs[current] << line << "\n";
         }
     }
+    m_progress = m_logData.totalNumberOfLines();
+}
+
+void LogParser::execToVector(std::promise<std::vector<std::string>>&& p)
+{
+    m_progress = 0;
+    std::vector<std::string> logs;
+    std::string line;
+    std::string current;
+    auto retrieveInfoFunc = createRetrieveFunc();
+    for (const auto& file : m_logData.files())
+    {
+        std::ifstream stream(file.filePath.c_str());
+        while (std::getline(stream, line))
+        {
+            LogLineInfo info {line};
+            if (info.hasInfo())
+            {
+                m_progress++;
+                logs.push_back(line);
+            }
+            if (!current.empty()) logs.back().append("\n" + line);
+        }
+    }
+    m_progress = m_logData.totalNumberOfLines();
+    p.set_value(logs);
 }
 
 bool LogParser::comparaisonFunc(LogLineInfo& info) const

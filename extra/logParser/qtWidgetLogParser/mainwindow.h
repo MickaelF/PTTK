@@ -30,6 +30,5 @@ private:
     QtParserIniFile m_ini;
     StartUpDialog m_startDialog;
     std::filesystem::path m_programDataPath;
-    QTemporaryDir* m_tempDir {nullptr};
     QMap<LogPriority::Priorities, PriorityLabel*> m_prioritySelection;
 };

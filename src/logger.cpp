@@ -1,4 +1,5 @@
 #include "logger.h"
+
 #include "log.h"
 
 namespace
@@ -10,7 +11,17 @@ LogDataFile::LogDataFile(const std::filesystem::path& folder, bool createIfNotEx
     : m_baseFolder(folder),
       m_dataFilePath(folder.string() + "/" + logDataFileName.data())
 {
+    load(folder, createIfNotExisting);
+}
+
+void LogDataFile::load(const std::filesystem::path& folder, bool createIfNotExisting)
+{
     constexpr std::string_view endLine {"</logs>"};
+    if (m_baseFolder != folder)
+    {
+        m_baseFolder = folder;
+        m_dataFilePath = folder.string() + "/" + logDataFileName.data();
+    }
     if (std::filesystem::exists(m_dataFilePath) && !std::filesystem::is_empty(m_dataFilePath))
     {
         std::ifstream dataFile(m_dataFilePath.c_str());
@@ -28,12 +39,11 @@ LogDataFile::LogDataFile(const std::filesystem::path& folder, bool createIfNotEx
     {
         /*lError << "An error occured while trying to read the log file. Every existing logs are "
                   "moved to a backup folder.";*/
-        std::filesystem::rename(
-            m_baseFolder, m_baseFolder.string() + "--backup" + strTls::currentDateTimeToString("%F-%T"));
+        std::filesystem::rename(m_baseFolder, m_baseFolder.string() + "--backup" +
+                                                  strTls::currentDateTimeToString("%F-%T"));
         std::filesystem::create_directories(m_baseFolder);
         createNewFile();
         write();
-
     }
     else if (createIfNotExisting)
     {
@@ -56,7 +66,7 @@ LogDataFile& LogDataFile::operator=(const LogDataFile& data)
     return *this;
 }
 
-LogDataFile& LogDataFile::operator=(LogDataFile&& data) 
+LogDataFile& LogDataFile::operator=(LogDataFile&& data)
 {
     m_baseFolder = std::move(data.m_baseFolder);
     m_totalLineNumber = data.m_totalLineNumber;
@@ -92,8 +102,7 @@ void LogDataFile::incrementLineNumber(int nbNewLines)
     m_totalLineNumber += nbNewLines;
     auto& currentFile = m_filesInfo.back();
     currentFile.numberLines += nbNewLines;
-    if (std::filesystem::file_size(currentFile.filePath) >= maxFileSize)
-        createNewFile();
+    if (std::filesystem::file_size(currentFile.filePath) >= maxFileSize) createNewFile();
     write();
 }
 

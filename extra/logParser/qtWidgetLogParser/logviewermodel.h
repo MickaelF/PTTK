@@ -28,7 +28,9 @@ public:
                         int role = Qt::DisplayRole) const override;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-    void setLogData(const std::vector<std::string>& data);
+    void setLogData(std::vector<std::string> data);
+
+    std::vector<std::string>& logDataRef() { return m_data; }
 
 private:
     std::vector<std::string> m_data;
