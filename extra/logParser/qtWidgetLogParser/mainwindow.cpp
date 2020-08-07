@@ -20,6 +20,7 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
       m_programDataPath(programDataPath)
 {
     setupUi(this);
+    QApplication::setFont(this->font());
     m_startDialog.setModal(true);
     m_programDataPath.append(iniFileName);
     if (std::filesystem::exists(m_programDataPath))
@@ -94,17 +95,14 @@ void MainWindow::displayStartUpDialog()
 void MainWindow::setupDisplayPrioritiesBox()
 {
     using namespace LogPriority;
-    const QSize widgetSize(60, 30);
 
-    auto layout = new QGridLayout();
     for (int i = 0; i < enumMaxNumber(); ++i)
     { 
         const QString name {enumToStr(static_cast<Priorities>(i)).data()};
-        auto label {PriorityLabelFactory::makePriorityLabel(name, widgetSize)};
+        auto label {PriorityLabelFactory::makePriorityLabel(name)};
         m_prioritySelection.insert(static_cast<Priorities>(i), label);
-        layout->addWidget(label, i / 2, i % 2);
+        g_displayedPriorities->addWidget(label);
     }
-    g_displayedPriorities->setLayout(layout);
 }
 
 void MainWindow::updateOpenRecently()

@@ -23,7 +23,7 @@ void LogGenerator::exec()
     const std::vector<std::string> logText {
         "This is a log on one line.",
         "This is a log on one line too, but this one is pretty long. Since every other log are "
-        "reaaaally shot, this seems like a good idea to have at least one long one, to see what it "
+        "reaaaally short, this seems like a good idea to have at least one long one, to see what it "
         "looks like.",
         "This is \na log on two lines", "This\nis\ntoo\nmany\nlines"};
 

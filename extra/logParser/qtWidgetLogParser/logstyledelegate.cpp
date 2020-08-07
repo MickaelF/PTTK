@@ -36,6 +36,12 @@ void LogStyleDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
         painter->drawPixmap(option.rect.x(), option.rect.y(), label->grab());
         label->deleteLater();
     }
+    else if (index.column() == 3)
+    {
+        QStyleOptionViewItem opt {option};
+        opt.rect.setLeft(opt.rect.left() + 10);
+        QStyledItemDelegate::paint(painter, opt, index);
+    }
     else
         QStyledItemDelegate::paint(painter, option, index);
 }

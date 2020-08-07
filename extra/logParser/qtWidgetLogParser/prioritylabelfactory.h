@@ -23,6 +23,6 @@ private:
 class PriorityLabelFactory
 {
 public:
-    static PriorityLabel* makePriorityLabel(const QString& name, const QSize& size, 
+    static PriorityLabel* makePriorityLabel(const QString& name, const QSize& size = QSize(80, 30), 
                                             QWidget* parent = nullptr);
 };

@@ -55,10 +55,27 @@ bool LogViewerModel::removeRows(int row, int count, const QModelIndex& parent)
 
 QVariant LogViewerModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    const QStringList columnNames {tr("Priority"), tr("Date"), tr("File"), tr("Text")};
+    // TODO Add a left padding to the "TEXT" label, other than with space.
+    const QStringList columnNames {tr("Priority"), tr("Date"), tr("File"), tr("   Text")};
     if (role == Qt::DisplayRole)
     {
         if (orientation == Qt::Horizontal) return columnNames[section];
+    }
+    else if (role == Qt::TextAlignmentRole)
+    {
+        if (orientation == Qt::Horizontal && section == 3) return Qt::AlignLeft;
+    }
+    else if (role == Qt::ForegroundRole)
+    {
+        return QColor(32, 119, 188);
+    }
+    else if (role == Qt::FontRole)
+    {
+        QFont font; 
+        font.setBold(true); 
+        font.setCapitalization(QFont::Capitalization::AllUppercase);
+        font.setPixelSize(12);
+        return font;
     }
     return QVariant();
 }

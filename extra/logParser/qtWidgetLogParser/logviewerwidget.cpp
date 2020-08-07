@@ -22,8 +22,9 @@ LogViewerWidget::LogViewerWidget(QWidget* parent) : QTableView(parent)
     header->setSectionResizeMode(3, QHeaderView::Stretch);
     setColumnWidth(0, cPriorityColumnWidth);
     setColumnWidth(1, 120);
-    setColumnWidth(2, 100);
+    setColumnWidth(2, 100); 
     setColumnWidth(3, 600);
+    setStyleSheet("LogViewerWidget::item { border: 0px; padding: 50px}");
 
     auto vHeader = verticalHeader();
     vHeader->setSectionResizeMode(QHeaderView::Fixed);
@@ -32,6 +33,7 @@ LogViewerWidget::LogViewerWidget(QWidget* parent) : QTableView(parent)
     setItemDelegate(new LogStyleDelegate(cPriorityColumnWidth, cRowHeight, this));
 
     setShowGrid(false);
+    setFrameStyle(QFrame::NoFrame);
     connect(verticalScrollBar(), &QScrollBar::sliderMoved, this, &LogViewerWidget::onSliderMoved);
 }
 
@@ -50,6 +52,8 @@ void LogViewerWidget::open(const QString& openPath)
         "[2077-09-01 12:19:26][Remember-file1:62] - This is a log on one lineThis is a log on ");
     bla.push_back(
         "[2077-09-01 12:19:26][Debug-file1:62] - This is a log on one lineThis is a log on ");
+    bla.push_back(
+        "[2077-09-01 12:19:26][Fatal-file1:62] - This is a log on one lineThis is a log on ");
     m_model.setLogData(bla);
 }
 
