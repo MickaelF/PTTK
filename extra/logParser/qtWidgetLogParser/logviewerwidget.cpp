@@ -1,6 +1,8 @@
 #include "logviewerwidget.h"
 
 #include <QHeaderView>
+#include <QPainter>
+#include <QProxyStyle>
 #include <QScrollBar>
 #include <QSortFilterProxyModel>
 #include <QTemporaryDir>
@@ -13,18 +15,69 @@
 
 namespace
 {
+class HeaderStyle : public QProxyStyle
+{
+public:
+    HeaderStyle() = default;
+    void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                     const QWidget* widget = nullptr) const override
+    {
+        if (element == CE_HeaderLabel)
+        {
+            auto ho = *qstyleoption_cast<const QStyleOptionHeader*>(option);
+            QFont font;
+            font.setBold(true);
+            font.setCapitalization(QFont::Capitalization::AllUppercase);
+            font.setPixelSize(12);
+
+            QFontMetrics metrics(font);
+            QRect oRect = ho.rect;
+            int textWidth = metrics.width(ho.text);
+            int textHeight = metrics.height();
+
+            int leftMargin = ho.section != 3 ? (oRect.width() - textWidth) * 0.5 : 10;
+            QRect oTextRect =
+                QRect(oRect.left() + leftMargin, oRect.top() + (oRect.height() - textHeight) / 2,
+                      textWidth * 1.2, textHeight);
+            painter->setPen(QPen(QColor(32, 119, 188)));
+            painter->setFont(font);
+            painter->drawText(oTextRect, ho.text);
+            QPixmap sortPixmap;
+            switch (ho.sortIndicator)
+            {
+                case QStyleOptionHeader::SortUp:
+                    sortPixmap = QIcon(":/resources/arrowUp").pixmap(10, 10);
+                    break;
+                case QStyleOptionHeader::SortDown:
+                    sortPixmap = QIcon(":/resources/arrowDown").pixmap(10, 10);
+                    break;
+                default: return;
+            }
+
+            if (!sortPixmap.isNull())
+            {
+                QRect sortRect = QRect(oTextRect.left() + oTextRect.width(),
+                                       oRect.top() + (oRect.height() - sortPixmap.height()) / 2,
+                                       sortPixmap.width(), sortPixmap.height());
+                painter->drawPixmap(sortRect, sortPixmap);
+            }
+        }
+        else
+            QProxyStyle::drawControl(element, option, painter, widget);
+    }
+};
+
 constexpr int cPriorityColumnWidth {100};
 constexpr int cRowHeight {60};
-constexpr int cMaxLines {1000000};
 } // namespace
 
-LogViewerWidget::LogViewerWidget(QWidget* parent) : QTableView(parent)
+LogViewerWidget::LogViewerWidget(QWidget* parent)
+    : QTableView(parent),
+      m_sortFilter(new QSortFilterProxyModel(this))
 {
-
-    QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
-    proxyModel->setSourceModel(&m_model);
-    setModel(proxyModel);
-    setSortingEnabled(true);
+    m_sortFilter->setDynamicSortFilter(false);
+    m_sortFilter->setSourceModel(&m_model);
+    setModel(m_sortFilter);
 
     auto header = horizontalHeader();
     header->setSectionResizeMode(0, QHeaderView::Fixed);
@@ -35,7 +88,11 @@ LogViewerWidget::LogViewerWidget(QWidget* parent) : QTableView(parent)
     setColumnWidth(1, 120);
     setColumnWidth(2, 100);
     setColumnWidth(3, 600);
-    setStyleSheet("LogViewerWidget::item { border: 0px; padding: 50px}");
+    setShowGrid(false);
+    header->setStyleSheet("QHeaderView::section {border: none;} "
+                          "QHeaderView::up-arrow { image: url(:/resources/empty);}"
+                          "QHeaderView::down-arrow { image: url(:/resources/empty);}");
+    header->setStyle(new HeaderStyle());
 
     auto vHeader = verticalHeader();
     vHeader->setSectionResizeMode(QHeaderView::Fixed);
@@ -45,10 +102,8 @@ LogViewerWidget::LogViewerWidget(QWidget* parent) : QTableView(parent)
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setFocusPolicy(Qt::NoFocus);
     setSelectionMode(QAbstractItemView::NoSelection);
-
-    setShowGrid(false);
     setFrameStyle(QFrame::NoFrame);
-    connect(verticalScrollBar(), &QScrollBar::sliderMoved, this, &LogViewerWidget::onSliderMoved);
+
     connect(horizontalHeader(), &QHeaderView::sectionClicked, this,
             &LogViewerWidget::onSectionClicked);
 }
@@ -57,38 +112,6 @@ void LogViewerWidget::open(const QString& openPath)
 {
     m_parser.setInputPath(openPath.toStdString());
     launchParsing();
-}
-
-void LogViewerWidget::onSliderMoved(int value)
-{
-    // Value is the row number displayed at the top of the screen.
-    // TODO load next or previous files when comming to the top or the botttom.
-    lInfo << value;
-}
-void LogViewerWidget::onSectionClicked(int section)
-{
-    /*verticalScrollBar()->setValue(0);
-    if (m_parser.numberOfLines() > cMaxLines)
-    {
-        m_parser.setSortType(static_cast<LogSort>(section));
-        launchParsing();
-    }*/
-    /*else
-    {
-        auto& data = m_model.logDataRef();
-        std::sort(data.begin(), data.end(), [&section](auto& left, auto& right) {
-            switch (static_cast<LogSort>(section))
-            {
-                case LogSort::Date: return LogLineInfo(left).date() < LogLineInfo(right).date();
-                case LogSort::Files:
-                    return LogLineInfo(left).fileName() < LogLineInfo(right).fileName();
-                case LogSort::Type:
-                    return LogLineInfo(left).priority() < LogLineInfo(right).priority();
-            }
-            return false;
-        });
-        emit data
-    }*/
 }
 
 void LogViewerWidget::launchParsing()
@@ -101,27 +124,26 @@ void LogViewerWidget::launchParsing()
     std::thread thread = std::thread {&LogParser::execToVector, &m_parser, std::move(p)};
     progress.start();
     thread.join();
-    lInfo << "Vector size " << f.get().size();
     m_model.setLogData(f.get());
+}
 
-   /* if (m_parser.numberOfLines() > cMaxLines) {}
-    else
+void LogViewerWidget::onSectionClicked(int section)
+{
+    if (section == 3)
     {
-        std::vector<std::string> data;
-        for (auto& p : std::filesystem::directory_iterator(m_tempDir->path().toStdString()))
-        {
-            if (!p.is_regular_file()) continue;
-            std::ifstream file(p.path().c_str());
-            std::string line;
-            while (std::getline(file, line))
-            {
-                if (LogLineInfo(line).hasInfo())
-                    data.push_back(line);
-                else
-                    data.back().append("\n" + line);
-            }
-        }
-        lInfo << "Vector size " << data.size();
-        m_model.setLogData(std::move(data));
-    }*/
+        if (horizontalHeader()->isSortIndicatorShown())
+            horizontalHeader()->setSortIndicatorShown(false);
+        return;
+    }
+
+    m_currentlySortedSection = section;
+    if (section != m_currentlySortedSection)
+        m_currentSortOrder = Qt::DescendingOrder;
+    else
+        m_currentSortOrder =
+            m_currentSortOrder == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder;
+    sortByColumn(m_currentlySortedSection, m_currentSortOrder);
+    if (!horizontalHeader()->isSortIndicatorShown())
+        horizontalHeader()->setSortIndicatorShown(true);
+    horizontalHeader()->setSortIndicator(m_currentlySortedSection, m_currentSortOrder);
 }

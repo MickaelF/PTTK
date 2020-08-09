@@ -1,4 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
+	<file>resources/arrowDown.png</file>
+	<file>resources/arrowUp.png</file>
+	<file>resources/empty.png</file>
 </qresource>
 </RCC>
