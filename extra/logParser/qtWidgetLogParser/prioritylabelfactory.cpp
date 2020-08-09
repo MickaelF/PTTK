@@ -64,3 +64,8 @@ void PriorityLabel::mousePressEvent(QMouseEvent* event)
     m_isSelected = !m_isSelected;
     repaint();
 }
+
+void PriorityLabel::mouseMoveEvent(QMouseEvent* event)
+{
+    this->setCursor(Qt::PointingHandCursor);
+}

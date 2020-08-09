@@ -39,6 +39,8 @@ set(SRCS_FILES
 	logstyledelegate.cpp
 	prioritylabelfactory.cpp
 	prioritylabelfactory.h
+logviewerhorizontalheader.cpp
+logviewerhorizontalheader.h
 )
 
 set(RSC_FILES
