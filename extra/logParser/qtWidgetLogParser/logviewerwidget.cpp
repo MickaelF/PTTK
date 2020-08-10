@@ -1,8 +1,6 @@
 #include "logviewerwidget.h"
 
-#include <QScrollBar>
 #include <QSortFilterProxyModel>
-#include <QTemporaryDir>
 
 #include "log.h"
 #include "logParser.h"
@@ -60,8 +58,6 @@ void LogViewerWidget::open(const QString& openPath)
 
 void LogViewerWidget::launchParsing()
 {
-    if (m_tempDir) delete m_tempDir;
-    m_tempDir = new QTemporaryDir();
     ProgressDialog progress(tr("Parsing log files..."), 0, m_parser.numberOfLines(), m_parser);
     std::promise<std::vector<std::string>> p;
     auto f = p.get_future();
@@ -69,4 +65,5 @@ void LogViewerWidget::launchParsing()
     progress.start();
     thread.join();
     m_model.setLogData(f.get());
+    resizeRowsToContents();
 }

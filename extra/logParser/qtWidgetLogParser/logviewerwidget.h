@@ -4,7 +4,6 @@
 
 #include "logParser.h"
 #include "logviewermodel.h"
-class QTemporaryDir;
 class QSortFilterProxyModel;
 
 class LogViewerWidget : public QTableView
@@ -19,7 +18,6 @@ private:
 	void launchParsing();
 
 	LogViewerModel m_model;
-	QTemporaryDir* m_tempDir{ nullptr };
 	QSortFilterProxyModel* m_sortFilter{ nullptr };
 	LogParser m_parser;
 	std::filesystem::directory_entry m_fileIt;

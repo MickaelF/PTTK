@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QStyledItemDelegate>
-#include <QLabel>
+#include <QPen>
 
 class LogStyleDelegate : public QStyledItemDelegate
 {
@@ -11,8 +11,11 @@ public:
     ~LogStyleDelegate() = default;
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                                        const QModelIndex &index) const override;
 
 private: 
     const int m_priorityLabelWidth, m_priorityCellHorizontalMargin, m_priorityLabelHeight; 
-    const int m_cellHeight, m_cellVerticalMargin;
+    const int m_cellHeight;
+    QPen m_pen; 
 };

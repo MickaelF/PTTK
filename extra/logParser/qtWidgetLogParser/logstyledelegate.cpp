@@ -1,29 +1,43 @@
 #include "logstyledelegate.h"
 
+#include <QApplication>
+#include <QMouseEvent>
 #include <QPainter>
 
+#include "log.h"
 #include "prioritylabelfactory.h"
 
-LogStyleDelegate::LogStyleDelegate(int priorityCellWidth, int cellHeight, QObject* parent)
+LogStyleDelegate::LogStyleDelegate(int priorityCellWidth, int cellHeight, QObject *parent)
     : QStyledItemDelegate(parent),
       m_priorityLabelWidth(priorityCellWidth * 0.80f),
       m_priorityCellHorizontalMargin(priorityCellWidth * 0.10f),
       m_priorityLabelHeight(cellHeight * 0.50f),
       m_cellHeight(cellHeight),
-      m_cellVerticalMargin(cellHeight * 0.25f)
+      m_pen(QBrush(QColor("#E0E0E0")), 1)
 {
 }
 
-void LogStyleDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
-                             const QModelIndex& index) const
+void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+                             const QModelIndex &index) const
 {
+    const QPen &oldPen = painter->pen();
+    painter->setPen(m_pen);
+    QPoint p1 = QPoint(option.rect.bottomLeft().x() - 1, option.rect.bottomLeft().y());
+    QPoint p2 = QPoint(option.rect.bottomRight().x() + 1, option.rect.bottomRight().y());
+    painter->drawLine(p1, p2);
+    painter->setPen(oldPen);
+
     // TODO Remove use of magic number, replace them by their meaning
     if (index.column() == 0)
     {
+        auto size = sizeHint(option, index.siblingAtColumn(3));
+        lInfo << "Line " << index.row()
+              << "\n Margin : " << (size.height() - m_priorityLabelHeight) * 0.5f
+              << "\nHeight " << size.height();
         auto label = PriorityLabelFactory::makePriorityLabel(
             index.data().toString(), QSize(m_priorityLabelWidth, m_priorityLabelHeight));
         painter->drawPixmap(option.rect.x() + m_priorityCellHorizontalMargin,
-                            option.rect.y() + m_cellVerticalMargin, m_priorityLabelWidth,
+                            option.rect.y() + (size.height() - m_priorityLabelHeight) * 0.5f, m_priorityLabelWidth,
                             m_priorityLabelHeight, label->grab());
         label->deleteLater();
     }
@@ -40,8 +54,20 @@ void LogStyleDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
     {
         QStyleOptionViewItem opt {option};
         opt.rect.setLeft(opt.rect.left() + 10);
+        auto text = index.data(Qt::DisplayRole).toString();
         QStyledItemDelegate::paint(painter, opt, index);
     }
     else
         QStyledItemDelegate::paint(painter, option, index);
+}
+
+
+QSize LogStyleDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    if (index.column() != 3) return QSize(-1, m_cellHeight);
+
+    auto text = index.data(Qt::DisplayRole).toString();
+    auto textStd = index.data(Qt::DisplayRole).toString().toStdString();
+    auto i = option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height() + 20;
+    return QSize(-1, std::max(m_cellHeight, i));
 }

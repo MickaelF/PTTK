@@ -93,7 +93,6 @@ void LogParser::execToVector(std::promise<std::vector<std::string>>&& p)
     m_progress = 0;
     std::vector<std::string> logs;
     std::string line;
-    std::string current;
     auto retrieveInfoFunc = createRetrieveFunc();
     for (const auto& file : m_logData.files())
     {
@@ -106,7 +105,8 @@ void LogParser::execToVector(std::promise<std::vector<std::string>>&& p)
                 m_progress++;
                 logs.push_back(line);
             }
-            if (!current.empty()) logs.back().append("\n" + line);
+            else
+                logs.back().append("\n" + line);
         }
     }
     m_progress = m_logData.totalNumberOfLines();
