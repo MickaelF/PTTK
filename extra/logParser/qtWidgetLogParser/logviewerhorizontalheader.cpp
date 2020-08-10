@@ -2,6 +2,7 @@
 
 #include <QProxyStyle>
 #include <QPainter>
+#include <QMouseEvent>
 
 
 namespace
@@ -75,15 +76,14 @@ LogViewerHorizontalHeader::LogViewerHorizontalHeader(QWidget* parent) : QHeaderV
 
 void LogViewerHorizontalHeader::mouseMoveEvent(QMouseEvent* event)
 {
-	setCursor(Qt::PointingHandCursor);
+    setCursor(logicalIndexAt(event->pos()) == 3 ? Qt::ArrowCursor : Qt::PointingHandCursor);
 }
 
 void LogViewerHorizontalHeader::onSectionClicked(int section)
 {
 	if (section == 3)
-	{
-		if (isSortIndicatorShown())
-			setSortIndicatorShown(false);
+    {
+        setSortIndicator(m_currentlySortedSection, m_currentSortOrder);
 		return;
 	}
 
@@ -96,7 +96,5 @@ void LogViewerHorizontalHeader::onSectionClicked(int section)
 
 	if (!isSortIndicatorShown())
 		setSortIndicatorShown(true);
-	setSortIndicator(m_currentlySortedSection, m_currentSortOrder);
 	emit sortByColumn(m_currentlySortedSection, m_currentSortOrder);
-
 }
