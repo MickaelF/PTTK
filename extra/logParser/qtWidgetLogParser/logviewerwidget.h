@@ -5,7 +5,7 @@
 #include "logParser.h"
 #include "logstyledelegate.h"
 #include "logviewermodel.h"
-class QSortFilterProxyModel;
+class LogFilterProxyModel;
 
 class LogViewerWidget : public QTableView
 {
@@ -27,7 +27,7 @@ private:
 	void launchParsing();
 
 	LogViewerModel m_model;
-	QSortFilterProxyModel* m_sortFilter{ nullptr };
+    LogFilterProxyModel* m_sortFilter {nullptr};
 	LogParser m_parser;
     LogStyleDelegate m_styleDelegate; 
 	std::filesystem::directory_entry m_fileIt;

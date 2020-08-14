@@ -7,6 +7,7 @@
 #include "loglineinfo.h"
 #include "logviewerhorizontalheader.h"
 #include "progressdialog.h"
+#include "logfilterproxymodel.h"
 
 #include <QDateTime>
 
@@ -18,7 +19,7 @@ constexpr int cRowHeight {60};
 
 LogViewerWidget::LogViewerWidget(QWidget* parent)
     : QTableView(parent),
-      m_sortFilter(new QSortFilterProxyModel(this)),
+      m_sortFilter(new LogFilterProxyModel(this)),
       m_styleDelegate(cPriorityColumnWidth, cRowHeight)
 {
     auto hHeader = new LogViewerHorizontalHeader();
@@ -56,6 +57,8 @@ void LogViewerWidget::open(const QString& openPath)
 {
     m_parser.setInputPath(openPath.toStdString());
     launchParsing();
+    m_sortFilter->setStartDate(firstDate());
+    m_sortFilter->setEndDate(lastDate());
 }
 
 QDateTime LogViewerWidget::firstDate() const

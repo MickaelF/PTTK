@@ -41,6 +41,8 @@ set(SRCS_FILES
 	prioritylabelfactory.h
 logviewerhorizontalheader.cpp
 logviewerhorizontalheader.h
+logfilterproxymodel.h
+logfilterproxymodel.cpp
 )
 
 set(RSC_FILES

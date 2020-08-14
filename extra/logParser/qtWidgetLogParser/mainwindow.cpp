@@ -87,14 +87,14 @@ void MainWindow::onStartUpDialogAccepted()
 
 void MainWindow::onApplyPressed() {}
 
-void MainWindow::onDefaultPressed() 
+void MainWindow::onDefaultPressed()
 {
     updateDate();
 }
 
-void MainWindow::onStartDateChanged(const QDateTime& dateTime) 
+void MainWindow::onStartDateChanged(const QDateTime& dateTime)
 {
-    if (dateTime < g_endDate->dateTime()) return; 
+    if (dateTime < g_endDate->dateTime()) return;
 
     blockSignals(true);
     g_endDate->setDateTime(dateTime.addSecs(1));
@@ -125,7 +125,7 @@ void MainWindow::setupDisplayPrioritiesBox()
     using namespace LogPriority;
 
     for (int i = 0; i < enumMaxNumber(); ++i)
-    { 
+    {
         const QString name {enumToStr(static_cast<Priorities>(i)).data()};
         auto label {PriorityLabelFactory::makePriorityLabel(name)};
         m_prioritySelection.insert(static_cast<Priorities>(i), label);
@@ -174,7 +174,6 @@ void MainWindow::open(const QString& path)
 
     g_sortOptions->setVisible(true);
 }
-
 
 void MainWindow::updateDate()
 {
