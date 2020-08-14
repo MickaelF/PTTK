@@ -5,7 +5,6 @@
 #include "log.h"
 #include "logParser.h"
 #include "loglineinfo.h"
-#include "logstyledelegate.h"
 #include "logviewerhorizontalheader.h"
 #include "progressdialog.h"
 
@@ -17,7 +16,8 @@ constexpr int cRowHeight {60};
 
 LogViewerWidget::LogViewerWidget(QWidget* parent)
     : QTableView(parent),
-      m_sortFilter(new QSortFilterProxyModel(this))
+      m_sortFilter(new QSortFilterProxyModel(this)),
+      m_styleDelegate(cPriorityColumnWidth, cRowHeight)
 {
     auto hHeader = new LogViewerHorizontalHeader();
     setHorizontalHeader(hHeader);
@@ -36,15 +36,14 @@ LogViewerWidget::LogViewerWidget(QWidget* parent)
     hHeader->setSectionResizeMode(2, QHeaderView::Interactive);
     hHeader->setSectionResizeMode(3, QHeaderView::Stretch);
 
-    auto vHeader = verticalHeader();
-    vHeader->setSectionResizeMode(QHeaderView::Fixed);
-    vHeader->setDefaultSectionSize(cRowHeight);
+    verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
-    setItemDelegate(new LogStyleDelegate(cPriorityColumnWidth, cRowHeight, this));
+    setItemDelegate(&m_styleDelegate);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setFocusPolicy(Qt::NoFocus);
     setSelectionMode(QAbstractItemView::NoSelection);
     setFrameStyle(QFrame::NoFrame);
+    m_styleDelegate.setTextColumnWidth(hHeader->sectionSize(3));
 
     connect(hHeader, &LogViewerHorizontalHeader::sortByColumn,
             [&](int section, Qt::SortOrder order) { sortByColumn(section, order); });
@@ -54,6 +53,13 @@ void LogViewerWidget::open(const QString& openPath)
 {
     m_parser.setInputPath(openPath.toStdString());
     launchParsing();
+}
+
+void LogViewerWidget::resizeEvent(QResizeEvent* event)
+{
+    QTableView::resizeEvent(event);
+    m_styleDelegate.setTextColumnWidth(horizontalHeader()->sectionSize(3));
+    resizeRowsToContents();
 }
 
 void LogViewerWidget::launchParsing()

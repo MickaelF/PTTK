@@ -30,15 +30,11 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     // TODO Remove use of magic number, replace them by their meaning
     if (index.column() == 0)
     {
-        auto size = sizeHint(option, index.siblingAtColumn(3));
-        lInfo << "Line " << index.row()
-              << "\n Margin : " << (size.height() - m_priorityLabelHeight) * 0.5f
-              << "\nHeight " << size.height();
         auto label = PriorityLabelFactory::makePriorityLabel(
             index.data().toString(), QSize(m_priorityLabelWidth, m_priorityLabelHeight));
         painter->drawPixmap(option.rect.x() + m_priorityCellHorizontalMargin,
-                            option.rect.y() + (size.height() - m_priorityLabelHeight) * 0.5f, m_priorityLabelWidth,
-                            m_priorityLabelHeight, label->grab());
+                            option.rect.y() + (option.rect.height() - m_priorityLabelHeight) * 0.5f,
+                            m_priorityLabelWidth, m_priorityLabelHeight, label->grab());
         label->deleteLater();
     }
     else if (index.column() == 1)
@@ -61,13 +57,17 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         QStyledItemDelegate::paint(painter, option, index);
 }
 
-
 QSize LogStyleDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     if (index.column() != 3) return QSize(-1, m_cellHeight);
-
     auto text = index.data(Qt::DisplayRole).toString();
-    auto textStd = index.data(Qt::DisplayRole).toString().toStdString();
-    auto i = option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height() + 20;
-    return QSize(-1, std::max(m_cellHeight, i));
+    QRect rect {0, 0, m_textColumnWidth, 0};
+    return QSize(
+        -1, std::max(m_cellHeight,
+                     option.fontMetrics.boundingRect(rect, Qt::TextWordWrap, text).height() + 20));
+}
+
+void LogStyleDelegate::setTextColumnWidth(int width)
+{
+    if (m_textColumnWidth != width) m_textColumnWidth = width;
 }

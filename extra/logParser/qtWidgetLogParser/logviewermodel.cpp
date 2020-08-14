@@ -59,8 +59,6 @@ QVariant LogViewerModel::headerData(int section, Qt::Orientation orientation, in
     {
         if (orientation == Qt::Horizontal)
             return columnNames[section];
-        else
-            return section; 
     }   
     return QVariant();
 }
