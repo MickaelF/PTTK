@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPushButton>
 
 #include "log.h"
 #include "prioritylabelfactory.h"
@@ -50,21 +51,39 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     {
         QStyleOptionViewItem opt {option};
         opt.rect.setLeft(opt.rect.left() + 10);
+        opt.rect.setWidth(opt.rect.width() - 40);
         auto text = index.data(Qt::DisplayRole).toString();
+        auto textHeight =
+            option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
+        if (textHeight >= m_cellHeight)
+        {
+            QPushButton button;
+            button.setFixedSize(20, 20);
+            if (textHeight > option.rect.height())
+                button.setText("+");
+            else 
+                button.setText("-");
+            painter->drawPixmap(opt.rect.right() + 5, opt.rect.top(), button.grab());
+        }
         QStyledItemDelegate::paint(painter, opt, index);
     }
     else
         QStyledItemDelegate::paint(painter, option, index);
 }
 
-QSize LogStyleDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+bool LogStyleDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
+                                   const QStyleOptionViewItem &option, const QModelIndex &index)
 {
-    if (index.column() != 3) return QSize(-1, m_cellHeight);
+    if (index.column() != 3 || event->type() != QEvent::MouseButtonRelease)
+        return QStyledItemDelegate::editorEvent(event, model, option, index);
+
     auto text = index.data(Qt::DisplayRole).toString();
-    QRect rect {0, 0, m_textColumnWidth, 0};
-    return QSize(
-        -1, std::max(m_cellHeight,
-                     option.fontMetrics.boundingRect(rect, Qt::TextWordWrap, text).height() + 20));
+    auto textHeight = option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
+    if (textHeight > option.rect.height())
+        emit resizeRow(index.row(), textHeight + 30);
+    else
+        emit resizeRow(index.row(), m_cellHeight);
+    return true;
 }
 
 void LogStyleDelegate::setTextColumnWidth(int width)

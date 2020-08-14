@@ -18,6 +18,9 @@ public:
 protected:
     void resizeEvent(QResizeEvent* event) override; 
 
+private slots: 
+	void onResizeRow(int index, int height);
+
 private:
 	void launchParsing();
 

@@ -28,7 +28,6 @@ LogViewerWidget::LogViewerWidget(QWidget* parent)
     setColumnWidth(0, cPriorityColumnWidth);
     setColumnWidth(1, 120);
     setColumnWidth(2, 100);
-    setColumnWidth(3, 600);
     setShowGrid(false);
 
     hHeader->setSectionResizeMode(0, QHeaderView::Fixed);
@@ -37,6 +36,7 @@ LogViewerWidget::LogViewerWidget(QWidget* parent)
     hHeader->setSectionResizeMode(3, QHeaderView::Stretch);
 
     verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    verticalHeader()->setDefaultSectionSize(cRowHeight);
 
     setItemDelegate(&m_styleDelegate);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -47,6 +47,7 @@ LogViewerWidget::LogViewerWidget(QWidget* parent)
 
     connect(hHeader, &LogViewerHorizontalHeader::sortByColumn,
             [&](int section, Qt::SortOrder order) { sortByColumn(section, order); });
+    connect(&m_styleDelegate, &LogStyleDelegate::resizeRow, this, &LogViewerWidget::onResizeRow);
 }
 
 void LogViewerWidget::open(const QString& openPath)
@@ -59,7 +60,6 @@ void LogViewerWidget::resizeEvent(QResizeEvent* event)
 {
     QTableView::resizeEvent(event);
     m_styleDelegate.setTextColumnWidth(horizontalHeader()->sectionSize(3));
-    resizeRowsToContents();
 }
 
 void LogViewerWidget::launchParsing()
@@ -71,5 +71,9 @@ void LogViewerWidget::launchParsing()
     progress.start();
     thread.join();
     m_model.setLogData(f.get());
-    resizeRowsToContents();
+}
+
+void LogViewerWidget::onResizeRow(int index, int height)
+{
+    setRowHeight(index, height);
 }
