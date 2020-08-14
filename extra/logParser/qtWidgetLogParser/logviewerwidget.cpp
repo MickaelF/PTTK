@@ -8,6 +8,8 @@
 #include "logviewerhorizontalheader.h"
 #include "progressdialog.h"
 
+#include <QDateTime>
+
 namespace
 {
 constexpr int cPriorityColumnWidth {100};
@@ -54,6 +56,16 @@ void LogViewerWidget::open(const QString& openPath)
 {
     m_parser.setInputPath(openPath.toStdString());
     launchParsing();
+}
+
+QDateTime LogViewerWidget::firstDate() const
+{
+    return QDateTime::fromSecsSinceEpoch(m_model.firstDate());
+}
+
+QDateTime LogViewerWidget::lastDate() const
+{
+    return QDateTime::fromSecsSinceEpoch(m_model.lastDate());
 }
 
 void LogViewerWidget::resizeEvent(QResizeEvent* event)

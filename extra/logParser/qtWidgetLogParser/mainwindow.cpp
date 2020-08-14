@@ -43,6 +43,11 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
             &MainWindow::onLogGeneratorActionPressed);
     connect(&m_startDialog, &QDialog::accepted, this, &MainWindow::onStartUpDialogAccepted);
     connect(&m_startDialog, &QDialog::rejected, [&]() { close(); });
+
+    connect(g_startDate, &QDateTimeEdit::dateTimeChanged, this, &MainWindow::onStartDateChanged);
+    connect(g_endDate, &QDateTimeEdit::dateTimeChanged, this, &MainWindow::onEndDateChanged);
+    connect(g_applyBtn, &QPushButton::pressed, this, &MainWindow::onApplyPressed);
+    connect(g_defaultBtn, &QPushButton::pressed, this, &MainWindow::onDefaultPressed);
 }
 
 void MainWindow::onLogGeneratorActionPressed()
@@ -78,6 +83,31 @@ void MainWindow::onStartUpDialogAccepted()
     g_sortOptions->setHidden(true);
     m_startDialog.hide();
     open(m_startDialog.pathOpened());
+}
+
+void MainWindow::onApplyPressed() {}
+
+void MainWindow::onDefaultPressed() 
+{
+    updateDate();
+}
+
+void MainWindow::onStartDateChanged(const QDateTime& dateTime) 
+{
+    if (dateTime < g_endDate->dateTime()) return; 
+
+    blockSignals(true);
+    g_endDate->setDateTime(dateTime.addSecs(1));
+    blockSignals(false);
+}
+
+void MainWindow::onEndDateChanged(const QDateTime& dateTime)
+{
+    if (dateTime > g_startDate->dateTime()) return;
+
+    blockSignals(true);
+    g_startDate->setDateTime(dateTime.addSecs(-1));
+    blockSignals(false);
 }
 
 void MainWindow::displayStartUpDialog()
@@ -140,5 +170,21 @@ void MainWindow::open(const QString& path)
     IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
     setWindowTitle(QString(windowName.data()).arg(path));
 
+    updateDate();
+
     g_sortOptions->setVisible(true);
+}
+
+
+void MainWindow::updateDate()
+{
+    auto startDate = g_parsedLogWidget->firstDate();
+    auto endDate = g_parsedLogWidget->lastDate();
+    g_startDate->setMinimumDateTime(startDate);
+    g_startDate->setDateTime(startDate);
+    g_startDate->setMaximumDateTime(endDate);
+
+    g_endDate->setMinimumDateTime(startDate);
+    g_endDate->setDateTime(endDate);
+    g_endDate->setMaximumDateTime(endDate);
 }

@@ -185,7 +185,7 @@ void Logger::close()
 
 std::string Logger::currentDate()
 {
-    return strTls::currentDateTimeToString("[%F %T]");
+    return strTls::currentDateTimeToString("[%Y-%m-%d %T]");
 }
 
 void Logger::setSpecificLogDate(const std::string& date)

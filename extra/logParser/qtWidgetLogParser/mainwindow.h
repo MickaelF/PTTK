@@ -21,12 +21,19 @@ private slots:
     void onOpenActionPressed();
     void onOpenRecentlyPressed();
     void onStartUpDialogAccepted();
+    void onApplyPressed();
+    void onDefaultPressed();
+
+    void onStartDateChanged(const QDateTime& dateTime);
+    void onEndDateChanged(const QDateTime& dateTime);
 
 private:
     void displayStartUpDialog();
     void setupDisplayPrioritiesBox();
     void updateOpenRecently();
     void open(const QString& path);
+    void updateDate(); 
+
     QtParserIniFile m_ini;
     StartUpDialog m_startDialog;
     std::filesystem::path m_programDataPath;

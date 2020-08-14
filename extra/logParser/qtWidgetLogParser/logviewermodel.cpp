@@ -71,6 +71,18 @@ void LogViewerModel::setLogData(std::vector<std::string> data)
     insertRows(0, m_data.size() - 1);
 }
 
+time_t LogViewerModel::firstDate() const
+{
+    if (m_data.empty()) return 0;
+    return LogLineInfo(m_data.front()).date();
+}
+
+time_t LogViewerModel::lastDate() const
+{
+    if (m_data.empty()) return 0;
+    return LogLineInfo(m_data.back()).date();
+}
+
 QVariant LogViewerModel::data(const QModelIndex& index, int role) const
 {
     LogLineInfo logInfo {m_data[index.row()]};

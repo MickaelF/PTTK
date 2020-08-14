@@ -30,7 +30,7 @@ LogLineInfo::LogLineInfo(std::string_view line)
 
 std::time_t LogLineInfo::date() const
 {
-    return strTls::toTimeT(m_date, "[%F %T]");
+    return strTls::toTimeT(m_date, "[%Y-%m-%d %T]");
 }
 
 std::string_view LogLineInfo::dateStr() const

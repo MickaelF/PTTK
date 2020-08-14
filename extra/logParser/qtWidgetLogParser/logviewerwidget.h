@@ -14,6 +14,8 @@ public:
 	LogViewerWidget(QWidget* parent = nullptr);
 
 	void open(const QString& openPath);
+    QDateTime firstDate() const; 
+	QDateTime lastDate() const; 
 
 protected:
     void resizeEvent(QResizeEvent* event) override; 

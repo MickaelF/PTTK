@@ -32,6 +32,9 @@ public:
 
     std::vector<std::string>& logDataRef() { return m_data; }
 
+    time_t firstDate() const; 
+    time_t lastDate() const; 
+
 private:
     std::vector<std::string> m_data;
 };
