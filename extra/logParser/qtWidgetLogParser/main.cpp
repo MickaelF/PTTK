@@ -1,8 +1,10 @@
 #include <QApplication>
+#include <QStyleFactory>
 #include "mainwindow.h"
 #include "logger.h"
 #include "log.h"
 #include "path.h"
+#include "style.h"
 
 constexpr std::string_view companyName{ "PotatoThunder" };
 
@@ -14,6 +16,8 @@ int main(int argc, char* argv[])
     BasicLog::setLogger(logger);
     lInfo << "Starting application"; 
     QApplication app(argc, argv);
+    app.setStyle(QStyleFactory::create("Fusion"));
+    app.setStyleSheet(AppStyle::stylesheet);
 
     MainWindow window {dataPath};
     window.show();

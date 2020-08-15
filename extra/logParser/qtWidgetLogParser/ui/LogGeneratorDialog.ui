@@ -14,20 +14,7 @@
    <string>Log Generator</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton
-{ 
-	border: 1px solid #2077bc;
-     border-radius: 15px;
-}
-
-QPushButton#g_generateBtn 
-{
-     background-color: #2077bc;
-	color: #FFFFFF;
-}
-
-
-</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -158,6 +145,12 @@ QPushButton#g_generateBtn
        </property>
        <property name="text">
         <string>Generate</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

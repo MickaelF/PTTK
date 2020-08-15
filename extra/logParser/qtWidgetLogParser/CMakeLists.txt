@@ -43,6 +43,7 @@ logviewerhorizontalheader.cpp
 logviewerhorizontalheader.h
 logfilterproxymodel.h
 logfilterproxymodel.cpp
+style.h
 )
 
 set(RSC_FILES

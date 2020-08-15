@@ -22,24 +22,7 @@
    <double>1.000000000000000</double>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton, QToolButton { border: 1px solid #2077bc;
-     border-radius: 15px;
-}
-
-QPushButton#g_open {
-     background-color: #2077bc;
-	color: #FFFFFF;
-}
-
-QToolButton::menu-button
-{
-     background-color: #2077bc;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-width: 15px;
-}
-
-</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -190,6 +173,9 @@ Generate: Generate a dummy log file to experiment with the reader.</string>
        </property>
        <property name="text">
         <string>Generate</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -502,8 +488,11 @@ Generate: Generate a dummy log file to experiment with the reader.</string>
        <property name="autoDefault">
         <bool>false</bool>
        </property>
-       <property name="flat">
+       <property name="default">
         <bool>true</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

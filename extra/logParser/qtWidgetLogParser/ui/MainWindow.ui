@@ -19,10 +19,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton { border: 1px solid #2077bc;    border-radius: 15px; }
-QPushButton#g_applyBtn {  background-color: #2077bc;	color: #FFFFFF; }
-
-</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -184,6 +181,9 @@ QPushButton#g_applyBtn {  background-color: #2077bc;	color: #FFFFFF; }
              </property>
              <property name="text">
               <string>Apply</string>
+             </property>
+             <property name="default">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
