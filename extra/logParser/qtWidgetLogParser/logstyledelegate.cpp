@@ -11,8 +11,8 @@
 
 LogStyleDelegate::LogStyleDelegate(int priorityCellWidth, int cellHeight, QObject *parent)
     : QStyledItemDelegate(parent),
-      m_priorityLabelWidth(priorityCellWidth * 0.70f),
-      m_priorityCellHorizontalMargin(priorityCellWidth * 0.15f),
+      m_priorityLabelWidth(priorityCellWidth * 0.60f),
+      m_priorityCellHorizontalMargin(priorityCellWidth * 0.20f),
       m_priorityLabelHeight(cellHeight * 0.50f),
       m_cellHeight(cellHeight),
       m_pen(QBrush(QColor(AppStyle::softGrey)), 1)
@@ -52,19 +52,20 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     {
         QStyleOptionViewItem opt {option};
         opt.rect.setLeft(opt.rect.left() + 10);
-        opt.rect.setWidth(opt.rect.width() - 40);
+        opt.rect.setWidth(opt.rect.width() - 60);
         auto text = index.data(Qt::DisplayRole).toString();
         auto textHeight =
             option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
         if (textHeight >= m_cellHeight)
         {
-            QRect rect {opt.rect.right() + 5, opt.rect.top() + static_cast<int>((opt.rect.height() - 30)* 0.5f), 30, 30};
+            QRect rect {opt.rect.right() + 10, opt.rect.top() + static_cast<int>((opt.rect.height() - 30)* 0.5f), 30, 30};
             QString text {textHeight < option.rect.height() ? "-" : "+"};
             painter->setBrush(QBrush(QColor(AppStyle::softGrey)));
             painter->drawEllipse(rect);
             painter->setPen(QColor(AppStyle::blue));
             QFont font; 
-            font.setPixelSize(18);
+            font.setPixelSize(20);
+            font.setBold(true);
             auto oldFont {painter->font()};
             painter->setFont(font);
             painter->drawText(rect, Qt::AlignCenter, text);
