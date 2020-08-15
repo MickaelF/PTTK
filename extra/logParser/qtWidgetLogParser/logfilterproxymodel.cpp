@@ -24,6 +24,7 @@ void LogFilterProxyModel::setStartDate(const QDateTime& date)
 {
     if (m_startDate != date) m_startDate = date;
 }
+
 void LogFilterProxyModel::setEndDate(const QDateTime& date)
 {
     if (m_endDate != date) m_endDate = date;

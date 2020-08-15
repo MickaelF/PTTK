@@ -34,7 +34,7 @@ void LogGenerator::exec()
     for (; m_progress < m_nbLines; ++m_progress)
     {
         Priorities priority =
-            static_cast<Priorities>(NumberGenerator::generateBetween(0, enumMaxNumber()));
+            static_cast<Priorities>(NumberGenerator::generateBetween(0, enumMaxNumber() - 1));
         int fileId =
             NumberGenerator::generateBetween(0, static_cast<int>(randomFileName.size() - 1));
         int logTextId = NumberGenerator::generateBetween(0, static_cast<int>(logText.size() - 1));

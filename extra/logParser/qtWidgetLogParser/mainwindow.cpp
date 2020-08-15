@@ -43,6 +43,7 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onOpenActionPressed);
     connect(actionLogGenerator, &QAction::triggered, this,
             &MainWindow::onLogGeneratorActionPressed);
+    connect(actionQuit, &QAction::triggered, [&]() { close(); });
     connect(&m_startDialog, &QDialog::accepted, this, &MainWindow::onStartUpDialogAccepted);
     connect(&m_startDialog, &QDialog::rejected, [&]() { close(); });
 

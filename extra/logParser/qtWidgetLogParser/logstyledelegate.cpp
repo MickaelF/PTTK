@@ -11,8 +11,8 @@
 
 LogStyleDelegate::LogStyleDelegate(int priorityCellWidth, int cellHeight, QObject *parent)
     : QStyledItemDelegate(parent),
-      m_priorityLabelWidth(priorityCellWidth * 0.80f),
-      m_priorityCellHorizontalMargin(priorityCellWidth * 0.10f),
+      m_priorityLabelWidth(priorityCellWidth * 0.70f),
+      m_priorityCellHorizontalMargin(priorityCellWidth * 0.15f),
       m_priorityLabelHeight(cellHeight * 0.50f),
       m_cellHeight(cellHeight),
       m_pen(QBrush(QColor(AppStyle::softGrey)), 1)
@@ -58,12 +58,17 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
         if (textHeight >= m_cellHeight)
         {
-            QRect rect {opt.rect.right() + 5, opt.rect.top() + 5, 30, 30};
+            QRect rect {opt.rect.right() + 5, opt.rect.top() + static_cast<int>((opt.rect.height() - 30)* 0.5f), 30, 30};
             QString text {textHeight < option.rect.height() ? "-" : "+"};
             painter->setBrush(QBrush(QColor(AppStyle::softGrey)));
             painter->drawEllipse(rect);
             painter->setPen(QColor(AppStyle::blue));
+            QFont font; 
+            font.setPixelSize(18);
+            auto oldFont {painter->font()};
+            painter->setFont(font);
             painter->drawText(rect, Qt::AlignCenter, text);
+            painter->setFont(oldFont);
         }
         QStyledItemDelegate::paint(painter, opt, index);
     }
@@ -76,16 +81,16 @@ bool LogStyleDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
 {
     if (index.column() != 3)
         QApplication::restoreOverrideCursor();
-    else 
+    else
     {
         auto text = index.data(Qt::DisplayRole).toString();
         auto textHeight =
             option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
-        if (event->type() == QEvent::MouseMove  )
+        if (event->type() == QEvent::MouseMove)
         {
-            if (textHeight > option.rect.height() && !QApplication::overrideCursor())
+            if ((textHeight > option.rect.height() || option.rect.height() > m_cellHeight) && !QApplication::overrideCursor())
                 QApplication::setOverrideCursor(QCursor(Qt::PointingHandCursor));
-            else if (textHeight <= option.rect.height() && QApplication::overrideCursor())
+            else if (textHeight <= option.rect.height() && option.rect.height() == m_cellHeight && QApplication::overrideCursor())
                 QApplication::restoreOverrideCursor();
         }
         else if (event->type() == QEvent::MouseButtonRelease)

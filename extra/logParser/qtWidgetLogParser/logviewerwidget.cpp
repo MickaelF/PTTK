@@ -14,7 +14,7 @@
 
 namespace
 {
-constexpr int cPriorityColumnWidth {100};
+constexpr int cPriorityColumnWidth {140};
 constexpr int cRowHeight {60};
 } // namespace
 
