@@ -77,6 +77,9 @@
              </item>
              <item>
               <widget class="QDateTimeEdit" name="g_startDate">
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
                <property name="displayFormat">
                 <string>yyyy-MM-dd HH:mm:ss</string>
                </property>
@@ -100,6 +103,9 @@
              </item>
              <item>
               <widget class="QDateTimeEdit" name="g_endDate">
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
                <property name="keyboardTracking">
                 <bool>false</bool>
                </property>

@@ -17,6 +17,9 @@ class MainWindow : public QMainWindow, public Ui_MainWindow
 public:
     MainWindow(const std::filesystem::path& programDataPath);
 
+protected:
+    void mousePressEvent(QMouseEvent* event) override; 
+
 private slots:
     void onLogGeneratorActionPressed();
     void onOpenActionPressed();

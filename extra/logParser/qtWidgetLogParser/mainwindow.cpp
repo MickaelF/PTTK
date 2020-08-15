@@ -59,6 +59,13 @@ void MainWindow::onLogGeneratorActionPressed()
     if (dialog.exec() == QDialog::Accepted && dialog.openInEditor()) open(dialog.path());
 }
 
+void MainWindow::mousePressEvent(QMouseEvent* event) 
+{
+    g_startDate->clearFocus();
+    g_endDate->clearFocus();
+    QMainWindow::mousePressEvent(event);
+}
+
 void MainWindow::onOpenActionPressed()
 {
     auto path = QFileDialog::getExistingDirectory(this, tr("Open log folder"));
