@@ -25,4 +25,7 @@ inline constexpr char* stylesheet {"QPushButton, QToolButton"
                                    "}"
 
 };
+
+inline constexpr char* blue {"#2077bc"};
+inline constexpr char* softGrey {"#E0E0E0"};
 } // namespace AppStyle

@@ -7,6 +7,7 @@
 
 #include "log.h"
 #include "prioritylabelfactory.h"
+#include "style.h"
 
 LogStyleDelegate::LogStyleDelegate(int priorityCellWidth, int cellHeight, QObject *parent)
     : QStyledItemDelegate(parent),
@@ -14,7 +15,7 @@ LogStyleDelegate::LogStyleDelegate(int priorityCellWidth, int cellHeight, QObjec
       m_priorityCellHorizontalMargin(priorityCellWidth * 0.10f),
       m_priorityLabelHeight(cellHeight * 0.50f),
       m_cellHeight(cellHeight),
-      m_pen(QBrush(QColor("#E0E0E0")), 1)
+      m_pen(QBrush(QColor(AppStyle::softGrey)), 1)
 {
 }
 
@@ -57,13 +58,12 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
         if (textHeight >= m_cellHeight)
         {
-            QPushButton button;
-            button.setFixedSize(20, 20);
-            if (textHeight > option.rect.height())
-                button.setText("+");
-            else 
-                button.setText("-");
-            painter->drawPixmap(opt.rect.right() + 5, opt.rect.top(), button.grab());
+            QRect rect {opt.rect.right() + 5, opt.rect.top() + 5, 30, 30};
+            QString text {textHeight < option.rect.height() ? "-" : "+"};
+            painter->setBrush(QBrush(QColor(AppStyle::softGrey)));
+            painter->drawEllipse(rect);
+            painter->setPen(QColor(AppStyle::blue));
+            painter->drawText(rect, Qt::AlignCenter, text);
         }
         QStyledItemDelegate::paint(painter, opt, index);
     }
@@ -74,16 +74,29 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 bool LogStyleDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
                                    const QStyleOptionViewItem &option, const QModelIndex &index)
 {
-    if (index.column() != 3 || event->type() != QEvent::MouseButtonRelease)
-        return QStyledItemDelegate::editorEvent(event, model, option, index);
-
-    auto text = index.data(Qt::DisplayRole).toString();
-    auto textHeight = option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
-    if (textHeight > option.rect.height())
-        emit resizeRow(index.row(), textHeight + 30);
-    else
-        emit resizeRow(index.row(), m_cellHeight);
-    return true;
+    if (index.column() != 3)
+        QApplication::restoreOverrideCursor();
+    else 
+    {
+        auto text = index.data(Qt::DisplayRole).toString();
+        auto textHeight =
+            option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
+        if (event->type() == QEvent::MouseMove  )
+        {
+            if (textHeight > option.rect.height() && !QApplication::overrideCursor())
+                QApplication::setOverrideCursor(QCursor(Qt::PointingHandCursor));
+            else if (textHeight <= option.rect.height() && QApplication::overrideCursor())
+                QApplication::restoreOverrideCursor();
+        }
+        else if (event->type() == QEvent::MouseButtonRelease)
+        {
+            if (textHeight > option.rect.height())
+                emit resizeRow(index.row(), textHeight + 30);
+            else
+                emit resizeRow(index.row(), m_cellHeight);
+        }
+    }
+    return QStyledItemDelegate::editorEvent(event, model, option, index);
 }
 
 void LogStyleDelegate::setTextColumnWidth(int width)

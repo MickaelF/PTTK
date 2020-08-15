@@ -1,15 +1,16 @@
 #include "logviewerwidget.h"
 
+#include <QApplication>
+#include <QDateTime>
+#include <QMouseEvent>
 #include <QSortFilterProxyModel>
 
 #include "log.h"
 #include "logParser.h"
+#include "logfilterproxymodel.h"
 #include "loglineinfo.h"
 #include "logviewerhorizontalheader.h"
 #include "progressdialog.h"
-#include "logfilterproxymodel.h"
-
-#include <QDateTime>
 
 namespace
 {
@@ -47,6 +48,7 @@ LogViewerWidget::LogViewerWidget(QWidget* parent)
     setSelectionMode(QAbstractItemView::NoSelection);
     setFrameStyle(QFrame::NoFrame);
     m_styleDelegate.setTextColumnWidth(hHeader->sectionSize(3));
+    setMouseTracking(true);
 
     connect(hHeader, &LogViewerHorizontalHeader::sortByColumn,
             [&](int section, Qt::SortOrder order) { sortByColumn(section, order); });
@@ -81,12 +83,12 @@ void LogViewerWidget::setFilterEndDate(const QDateTime& date) const
     m_sortFilter->setEndDate(date);
 }
 
-void LogViewerWidget::setFilteredPriorities(const QStringList& priorities) const 
+void LogViewerWidget::setFilteredPriorities(const QStringList& priorities) const
 {
     m_sortFilter->setFilteredPriorities(priorities);
 }
 
-void LogViewerWidget::updateFilter() const 
+void LogViewerWidget::updateFilter() const
 {
     m_sortFilter->invalidate();
 }
@@ -95,6 +97,13 @@ void LogViewerWidget::resizeEvent(QResizeEvent* event)
 {
     QTableView::resizeEvent(event);
     m_styleDelegate.setTextColumnWidth(horizontalHeader()->sectionSize(3));
+}
+
+void LogViewerWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    if (!rect().contains(event->pos()) && QApplication::overrideCursor())
+        QApplication::restoreOverrideCursor();
+    QTableView::mouseMoveEvent(event);
 }
 
 void LogViewerWidget::launchParsing()

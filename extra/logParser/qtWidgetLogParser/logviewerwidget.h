@@ -23,7 +23,8 @@ public:
     void updateFilter() const; 
 
 protected:
-    void resizeEvent(QResizeEvent* event) override; 
+    void resizeEvent(QResizeEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override; 
 
 private slots: 
 	void onResizeRow(int index, int height);
