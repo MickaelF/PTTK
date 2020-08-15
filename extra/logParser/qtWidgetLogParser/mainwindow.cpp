@@ -97,6 +97,7 @@ void MainWindow::onStartUpDialogAccepted()
 
 void MainWindow::onApplyPressed()
 {
+    QApplication::setOverrideCursor(QCursor(Qt::CursorShape::WaitCursor));
     g_parsedLogWidget->setFilterStartDate(g_startDate->dateTime());
     g_parsedLogWidget->setFilterEndDate(g_endDate->dateTime());
 
@@ -108,6 +109,7 @@ void MainWindow::onApplyPressed()
     g_parsedLogWidget->setFilteredFileNames(m_fileNamesMenu.uncheckedFileNames());
 
     g_parsedLogWidget->updateFilter();
+    QApplication::restoreOverrideCursor();
 }
 
 void MainWindow::onDefaultPressed()
@@ -208,12 +210,12 @@ void MainWindow::updateDate()
     auto startDate = g_parsedLogWidget->firstDate();
     auto endDate = g_parsedLogWidget->lastDate();
     g_startDate->setMinimumDateTime(startDate);
-    g_startDate->setDateTime(startDate);
     g_startDate->setMaximumDateTime(endDate);
+    g_startDate->setDateTime(startDate);
 
     g_endDate->setMinimumDateTime(startDate);
-    g_endDate->setDateTime(endDate);
     g_endDate->setMaximumDateTime(endDate);
+    g_endDate->setDateTime(endDate);
 }
 
 void MainWindow::updateFileNames()

@@ -121,6 +121,14 @@
            </item>
            <item>
             <widget class="QToolButton" name="g_displayedFiles">
+             <property name="font">
+              <font>
+               <underline>true</underline>
+              </font>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
              <property name="text">
               <string>Displayed files</string>
              </property>
