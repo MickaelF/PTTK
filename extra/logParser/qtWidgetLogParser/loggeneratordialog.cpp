@@ -13,6 +13,7 @@
 LogGeneratorDialog::LogGeneratorDialog(QWidget* parent) : QDialog(parent)
 {
     setupUi(this);
+    setWindowFlags(Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
 
     g_dateStart->setDateTime(QDateTime::currentDateTime());
     connect(g_cancelBtn, &QPushButton::clicked, this, [&]() { close(); });

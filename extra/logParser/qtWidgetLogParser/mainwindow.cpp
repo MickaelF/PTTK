@@ -199,8 +199,7 @@ void MainWindow::open(const QString& path)
     setWindowTitle(QString(windowName.data()).arg(path));
 
     updateDate();
-    updateFileNames();
-    onApplyPressed();
+    updateFileNames(); 
 
     g_sortOptions->setVisible(true);
 }

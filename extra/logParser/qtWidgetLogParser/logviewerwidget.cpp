@@ -59,8 +59,7 @@ void LogViewerWidget::open(const QString& openPath)
 {
     m_parser.setInputPath(openPath.toStdString());
     launchParsing();
-    m_sortFilter->setStartDate(firstDate());
-    m_sortFilter->setEndDate(lastDate());
+    m_sortFilter->resetParameters();
 }
 
 QDateTime LogViewerWidget::firstDate() const

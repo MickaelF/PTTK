@@ -9,6 +9,7 @@
 StartUpDialog::StartUpDialog(QWidget* parent) : QDialog(parent)
 {
     setupUi(this);
+    setWindowFlags(Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
     g_recent->setMenu(new QMenu());
     connect(g_open, &QPushButton::pressed, this, &StartUpDialog::onOpenPressed);
     connect(g_generate, &QPushButton::pressed, this, &StartUpDialog::onGeneratePressed);
