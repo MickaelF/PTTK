@@ -17,6 +17,11 @@ public:
     QDateTime firstDate() const; 
 	QDateTime lastDate() const; 
 
+	void setFilterStartDate(const QDateTime& date) const; 
+	void setFilterEndDate(const QDateTime& date) const;
+    void setFilteredPriorities(const QStringList& priorities) const; 
+    void updateFilter() const; 
+
 protected:
     void resizeEvent(QResizeEvent* event) override; 
 

@@ -7,6 +7,7 @@ class PriorityLabel : public QLabel
 public:
     PriorityLabel(const QColor& backgroundColor, const QString& text, QWidget* parent);
     bool isSelected() const { return m_isSelected; }
+    void setSelected(bool state);
     QString priority() const { return text(); }
 
 protected:

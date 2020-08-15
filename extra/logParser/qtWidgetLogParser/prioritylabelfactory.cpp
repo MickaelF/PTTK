@@ -1,7 +1,8 @@
 #include "prioritylabelfactory.h"
 
-#include "logpriority.h"
 #include <QPainter>
+
+#include "logpriority.h"
 namespace
 {
 QColor priorityColor(const QString& priority)
@@ -48,6 +49,11 @@ PriorityLabel::PriorityLabel(const QColor& backgroundColor, const QString& text,
     palette.setColor(QPalette::ColorRole::Window, QColor(0, 0, 0, 0));
     setPalette(palette);
     setMouseTracking(true);
+}
+
+void PriorityLabel::setSelected(bool state)
+{
+    if (m_isSelected != state) m_isSelected = state;
 }
 
 void PriorityLabel::paintEvent(QPaintEvent* event)

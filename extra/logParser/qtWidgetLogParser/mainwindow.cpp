@@ -85,11 +85,24 @@ void MainWindow::onStartUpDialogAccepted()
     open(m_startDialog.pathOpened());
 }
 
-void MainWindow::onApplyPressed() {}
+void MainWindow::onApplyPressed() 
+{
+    g_parsedLogWidget->setFilterStartDate(g_startDate->dateTime());
+    g_parsedLogWidget->setFilterEndDate(g_endDate->dateTime());
+
+    QStringList filteredPriorities;
+    for (auto& priority : m_prioritySelection)
+        if (!priority->isSelected()) filteredPriorities.push_back(priority->text());
+    g_parsedLogWidget->setFilteredPriorities(filteredPriorities);
+
+    g_parsedLogWidget->updateFilter();
+}
 
 void MainWindow::onDefaultPressed()
 {
     updateDate();
+    for (auto& priority : m_prioritySelection) priority->setSelected(true);
+    repaint();
 }
 
 void MainWindow::onStartDateChanged(const QDateTime& dateTime)
@@ -171,6 +184,7 @@ void MainWindow::open(const QString& path)
     setWindowTitle(QString(windowName.data()).arg(path));
 
     updateDate();
+    onApplyPressed();
 
     g_sortOptions->setVisible(true);
 }

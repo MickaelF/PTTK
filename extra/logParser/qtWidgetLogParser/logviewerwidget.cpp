@@ -71,6 +71,26 @@ QDateTime LogViewerWidget::lastDate() const
     return QDateTime::fromSecsSinceEpoch(m_model.lastDate());
 }
 
+void LogViewerWidget::setFilterStartDate(const QDateTime& date) const
+{
+    m_sortFilter->setStartDate(date);
+}
+
+void LogViewerWidget::setFilterEndDate(const QDateTime& date) const
+{
+    m_sortFilter->setEndDate(date);
+}
+
+void LogViewerWidget::setFilteredPriorities(const QStringList& priorities) const 
+{
+    m_sortFilter->setFilteredPriorities(priorities);
+}
+
+void LogViewerWidget::updateFilter() const 
+{
+    m_sortFilter->invalidate();
+}
+
 void LogViewerWidget::resizeEvent(QResizeEvent* event)
 {
     QTableView::resizeEvent(event);
