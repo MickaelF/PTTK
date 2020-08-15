@@ -37,6 +37,8 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
         displayStartUpDialog();
 
     setupDisplayPrioritiesBox();
+    
+    g_displayedFiles->setMenu(&m_fileNamesMenu);
 
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onOpenActionPressed);
     connect(actionLogGenerator, &QAction::triggered, this,
@@ -85,7 +87,7 @@ void MainWindow::onStartUpDialogAccepted()
     open(m_startDialog.pathOpened());
 }
 
-void MainWindow::onApplyPressed() 
+void MainWindow::onApplyPressed()
 {
     g_parsedLogWidget->setFilterStartDate(g_startDate->dateTime());
     g_parsedLogWidget->setFilterEndDate(g_endDate->dateTime());
@@ -95,12 +97,15 @@ void MainWindow::onApplyPressed()
         if (!priority->isSelected()) filteredPriorities.push_back(priority->text());
     g_parsedLogWidget->setFilteredPriorities(filteredPriorities);
 
+    g_parsedLogWidget->setFilteredFileNames(m_fileNamesMenu.uncheckedFileNames());
+
     g_parsedLogWidget->updateFilter();
 }
 
 void MainWindow::onDefaultPressed()
 {
     updateDate();
+    m_fileNamesMenu.checkEverything();
     for (auto& priority : m_prioritySelection) priority->setSelected(true);
     repaint();
 }
@@ -184,6 +189,7 @@ void MainWindow::open(const QString& path)
     setWindowTitle(QString(windowName.data()).arg(path));
 
     updateDate();
+    updateFileNames();
     onApplyPressed();
 
     g_sortOptions->setVisible(true);
@@ -200,4 +206,9 @@ void MainWindow::updateDate()
     g_endDate->setMinimumDateTime(startDate);
     g_endDate->setDateTime(endDate);
     g_endDate->setMaximumDateTime(endDate);
+}
+
+void MainWindow::updateFileNames()
+{
+    m_fileNamesMenu.setFileNames(g_parsedLogWidget->fileNames());
 }

@@ -12,6 +12,8 @@ public:
 	void setStartDate(const QDateTime& date);
     void setEndDate(const QDateTime& date); 
 	void setFilteredPriorities(const QStringList& priorities);
+    void setFilteredFileNames(const QStringList& priorities);
+    
 
 protected: 
 	bool filterAcceptsRow(int row, const QModelIndex& parent) const override; 
@@ -20,4 +22,5 @@ private:
 	QDateTime m_startDate; 
 	QDateTime m_endDate; 
 	QStringList m_filteredPriorities;
+    QStringList m_filteredFileNames;
 };

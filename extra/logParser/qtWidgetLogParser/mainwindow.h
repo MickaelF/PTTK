@@ -7,6 +7,7 @@
 #include "logpriority.h"
 #include "qtparserinifile.h"
 #include "startupdialog.h"
+#include "filenamesmenu.h"
 #include "ui_MainWindow.h"
 class PriorityLabel;
 
@@ -33,9 +34,11 @@ private:
     void updateOpenRecently();
     void open(const QString& path);
     void updateDate(); 
+    void updateFileNames();
 
     QtParserIniFile m_ini;
     StartUpDialog m_startDialog;
     std::filesystem::path m_programDataPath;
     QMap<LogPriority::Priorities, PriorityLabel*> m_prioritySelection;
+    FileNamesMenu m_fileNamesMenu;
 };

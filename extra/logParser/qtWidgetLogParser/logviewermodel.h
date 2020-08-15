@@ -34,6 +34,7 @@ public:
 
     time_t firstDate() const; 
     time_t lastDate() const; 
+    QStringList fileNames() const; 
 
 private:
     std::vector<std::string> m_data;

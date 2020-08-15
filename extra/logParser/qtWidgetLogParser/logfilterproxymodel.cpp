@@ -11,6 +11,8 @@ bool LogFilterProxyModel::filterAcceptsRow(int row, const QModelIndex& parent) c
 
     if (m_filteredPriorities.contains(std::string(info.priority()).c_str())) return false;
 
+    if (m_filteredFileNames.contains(std::string(info.fileName()).c_str())) return false; 
+
     auto rowDate =
         QDateTime::fromString(std::string(info.dateTimeStr()).c_str(), "yyyy-MM-dd hh:mm:ss");
     if (rowDate < m_startDate || rowDate > m_endDate) return false;
@@ -30,4 +32,9 @@ void LogFilterProxyModel::setEndDate(const QDateTime& date)
 void LogFilterProxyModel::setFilteredPriorities(const QStringList& priorities)
 {
     m_filteredPriorities = priorities;
+}
+
+void LogFilterProxyModel::setFilteredFileNames(const QStringList& priorities)
+{
+    m_filteredFileNames = priorities;
 }

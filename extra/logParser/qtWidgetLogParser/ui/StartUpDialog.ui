@@ -218,7 +218,7 @@ Generate: Generate a dummy log file to experiment with the reader.</string>
         <bool>false</bool>
        </property>
        <property name="popupMode">
-        <enum>QToolButton::MenuButtonPopup</enum>
+        <enum>QToolButton::InstantPopup</enum>
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextOnly</enum>

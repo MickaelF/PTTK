@@ -83,6 +83,18 @@ time_t LogViewerModel::lastDate() const
     return LogLineInfo(m_data.back()).date();
 }
 
+QStringList LogViewerModel::fileNames() const
+{
+    QStringList fileNames; 
+    for (const auto& data : m_data)
+    {
+        LogLineInfo info {data};
+        QString fileName {std::string(info.fileName()).c_str()};
+        if (!fileNames.contains(fileName)) fileNames.push_back(fileName);
+    }
+    return fileNames;
+}
+
 QVariant LogViewerModel::data(const QModelIndex& index, int role) const
 {
     LogLineInfo logInfo {m_data[index.row()]};

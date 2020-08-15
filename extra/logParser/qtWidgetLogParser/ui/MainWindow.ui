@@ -95,22 +95,12 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_3">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
+            <widget class="QToolButton" name="g_displayedFiles">
              <property name="text">
-              <string>Files</string>
+              <string>Displayed files</string>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="g_filesCB">
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
+             <property name="popupMode">
+              <enum>QToolButton::InstantPopup</enum>
              </property>
             </widget>
            </item>

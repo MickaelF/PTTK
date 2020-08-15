@@ -73,6 +73,11 @@ QDateTime LogViewerWidget::lastDate() const
     return QDateTime::fromSecsSinceEpoch(m_model.lastDate());
 }
 
+QStringList LogViewerWidget::fileNames() const
+{
+    return m_model.fileNames();
+}
+
 void LogViewerWidget::setFilterStartDate(const QDateTime& date) const
 {
     m_sortFilter->setStartDate(date);
@@ -86,6 +91,11 @@ void LogViewerWidget::setFilterEndDate(const QDateTime& date) const
 void LogViewerWidget::setFilteredPriorities(const QStringList& priorities) const
 {
     m_sortFilter->setFilteredPriorities(priorities);
+}
+
+void LogViewerWidget::setFilteredFileNames(const QStringList& priorities) const
+{
+    m_sortFilter->setFilteredFileNames(priorities);
 }
 
 void LogViewerWidget::updateFilter() const

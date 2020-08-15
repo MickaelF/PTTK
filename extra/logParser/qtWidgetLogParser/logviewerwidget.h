@@ -16,10 +16,12 @@ public:
 	void open(const QString& openPath);
     QDateTime firstDate() const; 
 	QDateTime lastDate() const; 
+	QStringList fileNames() const; 
 
 	void setFilterStartDate(const QDateTime& date) const; 
 	void setFilterEndDate(const QDateTime& date) const;
     void setFilteredPriorities(const QStringList& priorities) const; 
+	void setFilteredFileNames(const QStringList& priorities) const; 
     void updateFilter() const; 
 
 protected:
