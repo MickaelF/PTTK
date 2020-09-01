@@ -12,6 +12,9 @@ public:
     const QString& pathOpened() const { return m_pathOpened; }
     void updateRecentComboBox(const QStringList& recents);
 
+protected: 
+    void changeEvent(QEvent* event);
+
 private slots:
     void onOpenPressed();
     void onGeneratePressed();

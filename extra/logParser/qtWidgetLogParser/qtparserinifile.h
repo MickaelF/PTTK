@@ -26,7 +26,11 @@ public:
 
     bool setLastOpenedFolder(const std::string& folder);
 
+    void setSelectedLanguage(const std::string& language);
+    const std::optional<std::string>& languageSelected() const { return m_selectedLanguage; }
+
 private:
     ContigousArray<std::string, MaxSizePreviousFolders> m_previousFolders;
     std::optional<std::string> m_lastOpenedFolder;
+    std::optional<std::string> m_selectedLanguage; 
 };

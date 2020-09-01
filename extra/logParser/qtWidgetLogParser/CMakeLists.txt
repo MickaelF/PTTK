@@ -14,7 +14,7 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 COMPONENTS Widgets Core REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Core LinguistTools REQUIRED)
 find_library(PTTK_LIB PTTK)
 
 set(SRCS_FILES
@@ -39,13 +39,13 @@ set(SRCS_FILES
 	logstyledelegate.cpp
 	prioritylabelfactory.cpp
 	prioritylabelfactory.h
-logviewerhorizontalheader.cpp
-logviewerhorizontalheader.h
-logfilterproxymodel.h
-logfilterproxymodel.cpp
-style.h
-filenamesmenu.h
-filenamesmenu.cpp
+    logviewerhorizontalheader.cpp
+    logviewerhorizontalheader.h
+    logfilterproxymodel.h
+    logfilterproxymodel.cpp
+    style.h
+    filenamesmenu.h
+    filenamesmenu.cpp
 )
 
 set(RSC_FILES
@@ -58,7 +58,7 @@ set(UI_FILES
     ui/ProgressDialog.ui
 	ui/StartUpDialog.ui
 )
-
-add_executable(${PROJECT_NAME} ${SRCS_FILES} ${RSC_FILES} ${UI_FILES} ${ParserSrc} ${GeneratorSrcs})
+qt5_add_translation(QM_FILES resources/french.ts resources/english.ts)
+add_executable(${PROJECT_NAME} ${SRCS_FILES} ${RSC_FILES} ${UI_FILES} ${ParserSrc} ${GeneratorSrcs} ${QM_FILES})
 target_link_libraries(${PROJECT_NAME} Qt::Widgets Qt::Core PTTK)
 target_include_directories(${PROJECT_NAME} PUBLIC ${GeneratorIncludeDir} ${ParserIncludeDir})

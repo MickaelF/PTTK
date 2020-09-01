@@ -43,11 +43,16 @@ public:
     QStringList uncheckedFileNames() const; 
     void checkEverything() const;
 
+protected:
+    void mouseReleaseEvent(QMouseEvent* e) override;
+    void changeEvent(QEvent* event) override; 
+
 private slots:
     void onEverythingPressed() const;
     void onNothingPressed() const;
 
-protected:
-    void mouseReleaseEvent(QMouseEvent* e) override;
+private:
+    void constructWidget();
+    QStringList m_fileNames; 
 
 };

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 
+#include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -18,6 +19,7 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
       m_programDataPath(programDataPath)
 {
     setupUi(this);
+    initLanguageMenu();
     QApplication::setFont(this->font());
     m_startDialog.setModal(true);
     m_programDataPath.append(iniFileName);
@@ -37,7 +39,11 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
         displayStartUpDialog();
 
     setupDisplayPrioritiesBox();
-    
+    if (m_ini.languageSelected().has_value())
+        loadLanguage(m_ini.languageSelected().value().c_str());
+    else
+        defaultLanguage();
+
     g_displayedFiles->setMenu(&m_fileNamesMenu);
 
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onOpenActionPressed);
@@ -59,11 +65,36 @@ void MainWindow::onLogGeneratorActionPressed()
     if (dialog.exec() == QDialog::Accepted && dialog.openInEditor()) open(dialog.path());
 }
 
-void MainWindow::mousePressEvent(QMouseEvent* event) 
+void MainWindow::mousePressEvent(QMouseEvent* event)
 {
     g_startDate->clearFocus();
     g_endDate->clearFocus();
     QMainWindow::mousePressEvent(event);
+}
+
+void MainWindow::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        menuFile->setTitle(tr("File"));
+        actionOpen->setText(tr("Open..."));
+        menuOpenRecently->setTitle(tr("Open recently"));
+        actionQuit->setText(tr("Quit"));
+        menuTools->setTitle(tr("Options"));
+        actionLogGenerator->setText(tr("Log Generator"));
+        menuLanguage->setTitle(tr("Language"));
+        actionFrench->setText(tr("French"));
+        actionEnglish->setText(tr("English"));
+        menuAbout->setTitle(tr("About"));
+        g_fromLabel->setText(tr("From"));
+        g_toLabel->setText(tr("To"));
+        g_displayedFiles->setText(tr("Displayed files"));
+        g_defaultBtn->setText(tr("Default"));
+        g_applyBtn->setText(tr("Apply"));
+
+    }
+    else
+        QWidget::changeEvent(event);
 }
 
 void MainWindow::onOpenActionPressed()
@@ -138,6 +169,17 @@ void MainWindow::onEndDateChanged(const QDateTime& dateTime)
     blockSignals(false);
 }
 
+void MainWindow::initLanguageMenu()
+{
+    auto languageGroup = new QActionGroup(menuLanguage);
+    languageGroup->addAction(actionFrench);
+    languageGroup->addAction(actionEnglish);
+    languageGroup->setExclusive(true);
+
+    connect(actionFrench, &QAction::triggered, [&]() { loadLanguage("French", true); });
+    connect(actionEnglish, &QAction::triggered, [&]() { loadLanguage("English", true); });
+}
+
 void MainWindow::displayStartUpDialog()
 {
     QStringList recents;
@@ -199,7 +241,7 @@ void MainWindow::open(const QString& path)
     setWindowTitle(QString(windowName.data()).arg(path));
 
     updateDate();
-    updateFileNames(); 
+    updateFileNames();
 
     g_sortOptions->setVisible(true);
 }
@@ -220,4 +262,28 @@ void MainWindow::updateDate()
 void MainWindow::updateFileNames()
 {
     m_fileNamesMenu.setFileNames(g_parsedLogWidget->fileNames());
+}
+
+void MainWindow::loadLanguage(const QString& language, bool needRestart)
+{
+    QApplication::removeTranslator(&m_translator);
+    for (auto& action : menuLanguage->actions()) action->setChecked(language == action->text());
+    m_ini.setSelectedLanguage(language.toStdString());
+    IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
+
+    if (!m_translator.load(language))
+        QMessageBox::critical(this, tr("Changing language"),
+                              tr("Could not load language translation file."));
+
+    QApplication::installTranslator(&m_translator);
+}
+
+void MainWindow::defaultLanguage()
+{
+    for (auto& action : menuLanguage->actions())
+        if (action->isChecked())
+        {
+            loadLanguage(action->text());
+            return;
+        }
 }
