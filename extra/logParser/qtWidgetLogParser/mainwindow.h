@@ -16,7 +16,7 @@ class MainWindow : public QMainWindow, public Ui_MainWindow
 {
     Q_OBJECT
 public:
-    MainWindow(const std::filesystem::path& programDataPath);
+    explicit MainWindow(const std::filesystem::path& programDataPath);
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;

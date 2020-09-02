@@ -6,7 +6,7 @@ class LogViewerHorizontalHeader : public QHeaderView
 {
 	Q_OBJECT
 public:
-	LogViewerHorizontalHeader(QWidget* parent = nullptr);
+	explicit LogViewerHorizontalHeader(QWidget* parent = nullptr);
 
 protected:
 	void mouseMoveEvent(QMouseEvent* event) override;

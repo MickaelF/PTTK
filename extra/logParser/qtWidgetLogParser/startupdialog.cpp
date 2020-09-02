@@ -49,7 +49,7 @@ void StartUpDialog::updateRecentComboBox(const QStringList& recents)
     }
     if (!g_recent->isEnabled()) g_recent->setEnabled(true);
     for (auto& recent : recents)
-        QAction* action = menu->addAction(recent, this, &StartUpDialog::onOpenRecentPressed);
+        menu->addAction(recent, this, &StartUpDialog::onOpenRecentPressed);
 }
 
 void StartUpDialog::changeEvent(QEvent* event)

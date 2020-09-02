@@ -9,7 +9,7 @@ class FileNamesActionWidget : public QWidgetAction
 {
     Q_OBJECT
 public:
-    FileNamesActionWidget(QObject* parent = nullptr) : QWidgetAction(parent) {}
+    explicit FileNamesActionWidget(QObject* parent = nullptr) : QWidgetAction(parent) {}
 
 protected:
     QWidget* createWidget(QWidget* parent) override
@@ -37,7 +37,7 @@ class FileNamesMenu : public QMenu
 {
     Q_OBJECT
 public:
-    FileNamesMenu(QWidget* parent = nullptr);
+    explicit FileNamesMenu(QWidget* parent = nullptr);
 
     void setFileNames(QStringList filenames);
     QStringList uncheckedFileNames() const; 

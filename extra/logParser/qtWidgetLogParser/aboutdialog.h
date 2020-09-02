@@ -7,7 +7,7 @@ class AboutDialog : public QDialog, public Ui_AboutDialog
 {
     Q_OBJECT
 public:
-    AboutDialog(QWidget* parent = nullptr);
+    explicit AboutDialog(QWidget* parent = nullptr);
 
 private slots: 
     void openGitHub() const; 

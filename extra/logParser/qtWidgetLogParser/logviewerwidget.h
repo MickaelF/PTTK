@@ -11,7 +11,7 @@ class LogViewerWidget : public QTableView
 {
 	Q_OBJECT
 public:
-	LogViewerWidget(QWidget* parent = nullptr);
+	explicit LogViewerWidget(QWidget* parent = nullptr);
 
 	void open(const QString& openPath);
     QDateTime firstDate() const; 

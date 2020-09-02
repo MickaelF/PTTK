@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     {
         args = std::make_unique<ParserArguments>(argc, argv);
     }
-    catch (std::exception e)
+    catch (std::exception& e)
     {
         lFatal << e.what();
         return -1;
@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
         parser = std::make_unique<ParserExecution>(*args);
         parser->exec();
     }
-    catch (std::exception e)
+    catch (std::exception& e)
     {
         lFatal << e.what();
         return -2;

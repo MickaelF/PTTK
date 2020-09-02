@@ -9,7 +9,7 @@ class LogFilterProxyModel : public QSortFilterProxyModel
 {
 	Q_OBJECT
 public:
-    LogFilterProxyModel(QObject* parent = nullptr);
+    explicit LogFilterProxyModel(QObject* parent = nullptr);
 	
 	void setStartDate(const std::optional<QDateTime>& date);
     void setEndDate(const std::optional<QDateTime>& date); 

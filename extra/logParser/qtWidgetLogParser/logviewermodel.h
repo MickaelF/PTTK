@@ -13,7 +13,7 @@ public:
         File,
         Data
     };
-    LogViewerModel(QObject* parent = nullptr);
+    explicit LogViewerModel(QObject* parent = nullptr);
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;

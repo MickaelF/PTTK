@@ -5,7 +5,7 @@
 class LogLineInfo
 {
 public: 
-	LogLineInfo(std::string_view line); 
+	explicit LogLineInfo(std::string_view line); 
 
 	std::string_view priority() const { return m_priority; }
     std::string_view fileName() const { return m_fileName; }

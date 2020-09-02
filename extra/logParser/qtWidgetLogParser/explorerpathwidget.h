@@ -10,7 +10,7 @@ public:
         ExistingFile, 
         ExistingFolder
     };
-    ExplorerPathWidget(QWidget* parent = nullptr); 
+    explicit ExplorerPathWidget(QWidget* parent = nullptr); 
     void setFileType(const QString& type);
     void setExplorerType(ExplorerType type);
     void setCaption(const QString& caption); 

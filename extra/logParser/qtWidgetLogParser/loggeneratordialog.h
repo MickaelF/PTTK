@@ -7,7 +7,7 @@ class LogGeneratorDialog : public QDialog, public Ui_LogGeneratorDialog
 {
 	Q_OBJECT
 public: 
-	LogGeneratorDialog(QWidget* parent = nullptr); 
+	explicit LogGeneratorDialog(QWidget* parent = nullptr); 
 	bool openInEditor() const { return g_open->isChecked(); }
     const QString& path() const { return m_path; }
 

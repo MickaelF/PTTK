@@ -8,7 +8,7 @@ class StartUpDialog : public QDialog, public Ui_StartUpDialog
 {
     Q_OBJECT
 public:
-    StartUpDialog(QWidget* parent = nullptr);
+    explicit StartUpDialog(QWidget* parent = nullptr);
     const QString& pathOpened() const { return m_pathOpened; }
     void updateRecentComboBox(const QStringList& recents);
 
