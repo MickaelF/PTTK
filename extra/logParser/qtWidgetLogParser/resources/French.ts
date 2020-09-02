@@ -11,7 +11,7 @@
     <message>
         <location filename="../ui/AboutDialog.ui" line="80"/>
         <source>PTTK Log Viewer</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/AboutDialog.ui" line="96"/>
@@ -70,7 +70,7 @@ Cette application est distribuée sous la licence MIT. Les termes et conditions 
     <message>
         <location filename="../ui/LogGeneratorDialog.ui" line="14"/>
         <source>Log Generator</source>
-        <translation>Générateur de registre</translation>
+        <translation>Générateur de fichier d&apos;événements</translation>
     </message>
     <message>
         <location filename="../ui/LogGeneratorDialog.ui" line="44"/>
@@ -100,7 +100,7 @@ Cette application est distribuée sous la licence MIT. Les termes et conditions 
     <message>
         <location filename="../loggeneratordialog.cpp" line="31"/>
         <source>Generating log file...</source>
-        <translation>Génération du fichier de registre...</translation>
+        <translation>Génération du fichier d&apos;événements</translation>
     </message>
     <message>
         <location filename="../loggeneratordialog.cpp" line="39"/>
@@ -146,7 +146,7 @@ Cette application est distribuée sous la licence MIT. Les termes et conditions 
     <message>
         <location filename="../logviewerwidget.cpp" line="120"/>
         <source>Parsing log files...</source>
-        <translation>Analyse des fichiers de registre...</translation>
+        <translation>Analyse des fichiers d&apos;événements...</translation>
     </message>
 </context>
 <context>
@@ -241,7 +241,7 @@ Cette application est distribuée sous la licence MIT. Les termes et conditions 
         <location filename="../ui/MainWindow.ui" line="319"/>
         <location filename="../mainwindow.cpp" line="86"/>
         <source>Log Generator</source>
-        <translation>Générateur de registre</translation>
+        <translation>Générateur de fichiers d&apos;événements</translation>
     </message>
     <message>
         <location filename="../ui/MainWindow.ui" line="324"/>
@@ -257,7 +257,7 @@ Cette application est distribuée sous la licence MIT. Les termes et conditions 
     <message>
         <location filename="../mainwindow.cpp" line="103"/>
         <source>Open log folder</source>
-        <translation>Ouvrir un dossier de registres</translation>
+        <translation>Ouvrir un dossier d&apos;événements</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="113"/>
@@ -278,7 +278,7 @@ Cette application est distribuée sous la licence MIT. Les termes et conditions 
         <location filename="../mainwindow.cpp" line="241"/>
         <source>Could not open log file.
 Error : %1</source>
-        <translation>Impossible d&apos;ouvrir le fichier de registre. Erreur : %1</translation>
+        <translation>Impossible d&apos;ouvrir le fichier d&apos;événements. Erreur : %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="282"/>
@@ -321,7 +321,7 @@ Generate: Generate a dummy log file to experiment with the reader.</source>
         <location filename="../ui/StartUpDialog.ui" line="152"/>
         <location filename="../startupdialog.cpp" line="63"/>
         <source>Open: Select a folder containing logs to be read.</source>
-        <translation>Ouvrir : Choisir un dossier contenant les fichiers de registre à lire.</translation>
+        <translation>Ouvrir : Choisir un dossier contenant les fichiers d&apos;événements à lire.</translation>
     </message>
     <message>
         <location filename="../ui/StartUpDialog.ui" line="210"/>
@@ -333,7 +333,7 @@ Generate: Generate a dummy log file to experiment with the reader.</source>
         <location filename="../ui/StartUpDialog.ui" line="268"/>
         <location filename="../startupdialog.cpp" line="62"/>
         <source>Generate: Generate a dummy log file to experiment with the reader.</source>
-        <translation>Générer : Générer un fichier de registre par défault pour essayer l&apos;analyseur.</translation>
+        <translation>Générer : Générer un fichier d&apos;événements par défault pour essayer l&apos;analyseur.</translation>
     </message>
     <message>
         <location filename="../ui/StartUpDialog.ui" line="302"/>
