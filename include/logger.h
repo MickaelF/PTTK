@@ -1,4 +1,5 @@
 #pragma once
+#include <condition_variable>
 #include <filesystem>
 #include <fstream>
 #include <queue>
@@ -23,7 +24,7 @@ public:
     LogDataFile& operator=(const LogDataFile& data);
     LogDataFile& operator=(LogDataFile&& data);
 
-    void load(const std::filesystem::path& folder, bool createIfNotExisting = true); 
+    void load(const std::filesystem::path& folder, bool createIfNotExisting = true);
     void write() const;
     std::ofstream& stream();
     void incrementLineNumber(int nbNewLines);
@@ -57,14 +58,12 @@ public:
     template <bool SpecificDate>
     void appendLog(std::string_view str)
     {
+        std::unique_lock<std::mutex> lock(m_mutex);
         if constexpr (SpecificDate)
-            m_mainThreadLogQueue.push(m_specificDate + std::string(str));
+            m_logQueue.push(m_specificDate + std::string(str));
         else
-            m_mainThreadLogQueue.push(currentDate() + std::string(str));
+            m_logQueue.push(currentDate() + std::string(str));
     }
-
-    void waitForEmpty();
-
     void close();
 
     std::string currentDate();
@@ -74,10 +73,11 @@ public:
 private:
     void flush();
 
-    std::queue<std::string> m_mainThreadLogQueue;
     std::queue<std::string> m_logQueue;
     std::thread m_loggingThread;
     bool m_isRunning {true};
     LogDataFile m_data;
     std::string m_specificDate;
+    std::mutex m_mutex;
+    std::condition_variable m_condition;
 };

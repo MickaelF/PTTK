@@ -169,17 +169,10 @@ Logger::~Logger()
     close();
 }
 
-void Logger::waitForEmpty()
-{
-    using namespace std::chrono_literals;
-    while (!m_mainThreadLogQueue.empty() || !m_logQueue.empty())
-    { std::this_thread::sleep_for(10ms); }
-}
-
 void Logger::close()
 {
-    waitForEmpty();
     m_isRunning = false;
+    m_condition.notify_one();
     m_loggingThread.join();
 }
 
@@ -196,12 +189,12 @@ void Logger::setSpecificLogDate(const std::string& date)
 void Logger::flush()
 {
     using namespace std::chrono_literals;
-    constexpr auto waitDuration {500ms};
     while (m_isRunning)
     {
-        if (!m_mainThreadLogQueue.empty())
+        std::unique_lock<std::mutex> lock(m_mutex);
+        m_condition.wait_for(lock, 10s, [&] { return !m_logQueue.empty() || !m_isRunning; });
+        if (!m_logQueue.empty())
         {
-            m_logQueue.swap(m_mainThreadLogQueue);
             int nbNewLines = m_logQueue.size();
             while (!m_logQueue.empty())
             {
@@ -211,6 +204,5 @@ void Logger::flush()
             m_data.stream() << std::flush;
             m_data.incrementLineNumber(nbNewLines);
         }
-        std::this_thread::sleep_for(waitDuration);
     }
 }
