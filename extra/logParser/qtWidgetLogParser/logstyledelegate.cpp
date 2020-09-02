@@ -56,7 +56,7 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         auto text = index.data(Qt::DisplayRole).toString();
         auto textHeight =
             option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
-        if (textHeight >= m_cellHeight)
+        if (textHeight > m_cellHeight)
         {
             QRect rect {opt.rect.right() + 10, opt.rect.top() + static_cast<int>((opt.rect.height() - 30)* 0.5f), 30, 30};
             QString text {textHeight < option.rect.height() ? "-" : "+"};
