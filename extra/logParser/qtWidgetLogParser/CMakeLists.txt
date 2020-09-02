@@ -46,6 +46,8 @@ set(SRCS_FILES
     style.h
     filenamesmenu.h
     filenamesmenu.cpp
+	aboutdialog.cpp
+	aboutdialog.h
 )
 
 set(RSC_FILES

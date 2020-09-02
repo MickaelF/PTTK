@@ -33,6 +33,8 @@ private slots:
     void onStartDateChanged(const QDateTime& dateTime);
     void onEndDateChanged(const QDateTime& dateTime);
 
+    void onAboutPressed();
+
 private:
     void initLanguageMenu();
     void displayStartUpDialog();

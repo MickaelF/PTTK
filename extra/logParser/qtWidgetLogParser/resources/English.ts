@@ -2,6 +2,54 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en">
 <context>
+    <name>AboutDialog</name>
+    <message>
+        <location filename="../ui/AboutDialog.ui" line="32"/>
+        <source>About...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/AboutDialog.ui" line="80"/>
+        <source>PTTK Log Viewer</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/AboutDialog.ui" line="96"/>
+        <source>Text</source>
+        <translation>This application has been made to show my capacities as a desktop application maker and a Qt developer. &lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+
+
+As a part of PTTK (Potato Thunder Tool Kit), this software make PTTK produced logs readable in the best way possible. It also includes a log generator, to be able to test the application, if you don&apos;t have any project using PTTK. &lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+
+
+The log file are parsed and displayed in this application. It is also possible to filter the displayed result to only show some log types, log from some files or log that have been made between two dates. &lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+
+
+The whole application has been made by &lt;a href=&quot;http://mickael-fleurus.com&quot;&gt;Mickaël Fleurus&lt;/a&gt;, with a lot of help on design by&lt;a href=&quot;http://lea-dallazanna.com&quot;&gt;Léa Dalla Zanna&lt;/a&gt;. Be sure to visit my website if you want to know more about us. &lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+
+
+If you find any issue with this software (crash, bug, slowness, error in translation...), don&apos;t hesitate to contact through my website or by creating an issue directly on the &lt;a href=&quot;https://github.com/MickaelF/PTTK&quot;&gt;GitHub repository&lt;/a&gt; for this project. &lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+
+
+This software is provided under the MIT License. Term and conditions can be found in file LICENSE.md.</translation>
+    </message>
+    <message>
+        <location filename="../ui/AboutDialog.ui" line="133"/>
+        <source>Visit website</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/AboutDialog.ui" line="140"/>
+        <source>Visit GitHub repo</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/AboutDialog.ui" line="147"/>
+        <source>Close</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>FileNamesActionWidget</name>
     <message>
         <location filename="../filenamesmenu.h" line="19"/>
@@ -102,7 +150,7 @@
     <name>MainWindow</name>
     <message>
         <location filename="../ui/MainWindow.ui" line="74"/>
-        <location filename="../mainwindow.cpp" line="89"/>
+        <location filename="../mainwindow.cpp" line="90"/>
         <source>From</source>
         <translation></translation>
     </message>
@@ -114,123 +162,122 @@
     </message>
     <message>
         <location filename="../ui/MainWindow.ui" line="100"/>
-        <location filename="../mainwindow.cpp" line="90"/>
+        <location filename="../mainwindow.cpp" line="91"/>
         <source>To</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ui/MainWindow.ui" line="133"/>
-        <location filename="../mainwindow.cpp" line="91"/>
+        <location filename="../mainwindow.cpp" line="92"/>
         <source>Displayed files</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ui/MainWindow.ui" line="164"/>
-        <location filename="../mainwindow.cpp" line="92"/>
+        <location filename="../mainwindow.cpp" line="93"/>
         <source>Default</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ui/MainWindow.ui" line="186"/>
-        <location filename="../mainwindow.cpp" line="93"/>
+        <location filename="../mainwindow.cpp" line="94"/>
         <source>Apply</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ui/MainWindow.ui" line="283"/>
-        <location filename="../mainwindow.cpp" line="79"/>
+        <location filename="../mainwindow.cpp" line="81"/>
         <source>File</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ui/MainWindow.ui" line="287"/>
-        <location filename="../mainwindow.cpp" line="81"/>
+        <location filename="../mainwindow.cpp" line="83"/>
         <source>Open recently</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ui/MainWindow.ui" line="297"/>
-        <location filename="../mainwindow.cpp" line="83"/>
+        <location filename="../mainwindow.cpp" line="85"/>
         <source>Options</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ui/MainWindow.ui" line="301"/>
-        <location filename="../mainwindow.cpp" line="85"/>
+        <location filename="../mainwindow.cpp" line="87"/>
         <source>Language</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/MainWindow.ui" line="338"/>
-        <location filename="../mainwindow.cpp" line="86"/>
+        <location filename="../ui/MainWindow.ui" line="332"/>
+        <location filename="../mainwindow.cpp" line="88"/>
         <source>French</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/MainWindow.ui" line="349"/>
-        <location filename="../mainwindow.cpp" line="87"/>
+        <location filename="../ui/MainWindow.ui" line="343"/>
+        <location filename="../mainwindow.cpp" line="89"/>
         <source>English</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/MainWindow.ui" line="311"/>
-        <location filename="../mainwindow.cpp" line="88"/>
-        <source>About</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/MainWindow.ui" line="320"/>
-        <location filename="../mainwindow.cpp" line="80"/>
+        <location filename="../ui/MainWindow.ui" line="314"/>
+        <location filename="../mainwindow.cpp" line="82"/>
         <source>Open...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/MainWindow.ui" line="325"/>
-        <location filename="../mainwindow.cpp" line="84"/>
+        <location filename="../ui/MainWindow.ui" line="319"/>
+        <location filename="../mainwindow.cpp" line="86"/>
         <source>Log Generator</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/MainWindow.ui" line="330"/>
-        <location filename="../mainwindow.cpp" line="82"/>
+        <location filename="../ui/MainWindow.ui" line="324"/>
+        <location filename="../mainwindow.cpp" line="84"/>
         <source>Quit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="102"/>
+        <location filename="../mainwindow.cpp" line="23"/>
+        <source>About...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="103"/>
         <source>Open log folder</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="112"/>
+        <location filename="../mainwindow.cpp" line="113"/>
         <source>Folder not found</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="113"/>
+        <location filename="../mainwindow.cpp" line="114"/>
         <source>The selected folder could not be found.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="233"/>
+        <location filename="../mainwindow.cpp" line="240"/>
         <source>Parser error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="234"/>
+        <location filename="../mainwindow.cpp" line="241"/>
         <source>Could not open log file.
 Error : %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="275"/>
+        <location filename="../mainwindow.cpp" line="282"/>
         <source>Changing language</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="276"/>
+        <location filename="../mainwindow.cpp" line="283"/>
         <source>Could not load language translation file.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -241,42 +288,42 @@ Error : %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/StartUpDialog.ui" line="80"/>
+        <location filename="../ui/StartUpDialog.ui" line="86"/>
         <source>PTTK Logs Reader</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/StartUpDialog.ui" line="146"/>
+        <location filename="../ui/StartUpDialog.ui" line="152"/>
         <location filename="../startupdialog.cpp" line="63"/>
         <source>Open: Select a folder containing logs to be read.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../ui/StartUpDialog.ui" line="193"/>
+        <location filename="../ui/StartUpDialog.ui" line="210"/>
         <location filename="../startupdialog.cpp" line="64"/>
         <source>Recent: Open an previously opened folder.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../ui/StartUpDialog.ui" line="240"/>
+        <location filename="../ui/StartUpDialog.ui" line="268"/>
         <location filename="../startupdialog.cpp" line="62"/>
         <source>Generate: Generate a dummy log file to experiment with the reader.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../ui/StartUpDialog.ui" line="274"/>
+        <location filename="../ui/StartUpDialog.ui" line="302"/>
         <location filename="../startupdialog.cpp" line="59"/>
         <source>Generate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/StartUpDialog.ui" line="304"/>
+        <location filename="../ui/StartUpDialog.ui" line="332"/>
         <location filename="../startupdialog.cpp" line="60"/>
         <source>Recent</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/StartUpDialog.ui" line="585"/>
+        <location filename="../ui/StartUpDialog.ui" line="613"/>
         <location filename="../startupdialog.cpp" line="61"/>
         <source>Open</source>
         <translation></translation>

@@ -7,6 +7,7 @@
 #include "inifile.h"
 #include "loggeneratordialog.h"
 #include "prioritylabelfactory.h"
+#include "aboutdialog.h"
 
 namespace
 {
@@ -19,6 +20,7 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
       m_programDataPath(programDataPath)
 {
     setupUi(this);
+    menubar->addAction(tr("About..."), [&] { onAboutPressed(); });
     initLanguageMenu();
     QApplication::setFont(this->font());
     m_startDialog.setModal(true);
@@ -85,7 +87,6 @@ void MainWindow::changeEvent(QEvent* event)
         menuLanguage->setTitle(tr("Language"));
         actionFrench->setText(tr("French"));
         actionEnglish->setText(tr("English"));
-        menuAbout->setTitle(tr("About"));
         g_fromLabel->setText(tr("From"));
         g_toLabel->setText(tr("To"));
         g_displayedFiles->setText(tr("Displayed files"));
@@ -167,6 +168,12 @@ void MainWindow::onEndDateChanged(const QDateTime& dateTime)
     blockSignals(true);
     g_startDate->setDateTime(dateTime.addSecs(-1));
     blockSignals(false);
+}
+
+void MainWindow::onAboutPressed() 
+{
+    AboutDialog dialog; 
+    dialog.exec();
 }
 
 void MainWindow::initLanguageMenu()

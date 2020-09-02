@@ -306,14 +306,8 @@
     <addaction name="actionLogGenerator"/>
     <addaction name="menuLanguage"/>
    </widget>
-   <widget class="QMenu" name="menuAbout">
-    <property name="title">
-     <string>About</string>
-    </property>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
-   <addaction name="menuAbout"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
