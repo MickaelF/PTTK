@@ -1,4 +1,4 @@
-#include "..\include\numbergenerator.h"
+#include "numbergenerator.h"
 
 NumberGenerator& NumberGenerator::get()
 {

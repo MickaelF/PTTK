@@ -1,9 +1,9 @@
-#include "path.h"
+#include "pttkpath.h"
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
     #include <ShlObj.h>
 #endif
-namespace path
+namespace pttkPath
 {
 std::filesystem::path getDataPath(std::string_view executableName, std::string_view companyName)
 {

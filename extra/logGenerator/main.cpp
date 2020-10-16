@@ -8,7 +8,7 @@ constexpr std::string_view companyName {"PotatoThunder"};
 
 int main(int argc, char* argv[])
 {
-    Logger logger(path::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName));
+    Logger logger(pttkPath::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName));
     BasicLog::setLogger(logger);
     std::unique_ptr<GeneratorArguments> arguments {nullptr};
 	try

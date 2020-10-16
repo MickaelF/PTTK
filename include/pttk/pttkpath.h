@@ -3,7 +3,7 @@
 #include <string_view>
 
 
-namespace path
+namespace pttkPath
 {
 std::filesystem::path getDataPath(std::string_view executableName, std::string_view companyName);
 }

@@ -13,7 +13,7 @@ constexpr std::string_view companyName{ "PotatoThunder" };
 int main(int argc, char* argv[])
 {
     const auto dataPath {
-        path::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName)};
+        pttkPath::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName)};
     Logger logger(dataPath);
     BasicLog::setLogger(logger);
     lInfo << "Starting application"; 
