@@ -7,14 +7,14 @@ project(${LIB_NAME})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(PTTK_SRC 
+set(PTTK_SRC
     src/logger.cpp
     src/stringtools.cpp
     include/pttk/executiontimer.h
     include/pttk/log.h
     include/pttk/logger.h
     include/pttk/macro.h
-    include/pttk/stringtools.h 
+    include/pttk/stringtools.h
     src/numbergenerator.cpp
     include/pttk/iprogress.h
 	include/pttk/file/abstractinidefinition.h
@@ -23,7 +23,7 @@ set(PTTK_SRC
 	src/file/plaintextfile.cpp
 	src/pttkpath.cpp
 	include/pttk/contiguousarray.h
-	include/pttk/logpriority.h	
+	include/pttk/logpriority.h
 )
 
 option(PTTK_BUILD_CMD_LOG_PARSER "Build the PTTK Log parser command line executable" ON)
@@ -32,7 +32,7 @@ option(PTTK_BUILD_QT_WIDGET_LOG_PARSER "Build the PTTK Log parser with Qt Widget
 
 if (NOT ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
     set(PTTK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include/ PARENT_SCOPE)
-else()    
+else()
     set (PTTK_BUILD_CMD_LOG_PARSER OFF)
     set (PTTK_BUILD_LOG_GENERATOR OFF)
     set (PTTK_BUILD_QT_WIDGET_LOG_PARSER ON)
@@ -40,6 +40,12 @@ endif()
 
 add_library(${LIB_NAME} ${PTTK_SRC})
 target_include_directories(${LIB_NAME} PUBLIC include/pttk include/pttk/file)
+
+install(TARGETS ${LIB_NAME} DESTINATION lib)
+file (GLOB HEADERS include/pttk/*.h)
+install(FILES ${HEADERS} DESTINATION include/pttk)
+file (GLOB HEADERS_FILE include/pttk/file/*.h)
+install(FILES ${HEADERS_FILE} DESTINATION include/pttk/file)
 
 if(PTTK_BUILD_CMD_LOG_PARSER) 
     add_subdirectory(extra/logParser/CmdLogParser)
