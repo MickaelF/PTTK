@@ -1,14 +1,15 @@
 #include <QApplication>
-#include <QStyleFactory>
 #include <QMessageBox>
+#include <QStyleFactory>
 #include <QTranslator>
-#include "mainwindow.h"
-#include "logger.h"
+
 #include "log.h"
-#include "path.h"
+#include "logger.h"
+#include "mainwindow.h"
+#include "pttkpath.h"
 #include "style.h"
 
-constexpr std::string_view companyName{ "PotatoThunder" };
+constexpr std::string_view companyName {"PotatoThunder"};
 
 int main(int argc, char* argv[])
 {
@@ -16,7 +17,7 @@ int main(int argc, char* argv[])
         pttkPath::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName)};
     Logger logger(dataPath);
     BasicLog::setLogger(logger);
-    lInfo << "Starting application"; 
+    lInfo << "Starting application";
     QApplication app(argc, argv);
     app.setStyle(QStyleFactory::create("Fusion"));
     app.setStyleSheet(AppStyle::stylesheet);
@@ -31,8 +32,9 @@ int main(int argc, char* argv[])
     catch (std::exception& e)
     {
         lFatal << e.what();
-        QMessageBox::critical(nullptr, "Fatal error",
-                              QString("An unhandled error made the application crash : %1").arg(e.what()));
+        QMessageBox::critical(
+            nullptr, "Fatal error",
+            QString("An unhandled error made the application crash : %1").arg(e.what()));
         execRet = -1;
     }
     lInfo << "End execution";
