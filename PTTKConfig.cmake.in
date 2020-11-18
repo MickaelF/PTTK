@@ -1,0 +1,17 @@
+# - Config file for the PTTK package
+# It defines the following variables
+#  PTTK_INCLUDE_DIRS - include directories for FooBar
+#  PTTK_LIBRARIES    - libraries to link against
+# This file is a template found on page https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-to-create-a-ProjectConfig.cmake-file
+
+# Compute paths
+get_filename_component(PTTK_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(PTTK_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET PTTK)
+  include("${PTTK_CMAKE_DIR}/PTTKTargets.cmake")
+endif()
+
+# These are IMPORTED targets created by PTTKTargets.cmake
+set(PTTK_LIBRARIES PTTK)
