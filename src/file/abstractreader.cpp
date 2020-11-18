@@ -1,4 +1,4 @@
-#include "abstractreader.h"
+#include "pttk/file/abstractreader.h"
 
 AbstractReader::~AbstractReader()
 {

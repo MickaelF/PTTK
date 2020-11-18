@@ -30,22 +30,22 @@ option(PTTK_BUILD_CMD_LOG_PARSER "Build the PTTK Log parser command line executa
 option(PTTK_BUILD_LOG_GENERATOR "Build the PTTK Log generator (for parser tests)" OFF)
 option(PTTK_BUILD_QT_WIDGET_LOG_PARSER "Build the PTTK Log parser with Qt Widget GUI executable" OFF)
 
-if (NOT ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-    set(PTTK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include/ PARENT_SCOPE)
-else()
-    set (PTTK_BUILD_CMD_LOG_PARSER OFF)
-    set (PTTK_BUILD_LOG_GENERATOR OFF)
-    set (PTTK_BUILD_QT_WIDGET_LOG_PARSER ON)
-endif()
+set (PTTK_BUILD_CMD_LOG_PARSER OFF)
+set (PTTK_BUILD_LOG_GENERATOR OFF)
+set (PTTK_BUILD_QT_WIDGET_LOG_PARSER OFF)
 
 add_library(${LIB_NAME} ${PTTK_SRC})
-target_include_directories(${LIB_NAME} PUBLIC include/pttk include/pttk/file)
+target_include_directories(${LIB_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:/include>
+    )
 
-install(TARGETS ${LIB_NAME} DESTINATION lib)
-file (GLOB HEADERS include/pttk/*.h)
-install(FILES ${HEADERS} DESTINATION include/pttk)
-file (GLOB HEADERS_FILE include/pttk/file/*.h)
-install(FILES ${HEADERS_FILE} DESTINATION include/pttk/file)
+install(TARGETS ${LIB_NAME} EXPORT ${LIB_NAME}_target LIBRARY)
+install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
+install(EXPORT ${LIB_NAME}_target
+        FILE PTTK.cmake
+        EXPORT_LINK_INTERFACE_LIBRARIES
+        DESTINATION lib/cmake)
 
 if(PTTK_BUILD_CMD_LOG_PARSER) 
     add_subdirectory(extra/logParser/CmdLogParser)

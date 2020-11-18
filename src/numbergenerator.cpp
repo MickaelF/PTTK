@@ -1,9 +1,9 @@
-#include "numbergenerator.h"
+#include "pttk/numbergenerator.h"
 
 NumberGenerator& NumberGenerator::get()
 {
-    static NumberGenerator instance; 
-    return instance; 
+    static NumberGenerator instance;
+    return instance;
 }
 
-NumberGenerator::NumberGenerator(): m_numberGenerator(m_randomDevice()) {}
+NumberGenerator::NumberGenerator() : m_numberGenerator(m_randomDevice()) {}

@@ -1,4 +1,4 @@
-#include "pttkpath.h"
+#include "pttk/pttkpath.h"
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
     #include <ShlObj.h>
@@ -18,4 +18,4 @@ std::filesystem::path getDataPath(std::string_view executableName, std::string_v
         std::filesystem::create_directories(programDataPath);
     return programDataPath;
 }
-} // namespace path
+} // namespace pttkPath
