@@ -8,6 +8,7 @@
 #include "logger.h"
 #include "macro.h"
 #include "logpriority.h"
+#include "pttkpath.h"
 
 template <bool Console, bool Generator>
 class Log
@@ -100,7 +101,14 @@ public:
         m_stream << message;
         return *this;
     }
+    static void setupAsDefault(std::string_view execName, std::string_view companyName) 
+    {
+        const auto dataPath {
+        pttkPath::getDataPath(execName, companyName)};
 
+        static Logger logger(dataPath);
+        setLogger(logger);
+    }
     static void setLogger(Logger& logger) { m_logger = &logger; }
 
 private:
