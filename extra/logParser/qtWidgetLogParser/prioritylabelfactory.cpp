@@ -1,8 +1,8 @@
 #include "prioritylabelfactory.h"
 
-#include <QPainter>
+#include <pttk/logpriority.h>
 
-#include "logpriority.h"
+#include <QPainter>
 namespace
 {
 QColor priorityColor(const QString& priority)
@@ -27,7 +27,8 @@ QColor priorityColor(const QString& priority)
 
 } // namespace
 
-PriorityLabel* PriorityLabelFactory::makePriorityLabel(const QString& name, const QSize& size,
+PriorityLabel* PriorityLabelFactory::makePriorityLabel(const QString& name,
+                                                       const QSize& size,
                                                        QWidget* parent)
 {
     auto* label = new PriorityLabel(priorityColor(name), name, parent);
@@ -36,7 +37,8 @@ PriorityLabel* PriorityLabelFactory::makePriorityLabel(const QString& name, cons
     return label;
 }
 
-PriorityLabel::PriorityLabel(const QColor& backgroundColor, const QString& text, QWidget* parent)
+PriorityLabel::PriorityLabel(const QColor& backgroundColor, const QString& text,
+                             QWidget* parent)
     : QLabel(text, parent),
       m_backgroundColor(backgroundColor)
 {
@@ -60,7 +62,8 @@ void PriorityLabel::paintEvent(QPaintEvent* event)
 {
     QPainter painter {this};
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(QBrush(m_isSelected ? m_backgroundColor : m_unselectedColor));
+    painter.setBrush(
+        QBrush(m_isSelected ? m_backgroundColor : m_unselectedColor));
     painter.drawRoundedRect(rect(), 20, 20);
     QLabel::paintEvent(event);
 }

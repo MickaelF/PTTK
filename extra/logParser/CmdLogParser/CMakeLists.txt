@@ -1,6 +1,10 @@
-include ("${CMAKE_SOURCE_DIR}/parserSrcs.cmake")
-
 set(PROJECT_NAME CmdLogParser)
+
+set(ParserSrc
+    ${CMAKE_SOURCE_DIR}/extra/logParser/loglineinfo.cpp
+    ${CMAKE_SOURCE_DIR}/extra/logParser/logparser.cpp)
+
+set(ParserIncludeDir ${CMAKE_SOURCE_DIR}/extra/logParser/)
 
 project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 20)

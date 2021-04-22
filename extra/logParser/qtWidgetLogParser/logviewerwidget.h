@@ -9,34 +9,34 @@ class LogFilterProxyModel;
 
 class LogViewerWidget : public QTableView
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit LogViewerWidget(QWidget* parent = nullptr);
+    explicit LogViewerWidget(QWidget* parent = nullptr);
 
-	void open(const QString& openPath);
-    QDateTime firstDate() const; 
-	QDateTime lastDate() const; 
-	QStringList fileNames() const; 
+    void open(const QString& openPath);
+    QDateTime firstDate() const;
+    QDateTime lastDate() const;
+    QStringList fileNames() const;
 
-	void setFilterStartDate(const QDateTime& date) const; 
-	void setFilterEndDate(const QDateTime& date) const;
-    void setFilteredPriorities(const QStringList& priorities) const; 
-	void setFilteredFileNames(const QStringList& priorities) const; 
-    void updateFilter() const; 
+    void setFilterStartDate(const QDateTime& date) const;
+    void setFilterEndDate(const QDateTime& date) const;
+    void setFilteredPriorities(const QStringList& priorities) const;
+    void setFilteredFileNames(const QStringList& priorities) const;
+    void updateFilter() const;
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override; 
+    void mouseMoveEvent(QMouseEvent* event) override;
 
-private slots: 
-	void onResizeRow(int index, int height);
+private slots:
+    void onResizeRow(int index, int height);
 
 private:
-	void launchParsing();
+    void launchParsing();
 
-	LogViewerModel m_model;
+    LogViewerModel m_model;
     LogFilterProxyModel* m_sortFilter {nullptr};
-	LogParser m_parser;
-    LogStyleDelegate m_styleDelegate; 
-	std::filesystem::directory_entry m_fileIt;
+    LogParser m_parser;
+    LogStyleDelegate m_styleDelegate;
+    std::filesystem::directory_entry m_fileIt;
 };

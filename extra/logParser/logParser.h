@@ -1,4 +1,7 @@
 #pragma once
+#include <pttk/iprogress.h>
+#include <pttk/logger.h>
+
 #include <ctime>
 #include <fstream>
 #include <functional>
@@ -7,9 +10,6 @@
 #include <optional>
 #include <string>
 #include <vector>
-
-#include "iprogress.h"
-#include "logger.h"
 class LogLineInfo;
 
 enum class LogSort
@@ -27,16 +27,18 @@ public:
     void setInputPath(const std::filesystem::path& folder);
 
     void setSortType(LogSort sort);
-    std::function<std::string_view(const LogLineInfo& info)> createRetrieveFunc() const;
+    std::function<std::string_view(const LogLineInfo& info)>
+    createRetrieveFunc() const;
 
     std::map<std::string, std::vector<std::string>> exec();
     void execToFilesNoParam(const std::string& outPath);
     void execToVector(std::promise<std::vector<std::string>>&& p);
 
-    void createComparaisonFunctions(const std::optional<std::vector<std::string>>& priorities,
-                                    const std::optional<std::time_t>& startDate,
-                                    const std::optional<std::time_t>& endDate,
-                                    const std::optional<std::vector<std::string>>& fileName);
+    void createComparaisonFunctions(
+        const std::optional<std::vector<std::string>>& priorities,
+        const std::optional<std::time_t>& startDate,
+        const std::optional<std::time_t>& endDate,
+        const std::optional<std::vector<std::string>>& fileName);
     int progress() const override { return m_progress; }
     int numberOfLines() const { return m_logData.totalNumberOfLines(); }
 

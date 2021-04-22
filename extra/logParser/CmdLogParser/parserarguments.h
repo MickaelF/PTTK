@@ -17,13 +17,13 @@ public:
     const std::string& output() const { return m_outputFile; }
     const std::optional<std::time_t>& startDate() const { return m_startDate; }
     const std::optional<std::time_t>& endDate() const { return m_endDate; }
-    
+
     const std::optional<std::vector<std::string>>& fileNames() const { return m_fileNames; }
     const std::optional<std::vector<std::string>>& priorities() const { return m_parsedPriorities; }
     const std::optional<LogSort>& sort() const { return m_sort; }
 
 private:
-    void pushPriorities(std::string_view p); 
+    void pushPriorities(std::string_view p);
     void displayHelp();
     void setFileNames(const std::string& fileNames);
 

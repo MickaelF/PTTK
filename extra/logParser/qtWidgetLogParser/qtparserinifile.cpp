@@ -1,8 +1,8 @@
 #include "qtparserinifile.h"
 
-#include <sstream>
+#include <pttk/stringtools.h>
 
-#include "stringtools.h"
+#include <sstream>
 
 namespace
 {
@@ -28,7 +28,8 @@ QtParserIniFile::QtParserIniFile(QtParserIniFile&& other) noexcept
     other.m_selectedLanguage.reset();
 }
 
-QtParserIniFile& QtParserIniFile::operator=(const QtParserIniFile& other) noexcept
+QtParserIniFile& QtParserIniFile::operator=(
+    const QtParserIniFile& other) noexcept
 {
     m_lastOpenedFolder = other.m_lastOpenedFolder;
     m_previousFolders = other.m_previousFolders;
@@ -49,13 +50,15 @@ QtParserIniFile& QtParserIniFile::operator=(QtParserIniFile&& other) noexcept
 
 bool QtParserIniFile::contains(std::string_view name) const
 {
-    return name == PreviousOpenedFolder || name == LastOpenedFolder || name == SelectedLanguage;
+    return name == PreviousOpenedFolder || name == LastOpenedFolder ||
+           name == SelectedLanguage;
 }
 
 void QtParserIniFile::initValue(std::string_view name, std::string_view value)
 {
     if (name == PreviousOpenedFolder)
-        for (auto& folder : strTls::split(std::string(value), ';')) m_previousFolders.push(folder);
+        for (auto& folder : strTls::split(std::string(value), ';'))
+            m_previousFolders.push(folder);
     else if (name == LastOpenedFolder)
         m_lastOpenedFolder = value;
     else if (name == SelectedLanguage)
@@ -70,8 +73,10 @@ std::vector<std::pair<std::string, std::string>> QtParserIniFile::values() const
     for (const auto& val : m_previousFolders)
         if (val.has_value()) stream << *val << ";";
     values.emplace_back(PreviousOpenedFolder, stream.str());
-    if (m_lastOpenedFolder.has_value()) values.emplace_back(LastOpenedFolder, *m_lastOpenedFolder);
-    if (m_selectedLanguage.has_value()) values.emplace_back(SelectedLanguage, *m_selectedLanguage);
+    if (m_lastOpenedFolder.has_value())
+        values.emplace_back(LastOpenedFolder, *m_lastOpenedFolder);
+    if (m_selectedLanguage.has_value())
+        values.emplace_back(SelectedLanguage, *m_selectedLanguage);
     return values;
 }
 
@@ -97,7 +102,8 @@ bool QtParserIniFile::setLastOpenedFolder(const std::string& folder)
 
 void QtParserIniFile::setSelectedLanguage(const std::string& language)
 {
-    if (m_selectedLanguage.has_value() && m_selectedLanguage == language) return;
+    if (m_selectedLanguage.has_value() && m_selectedLanguage == language)
+        return;
 
     m_selectedLanguage = language;
 }

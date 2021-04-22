@@ -1,11 +1,12 @@
 #include "logviewerwidget.h"
 
+#include <pttk/log.h>
+
 #include <QApplication>
 #include <QDateTime>
 #include <QMouseEvent>
 #include <QSortFilterProxyModel>
 
-#include "log.h"
 #include "logParser.h"
 #include "logfilterproxymodel.h"
 #include "loglineinfo.h"
@@ -51,8 +52,11 @@ LogViewerWidget::LogViewerWidget(QWidget* parent)
     setMouseTracking(true);
 
     connect(hHeader, &LogViewerHorizontalHeader::sortByColumn,
-            [&](int section, Qt::SortOrder order) { sortByColumn(section, order); });
-    connect(&m_styleDelegate, &LogStyleDelegate::resizeRow, this, &LogViewerWidget::onResizeRow);
+            [&](int section, Qt::SortOrder order) {
+                sortByColumn(section, order);
+            });
+    connect(&m_styleDelegate, &LogStyleDelegate::resizeRow, this,
+            &LogViewerWidget::onResizeRow);
 }
 
 void LogViewerWidget::open(const QString& openPath)
@@ -117,10 +121,12 @@ void LogViewerWidget::mouseMoveEvent(QMouseEvent* event)
 
 void LogViewerWidget::launchParsing()
 {
-    ProgressDialog progress(tr("Parsing log files..."), 0, m_parser.numberOfLines(), m_parser);
+    ProgressDialog progress(tr("Parsing log files..."), 0,
+                            m_parser.numberOfLines(), m_parser);
     std::promise<std::vector<std::string>> p;
     auto f = p.get_future();
-    std::thread thread = std::thread {&LogParser::execToVector, &m_parser, std::move(p)};
+    std::thread thread =
+        std::thread {&LogParser::execToVector, &m_parser, std::move(p)};
     progress.start();
     thread.join();
     m_model.setLogData(f.get());

@@ -1,12 +1,13 @@
 #pragma once
 
+#include <pttk/logpriority.h>
+
 #include <QMainWindow>
 #include <QTemporaryDir>
 #include <QTranslator>
 #include <filesystem>
 
 #include "filenamesmenu.h"
-#include "logpriority.h"
 #include "qtparserinifile.h"
 #include "startupdialog.h"
 #include "ui_MainWindow.h"
@@ -20,7 +21,7 @@ public:
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
-    void changeEvent(QEvent* event) override; 
+    void changeEvent(QEvent* event) override;
 
 private slots:
     void onLogGeneratorActionPressed();
@@ -51,5 +52,5 @@ private:
     std::filesystem::path m_programDataPath;
     QMap<LogPriority::Priorities, PriorityLabel*> m_prioritySelection;
     FileNamesMenu m_fileNamesMenu;
-    QTranslator m_translator; 
+    QTranslator m_translator;
 };

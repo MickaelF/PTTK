@@ -1,10 +1,11 @@
 #include "progressdialog.h"
 
-#include "iprogress.h"
-#include "log.h"
+#include <pttk/iprogress.h>
+#include <pttk/log.h>
 
-ProgressDialog::ProgressDialog(const QString& title, int min, int max, const IProgress& progress):
-    m_progress(progress)
+ProgressDialog::ProgressDialog(const QString& title, int min, int max,
+                               const IProgress& progress)
+    : m_progress(progress)
 {
     m_progressDialog.setWindowFlags(Qt::WindowTitleHint);
     using namespace std::chrono_literals;
@@ -30,4 +31,3 @@ void ProgressDialog::onTimerKicked()
 {
     m_progressDialog.setValue(m_progress.progress());
 }
-

@@ -1,14 +1,16 @@
+#include <pttk/log.h>
+#include <pttk/logger.h>
+#include <pttk/pttkpath.h>
+
 #include "parserarguments.h"
 #include "parserexecution.h"
-#include "logger.h"
-#include "log.h"
-#include "path.h"
 
 constexpr std::string_view companyName {"PotatoThunder"};
 
 int main(int argc, char* argv[])
 {
-    Logger logger(pttkPath::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName));
+    Logger logger(pttkPath::getDataPath(
+        std::filesystem::path(argv[0]).stem().string(), companyName));
     BasicLog::setLogger(logger);
     std::unique_ptr<ParserArguments> args {nullptr};
     try

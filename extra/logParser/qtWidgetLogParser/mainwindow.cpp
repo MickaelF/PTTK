@@ -1,13 +1,14 @@
 #include "mainwindow.h"
 
+#include <pttk/file/inifile.h>
+
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "inifile.h"
+#include "aboutdialog.h"
 #include "loggeneratordialog.h"
 #include "prioritylabelfactory.h"
-#include "aboutdialog.h"
 
 namespace
 {
@@ -27,7 +28,8 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
     m_programDataPath.append(iniFileName);
     if (std::filesystem::exists(m_programDataPath))
     {
-        auto ini = IniFile().readIni<QtParserIniFile>(m_programDataPath.string());
+        auto ini =
+            IniFile().readIni<QtParserIniFile>(m_programDataPath.string());
         if (ini.has_value())
         {
             m_ini = *ini;
@@ -35,7 +37,8 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
         }
     }
 
-    if (m_ini.lastFolder().has_value() && QDir(m_ini.lastFolder().value().c_str()).exists())
+    if (m_ini.lastFolder().has_value() &&
+        QDir(m_ini.lastFolder().value().c_str()).exists())
         open(m_ini.lastFolder().value().c_str());
     else
         displayStartUpDialog();
@@ -48,23 +51,30 @@ MainWindow::MainWindow(const std::filesystem::path& programDataPath)
 
     g_displayedFiles->setMenu(&m_fileNamesMenu);
 
-    connect(actionOpen, &QAction::triggered, this, &MainWindow::onOpenActionPressed);
+    connect(actionOpen, &QAction::triggered, this,
+            &MainWindow::onOpenActionPressed);
     connect(actionLogGenerator, &QAction::triggered, this,
             &MainWindow::onLogGeneratorActionPressed);
     connect(actionQuit, &QAction::triggered, [&]() { close(); });
-    connect(&m_startDialog, &QDialog::accepted, this, &MainWindow::onStartUpDialogAccepted);
+    connect(&m_startDialog, &QDialog::accepted, this,
+            &MainWindow::onStartUpDialogAccepted);
     connect(&m_startDialog, &QDialog::rejected, [&]() { close(); });
 
-    connect(g_startDate, &QDateTimeEdit::dateTimeChanged, this, &MainWindow::onStartDateChanged);
-    connect(g_endDate, &QDateTimeEdit::dateTimeChanged, this, &MainWindow::onEndDateChanged);
-    connect(g_applyBtn, &QPushButton::pressed, this, &MainWindow::onApplyPressed);
-    connect(g_defaultBtn, &QPushButton::pressed, this, &MainWindow::onDefaultPressed);
+    connect(g_startDate, &QDateTimeEdit::dateTimeChanged, this,
+            &MainWindow::onStartDateChanged);
+    connect(g_endDate, &QDateTimeEdit::dateTimeChanged, this,
+            &MainWindow::onEndDateChanged);
+    connect(g_applyBtn, &QPushButton::pressed, this,
+            &MainWindow::onApplyPressed);
+    connect(g_defaultBtn, &QPushButton::pressed, this,
+            &MainWindow::onDefaultPressed);
 }
 
 void MainWindow::onLogGeneratorActionPressed()
 {
     LogGeneratorDialog dialog;
-    if (dialog.exec() == QDialog::Accepted && dialog.openInEditor()) open(dialog.path());
+    if (dialog.exec() == QDialog::Accepted && dialog.openInEditor())
+        open(dialog.path());
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event)
@@ -92,7 +102,6 @@ void MainWindow::changeEvent(QEvent* event)
         g_displayedFiles->setText(tr("Displayed files"));
         g_defaultBtn->setText(tr("Default"));
         g_applyBtn->setText(tr("Apply"));
-
     }
     else
         QWidget::changeEvent(event);
@@ -135,10 +144,12 @@ void MainWindow::onApplyPressed()
 
     QStringList filteredPriorities;
     for (auto& priority : m_prioritySelection)
-        if (!priority->isSelected()) filteredPriorities.push_back(priority->text());
+        if (!priority->isSelected())
+            filteredPriorities.push_back(priority->text());
     g_parsedLogWidget->setFilteredPriorities(filteredPriorities);
 
-    g_parsedLogWidget->setFilteredFileNames(m_fileNamesMenu.uncheckedFileNames());
+    g_parsedLogWidget->setFilteredFileNames(
+        m_fileNamesMenu.uncheckedFileNames());
 
     g_parsedLogWidget->updateFilter();
     QApplication::restoreOverrideCursor();
@@ -170,9 +181,9 @@ void MainWindow::onEndDateChanged(const QDateTime& dateTime)
     blockSignals(false);
 }
 
-void MainWindow::onAboutPressed() 
+void MainWindow::onAboutPressed()
 {
-    AboutDialog dialog; 
+    AboutDialog dialog;
     dialog.exec();
 }
 
@@ -183,8 +194,10 @@ void MainWindow::initLanguageMenu()
     languageGroup->addAction(actionEnglish);
     languageGroup->setExclusive(true);
 
-    connect(actionFrench, &QAction::triggered, [&]() { loadLanguage("French", true); });
-    connect(actionEnglish, &QAction::triggered, [&]() { loadLanguage("English", true); });
+    connect(actionFrench, &QAction::triggered,
+            [&]() { loadLanguage("French", true); });
+    connect(actionEnglish, &QAction::triggered,
+            [&]() { loadLanguage("English", true); });
 }
 
 void MainWindow::displayStartUpDialog()
@@ -223,7 +236,8 @@ void MainWindow::updateOpenRecently()
         }
         QAction* action = new QAction(folder.value().c_str());
         menuOpenRecently->addAction(action);
-        connect(action, &QAction::triggered, this, &MainWindow::onOpenRecentlyPressed);
+        connect(action, &QAction::triggered, this,
+                &MainWindow::onOpenRecentlyPressed);
     }
 
     IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
@@ -237,8 +251,9 @@ void MainWindow::open(const QString& path)
     }
     catch (std::exception& e)
     {
-        QMessageBox::critical(this, tr("Parser error"),
-                              tr("Could not open log file.\nError : %1").arg(e.what()));
+        QMessageBox::critical(
+            this, tr("Parser error"),
+            tr("Could not open log file.\nError : %1").arg(e.what()));
         m_ini.removeFolder(path.toStdString());
         IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
         displayStartUpDialog();
@@ -274,7 +289,8 @@ void MainWindow::updateFileNames()
 void MainWindow::loadLanguage(const QString& language, bool needRestart)
 {
     QApplication::removeTranslator(&m_translator);
-    for (auto& action : menuLanguage->actions()) action->setChecked(language == action->text());
+    for (auto& action : menuLanguage->actions())
+        action->setChecked(language == action->text());
     m_ini.setSelectedLanguage(language.toStdString());
     IniFile().save<QtParserIniFile>(m_programDataPath.string(), m_ini);
 

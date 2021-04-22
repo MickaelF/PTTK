@@ -1,23 +1,26 @@
 #include "loggeneratordialog.h"
 
+#include <pttk/executiontimer.h>
+
 #include <QCheckBox>
 #include <QDateTime>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QStandardItemModel>
 
-#include "executiontimer.h"
 #include "loggenerator.h"
 #include "progressdialog.h"
 
 LogGeneratorDialog::LogGeneratorDialog(QWidget* parent) : QDialog(parent)
 {
     setupUi(this);
-    setWindowFlags(Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
+    setWindowFlags(Qt::WindowSystemMenuHint | Qt::WindowTitleHint |
+                   Qt::WindowCloseButtonHint);
 
     g_dateStart->setDateTime(QDateTime::currentDateTime());
     connect(g_cancelBtn, &QPushButton::clicked, this, [&]() { close(); });
-    connect(g_generateBtn, &QPushButton::clicked, this, &LogGeneratorDialog::onGenerateBtnPressed);
+    connect(g_generateBtn, &QPushButton::clicked, this,
+            &LogGeneratorDialog::onGenerateBtnPressed);
 }
 
 void LogGeneratorDialog::onGenerateBtnPressed()
@@ -28,8 +31,8 @@ void LogGeneratorDialog::onGenerateBtnPressed()
     {
         LogGenerator generator {m_path.toStdString(), g_lineNumberSP->value(),
                                 g_dateStart->dateTime().toTime_t()};
-        ProgressDialog progress(tr("Generating log file..."), 0, g_lineNumberSP->value(),
-                                generator);
+        ProgressDialog progress(tr("Generating log file..."), 0,
+                                g_lineNumberSP->value(), generator);
         std::thread thread = std::thread {&LogGenerator::exec, &generator};
         progress.start();
         thread.join();
@@ -40,6 +43,7 @@ void LogGeneratorDialog::onGenerateBtnPressed()
         reject();
         return;
     }
-    QMessageBox::information(this, tr("Log generation ended"), tr("Log file generated!"));
+    QMessageBox::information(this, tr("Log generation ended"),
+                             tr("Log file generated!"));
     accept();
 }

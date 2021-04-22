@@ -1,20 +1,21 @@
+#include <pttk/log.h>
+#include <pttk/logger.h>
+#include <pttk/pttkpath.h>
+
 #include <QApplication>
 #include <QMessageBox>
 #include <QStyleFactory>
 #include <QTranslator>
 
-#include "log.h"
-#include "logger.h"
 #include "mainwindow.h"
-#include "pttkpath.h"
 #include "style.h"
 
 constexpr std::string_view companyName {"PotatoThunder"};
 
 int main(int argc, char* argv[])
 {
-    const auto dataPath {
-        pttkPath::getDataPath(std::filesystem::path(argv[0]).stem().string(), companyName)};
+    const auto dataPath {pttkPath::getDataPath(
+        std::filesystem::path(argv[0]).stem().string(), companyName)};
     Logger logger(dataPath);
     BasicLog::setLogger(logger);
     lInfo << "Starting application";
@@ -34,7 +35,8 @@ int main(int argc, char* argv[])
         lFatal << e.what();
         QMessageBox::critical(
             nullptr, "Fatal error",
-            QString("An unhandled error made the application crash : %1").arg(e.what()));
+            QString("An unhandled error made the application crash : %1")
+                .arg(e.what()));
         execRet = -1;
     }
     lInfo << "End execution";

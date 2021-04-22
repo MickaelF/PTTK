@@ -1,15 +1,17 @@
 #include "logstyledelegate.h"
 
+#include <pttk/log.h>
+
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
 
-#include "log.h"
 #include "prioritylabelfactory.h"
 #include "style.h"
 
-LogStyleDelegate::LogStyleDelegate(int priorityCellWidth, int cellHeight, QObject *parent)
+LogStyleDelegate::LogStyleDelegate(int priorityCellWidth, int cellHeight,
+                                   QObject *parent)
     : QStyledItemDelegate(parent),
       m_priorityLabelWidth(priorityCellWidth * 0.60f),
       m_priorityCellHorizontalMargin(priorityCellWidth * 0.20f),
@@ -19,13 +21,16 @@ LogStyleDelegate::LogStyleDelegate(int priorityCellWidth, int cellHeight, QObjec
 {
 }
 
-void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+void LogStyleDelegate::paint(QPainter *painter,
+                             const QStyleOptionViewItem &option,
                              const QModelIndex &index) const
 {
     const QPen &oldPen = painter->pen();
     painter->setPen(m_pen);
-    QPoint p1 = QPoint(option.rect.bottomLeft().x() - 1, option.rect.bottomLeft().y());
-    QPoint p2 = QPoint(option.rect.bottomRight().x() + 1, option.rect.bottomRight().y());
+    QPoint p1 =
+        QPoint(option.rect.bottomLeft().x() - 1, option.rect.bottomLeft().y());
+    QPoint p2 = QPoint(option.rect.bottomRight().x() + 1,
+                       option.rect.bottomRight().y());
     painter->drawLine(p1, p2);
     painter->setPen(oldPen);
 
@@ -33,10 +38,13 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (index.column() == 0)
     {
         auto label = PriorityLabelFactory::makePriorityLabel(
-            index.data().toString(), QSize(m_priorityLabelWidth, m_priorityLabelHeight));
-        painter->drawPixmap(option.rect.x() + m_priorityCellHorizontalMargin,
-                            option.rect.y() + (option.rect.height() - m_priorityLabelHeight) * 0.5f,
-                            m_priorityLabelWidth, m_priorityLabelHeight, label->grab());
+            index.data().toString(),
+            QSize(m_priorityLabelWidth, m_priorityLabelHeight));
+        painter->drawPixmap(
+            option.rect.x() + m_priorityCellHorizontalMargin,
+            option.rect.y() +
+                (option.rect.height() - m_priorityLabelHeight) * 0.5f,
+            m_priorityLabelWidth, m_priorityLabelHeight, label->grab());
         label->deleteLater();
     }
     else if (index.column() == 1)
@@ -55,15 +63,19 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         opt.rect.setWidth(opt.rect.width() - 60);
         auto text = index.data(Qt::DisplayRole).toString();
         auto textHeight =
-            option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
+            option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text)
+                .height();
         if (textHeight > m_cellHeight)
         {
-            QRect rect {opt.rect.right() + 10, opt.rect.top() + static_cast<int>((opt.rect.height() - 30)* 0.5f), 30, 30};
+            QRect rect {opt.rect.right() + 10,
+                        opt.rect.top() +
+                            static_cast<int>((opt.rect.height() - 30) * 0.5f),
+                        30, 30};
             QString text {textHeight < option.rect.height() ? "-" : "+"};
             painter->setBrush(QBrush(QColor(AppStyle::softGrey)));
             painter->drawEllipse(rect);
             painter->setPen(QColor(AppStyle::blue));
-            QFont font; 
+            QFont font;
             font.setPixelSize(20);
             font.setBold(true);
             auto oldFont {painter->font()};
@@ -78,7 +90,8 @@ void LogStyleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 }
 
 bool LogStyleDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
-                                   const QStyleOptionViewItem &option, const QModelIndex &index)
+                                   const QStyleOptionViewItem &option,
+                                   const QModelIndex &index)
 {
     if (index.column() != 3)
         QApplication::restoreOverrideCursor();
@@ -86,12 +99,18 @@ bool LogStyleDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
     {
         auto text = index.data(Qt::DisplayRole).toString();
         auto textHeight =
-            option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text).height();
+            option.fontMetrics.boundingRect(option.rect, Qt::TextWordWrap, text)
+                .height();
         if (event->type() == QEvent::MouseMove)
         {
-            if ((textHeight > option.rect.height() || option.rect.height() > m_cellHeight) && !QApplication::overrideCursor())
-                QApplication::setOverrideCursor(QCursor(Qt::PointingHandCursor));
-            else if (textHeight <= option.rect.height() && option.rect.height() == m_cellHeight && QApplication::overrideCursor())
+            if ((textHeight > option.rect.height() ||
+                 option.rect.height() > m_cellHeight) &&
+                !QApplication::overrideCursor())
+                QApplication::setOverrideCursor(
+                    QCursor(Qt::PointingHandCursor));
+            else if (textHeight <= option.rect.height() &&
+                     option.rect.height() == m_cellHeight &&
+                     QApplication::overrideCursor())
                 QApplication::restoreOverrideCursor();
         }
         else if (event->type() == QEvent::MouseButtonRelease)

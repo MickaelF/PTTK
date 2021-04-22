@@ -1,8 +1,13 @@
-include ("${CMAKE_SOURCE_DIR}/parserSrcs.cmake")
-include ("${CMAKE_SOURCE_DIR}/generatorSrcs.cmake")
-
 set(PROJECT_NAME QtWidgetLogParser)
 project(${PROJECT_NAME})
+
+set(GeneratorIncludeDir ${CMAKE_SOURCE_DIR}/extra/logGenerator/)
+set(ParserIncludeDir ${CMAKE_SOURCE_DIR}/extra/logParser/)
+set(GeneratorSrc
+    ${CMAKE_SOURCE_DIR}/extra/logGenerator/loggenerator.cpp)
+set(ParserSrc
+    ${CMAKE_SOURCE_DIR}/extra/logParser/loglineinfo.cpp
+    ${CMAKE_SOURCE_DIR}/extra/logParser/logparser.cpp)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -61,6 +66,6 @@ set(UI_FILES
 	ui/StartUpDialog.ui
 )
 qt5_add_translation(QM_FILES resources/french.ts resources/english.ts)
-add_executable(${PROJECT_NAME} ${SRCS_FILES} ${RSC_FILES} ${UI_FILES} ${ParserSrc} ${GeneratorSrcs} ${QM_FILES})
+add_executable(${PROJECT_NAME} ${SRCS_FILES} ${RSC_FILES} ${UI_FILES} ${ParserSrc} ${GeneratorSrc} ${QM_FILES})
 target_link_libraries(${PROJECT_NAME} Qt::Widgets Qt::Core PTTK)
-target_include_directories(${PROJECT_NAME} PUBLIC ${GeneratorIncludeDir} ${ParserIncludeDir})
+target_include_directories(${PROJECT_NAME} PUBLIC ${PTTK_INCLUDE_DIRS} ${GeneratorIncludeDir} ${ParserIncludeDir})

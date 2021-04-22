@@ -1,11 +1,12 @@
 #include "parserarguments.h"
 
+#include <pttk/stringtools.h>
+
 #include <filesystem>
 #include <iostream>
 #include <string_view>
 
-#include "../logparser.h"
-#include "stringtools.h"
+#include "logParser.h"
 
 namespace
 {
@@ -89,10 +90,11 @@ ParserArguments::ParserArguments(int argc, char* argv[])
     if (m_inputFile.empty() || !std::filesystem::exists(m_inputFile))
         throw std::runtime_error("Cannot parser file that does not exists.");
 
-    if (m_outputFile.empty()) m_outputFile = std::move(outputDefaultFileName(m_inputFile));
+    if (m_outputFile.empty())
+        m_outputFile = std::move(outputDefaultFileName(m_inputFile));
 }
 
-void ParserArguments::pushPriorities(std::string_view p) 
+void ParserArguments::pushPriorities(std::string_view p)
 {
     if (!m_parsedPriorities.has_value())
         m_parsedPriorities = std::make_optional<std::vector<std::string>>();
@@ -112,7 +114,8 @@ void ParserArguments::displayHelp()
         << "\t-i {path_to_log_file}\n"
         << "\t\tWhere to find the log file to parse."
         << "\t-o {path_to_output_file}\n"
-        << "\t\tWhere to write result file. By default, it output the parsed file beside "
+        << "\t\tWhere to write result file. By default, it output the parsed "
+           "file beside "
            "the input file.\n"
         << "\t-R\n"
         << "\t\tDisplay logs with priority \"Remember\"\n"
@@ -135,7 +138,8 @@ void ParserArguments::displayHelp()
         << "\t--dateEnd MM/DD/YY\n"
         << "\t\tEvery log after this date won't be displayed\n"
         << "\t--sort {priority/date/files}\n"
-        << "\t\tSort logs by priority, by date or by files. By default, they are sorted by date\n"
+        << "\t\tSort logs by priority, by date or by files. By default, they "
+           "are sorted by date\n"
         << std::endl;
 }
 

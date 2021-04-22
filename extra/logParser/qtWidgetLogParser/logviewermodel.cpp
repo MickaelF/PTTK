@@ -22,14 +22,16 @@ Qt::ItemFlags LogViewerModel::flags(const QModelIndex& index) const
     return Qt::ItemIsEnabled;
 }
 
-bool LogViewerModel::insertColumns(int column, int count, const QModelIndex& parent)
+bool LogViewerModel::insertColumns(int column, int count,
+                                   const QModelIndex& parent)
 {
     beginInsertColumns(parent, column, column + count);
     endInsertColumns();
     return false;
 }
 
-bool LogViewerModel::removeColumns(int column, int count, const QModelIndex& parent)
+bool LogViewerModel::removeColumns(int column, int count,
+                                   const QModelIndex& parent)
 {
     beginRemoveColumns(parent, column, column + count);
     endRemoveColumns();
@@ -52,14 +54,15 @@ bool LogViewerModel::removeRows(int row, int count, const QModelIndex& parent)
     return true;
 }
 
-QVariant LogViewerModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant LogViewerModel::headerData(int section, Qt::Orientation orientation,
+                                    int role) const
 {
-    const QStringList columnNames {tr("Priority"), tr("Date"), tr("File"), tr("Text")};
+    const QStringList columnNames {tr("Priority"), tr("Date"), tr("File"),
+                                   tr("Text")};
     if (role == Qt::DisplayRole)
     {
-        if (orientation == Qt::Horizontal)
-            return columnNames[section];
-    }   
+        if (orientation == Qt::Horizontal) return columnNames[section];
+    }
     return QVariant();
 }
 
@@ -85,7 +88,7 @@ time_t LogViewerModel::lastDate() const
 
 QStringList LogViewerModel::fileNames() const
 {
-    QStringList fileNames; 
+    QStringList fileNames;
     for (const auto& data : m_data)
     {
         LogLineInfo info {data};
@@ -107,12 +110,15 @@ QVariant LogViewerModel::data(const QModelIndex& index, int role) const
                 return ("<b>" + std::string(logInfo.dateStr()) + "</b><br/>" +
                         std::string(logInfo.timeStr()))
                     .c_str();
-            case ColumnType::Priority: return std::string(logInfo.priority()).c_str();
-            case ColumnType::File: return std::string(logInfo.fileName()).c_str();
+            case ColumnType::Priority:
+                return std::string(logInfo.priority()).c_str();
+            case ColumnType::File:
+                return std::string(logInfo.fileName()).c_str();
             default: return QVariant();
         }
     }
-    else if (role == Qt::TextAlignmentRole && index.column() != static_cast<int>(ColumnType::Data))
+    else if (role == Qt::TextAlignmentRole &&
+             index.column() != static_cast<int>(ColumnType::Data))
         return Qt::AlignCenter;
     return QVariant(QVariant::Invalid);
 }
