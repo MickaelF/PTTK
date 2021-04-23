@@ -4,8 +4,12 @@
 
 namespace pttkPath
 {
-std::filesystem::path getDataPath(std::string_view executableName,
-                                  std::string_view companyName);
-std::filesystem::path getDocumentFolderPath(std::string_view executableName,
-                                            std::string_view companyName);
+    std::wstring getDataPathStr(std::wstring_view executableName,
+                                std::wstring_view companyName);
+    std::filesystem::path getDataPath(std::wstring_view executableName,
+                                      std::wstring_view companyName);
+    std::wstring getDocumentFolderPathStr(std::wstring_view executableName,
+                                          std::wstring_view companyName);
+    std::filesystem::path getDocumentFolderPath(std::wstring_view executableName,
+                                                std::wstring_view companyName);
 } // namespace pttkPath
