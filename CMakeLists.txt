@@ -91,10 +91,10 @@ if(PTTK_BUILD_CMD_LOG_PARSER)
     add_subdirectory(extra/logParser/CmdLogParser)
 endif()
 
-if(PTTK_BUILD_LOG_GENERATOR) 
+if(PTTK_BUILD_LOG_GENERATOR)
     add_subdirectory(extra/logGenerator)
 endif()
 
-if(PTTK_BUILD_QT_WIDGET_LOG_PARSER) 
+if(PTTK_BUILD_QT_WIDGET_LOG_PARSER)
     add_subdirectory(extra/logParser/qtWidgetLogParser)
 endif()
