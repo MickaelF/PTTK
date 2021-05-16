@@ -1,16 +1,14 @@
 #pragma once
 #include <string_view>
 #include <fstream>
+#include <pttk/macroutils.h>
 
 class AbstractReader
 {
 public: 
 	AbstractReader() = default; 
 	virtual ~AbstractReader(); 
-	AbstractReader(const AbstractReader&) = delete;
-    AbstractReader(AbstractReader&&) = delete; 
-	AbstractReader& operator=(const AbstractReader&) = delete;
-    AbstractReader& operator=(AbstractReader&&) = delete; 
+    DELETE_COPY_CONSTR_ASSIGN(AbstractReader)
 
     void close(); 
 

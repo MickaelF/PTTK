@@ -1,6 +1,7 @@
 #pragma once
 #include <type_traits>
 #include <random>
+#include <pttk/macroutils.h>
 
 class NumberGenerator
 {
@@ -21,10 +22,7 @@ public:
 private: 
     static NumberGenerator& get();
 	explicit NumberGenerator(); 
-	NumberGenerator(const NumberGenerator&) = delete;
-    NumberGenerator(NumberGenerator&&) = delete;
-    NumberGenerator& operator=(const NumberGenerator&) = delete;
-    NumberGenerator& operator=(NumberGenerator&&) = delete;
+    DELETE_COPY_CONSTR_ASSIGN(NumberGenerator)
     
 	std::random_device m_randomDevice; // Will be used to obtain a seed for the random number engine
     std::mt19937 m_numberGenerator; // Standard mersenne_twister_engine seeded with rd()

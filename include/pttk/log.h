@@ -9,6 +9,7 @@
 #include "macro.h"
 #include "logpriority.h"
 #include "pttkpath.h"
+#include "macroutils.h"
 
 template <bool Console, bool Generator>
 class Log
@@ -37,10 +38,7 @@ public:
         m_logger->appendLog<Generator>(m_stream.str() + "\n");
     }
 
-    Log(Log& o) = delete;
-    Log(Log&& o) = delete;
-    Log& operator=(Log& o) = delete;
-    Log& operator=(Log&& o) = delete;
+    DELETE_COPY_CONSTR_ASSIGN(Log)
 
     Log& operator<<(bool b)
     {

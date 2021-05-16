@@ -13,3 +13,12 @@ std::optional<std::string> PlainTextFile::wholeFile(std::string_view str)
     close();
     return file;
 }
+
+bool PlainTextFile::writeFile(std::string_view path, std::string_view content)
+{
+    if (!openToWrite(path))
+        return false;
+    m_fileStream << content;
+    close();
+    return true;
+}
