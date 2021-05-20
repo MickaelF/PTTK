@@ -18,9 +18,9 @@ public:
     Log(LogPriority::Priorities p, std::string_view fileName, int lineNumber)
     {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-        constexpr char delimiter {'\\'};
+        constexpr char delimiter{'\\'};
 #else
-        constexpr char delimiter {'/'};
+        constexpr char delimiter{'/'};
 #endif
         m_stream << "[" << LogPriority::enumToStr(p) << "-"
                  << fileName.substr(fileName.find_last_of(delimiter) + 1) << ":" << lineNumber
@@ -32,7 +32,7 @@ public:
         if constexpr (Console)
         {
             static std::mutex m_mutex;
-            std::lock_guard<std::mutex> lock {m_mutex};
+            std::lock_guard<std::mutex> lock{m_mutex};
             std::cout << m_stream.str() << std::endl;
         }
         m_logger->appendLog<Generator>(m_stream.str() + "\n");
@@ -40,82 +40,77 @@ public:
 
     DELETE_COPY_CONSTR_ASSIGN(Log)
 
-    Log& operator<<(bool b)
+    Log &operator<<(bool b)
     {
         m_stream << std::boolalpha << b;
         return *this;
     }
 
-    Log& operator<<(const std::string& message)
+    Log &operator<<(const std::string &message)
     {
         m_stream << message;
         return *this;
     }
 
-    Log& operator<<(const char* message)
+    Log &operator<<(const char *message)
     {
         m_stream << std::string(message);
         return *this;
     }
 
-    Log& operator<<(int message)
+    Log &operator<<(int message)
     {
         m_stream << message;
         return *this;
     }
 
-    Log& operator<<(unsigned int message)
+    Log &operator<<(float message)
     {
         m_stream << message;
         return *this;
     }
 
-    Log& operator<<(float message)
+    Log &operator<<(double message)
     {
         m_stream << message;
         return *this;
     }
 
-    Log& operator<<(double message)
+    Log &operator<<(char message)
     {
         m_stream << message;
         return *this;
     }
 
-    Log& operator<<(char message)
+    Log &operator<<(int64_t message)
     {
         m_stream << message;
         return *this;
     }
 
-    Log& operator<<(int64_t message)
+    Log &operator<<(size_t message)
     {
         m_stream << message;
         return *this;
     }
 
-    Log& operator<<(size_t message)
+    static void setupAsDefault(std::string_view execName, std::string_view companyName)
     {
-        m_stream << message;
-        return *this;
-    }
-    static void setupAsDefault(std::string_view execName, std::string_view companyName) 
-    {
-        const auto dataPath {
-        pttkPath::getDataPath(execName, companyName)};
+        const auto dataPath{
+            pttkPath::getDataPath(execName, companyName)};
 
         static Logger logger(dataPath);
         setLogger(logger);
     }
-    static void setLogger(Logger& logger) { m_logger = &logger; }
+    static void setLogger(Logger &logger) { m_logger = &logger; }
 
 private:
     std::ostringstream m_stream;
-    static Logger* m_logger;
+    static Logger *m_logger;
 };
 
 template <bool Console, bool Generator>
-Logger* Log<Console, Generator>::m_logger {nullptr};
+Logger *Log<Console, Generator>::m_logger{nullptr};
 
 #define BasicLog Log<true, false>
 #define lFatal BasicLog(LogPriority::Priorities::Fatal, __FILE__, __LINE__)
