@@ -4,24 +4,25 @@
 
 namespace
 {
-constexpr std::string_view logDataFileName {"data.ptlData"};
+    constexpr std::string_view logDataFileName{"data.ptlData"};
 }
 
-LogDataFile::LogDataFile(const std::filesystem::path& folder, bool createIfNotExisting)
+LogDataFile::LogDataFile(const std::filesystem::path &folder, bool createIfNotExisting)
     : m_baseFolder(folder),
       m_dataFilePath(folder.string() + "/" + logDataFileName.data())
 {
     load(folder, createIfNotExisting);
 }
 
-void LogDataFile::load(const std::filesystem::path& folder, bool createIfNotExisting)
+void LogDataFile::load(const std::filesystem::path &folder, bool createIfNotExisting)
 {
-    constexpr std::string_view endLine {"</logs>"};
+    constexpr std::string_view endLine{"</logs>"};
     if (m_baseFolder != folder)
     {
         m_baseFolder = folder;
         m_dataFilePath = folder.string() + "/" + logDataFileName.data();
     }
+
     if (std::filesystem::exists(m_dataFilePath) && !std::filesystem::is_empty(m_dataFilePath))
     {
         std::ifstream dataFile(m_dataFilePath.c_str());
@@ -56,7 +57,7 @@ void LogDataFile::load(const std::filesystem::path& folder, bool createIfNotExis
     }
 }
 
-LogDataFile& LogDataFile::operator=(const LogDataFile& data)
+LogDataFile &LogDataFile::operator=(const LogDataFile &data)
 {
     m_baseFolder = data.m_baseFolder;
     m_totalLineNumber = data.m_totalLineNumber;
@@ -66,7 +67,7 @@ LogDataFile& LogDataFile::operator=(const LogDataFile& data)
     return *this;
 }
 
-LogDataFile& LogDataFile::operator=(LogDataFile&& data)
+LogDataFile &LogDataFile::operator=(LogDataFile &&data)
 {
     m_baseFolder = std::move(data.m_baseFolder);
     m_totalLineNumber = data.m_totalLineNumber;
@@ -84,34 +85,35 @@ void LogDataFile::write() const
     std::ofstream outFile(m_dataFilePath.c_str());
     outFile << "<logs totalLines=\"" << m_totalLineNumber << "\" files=\"" << m_numberOfFiles
             << "\">\n";
-    for (const auto& file : m_filesInfo)
+    for (const auto &file : m_filesInfo)
         outFile << "\t<file name=" << file.filePath.filename() << " lines=\"" << file.numberLines
                 << "\"/>\n";
     outFile << "</logs>";
     outFile.close();
 }
 
-std::ofstream& LogDataFile::stream()
+std::ofstream &LogDataFile::stream()
 {
     return m_currentLog;
 }
 
 void LogDataFile::incrementLineNumber(int nbNewLines)
 {
-    constexpr uintmax_t maxFileSize {5000000}; // 5Mo
+    constexpr uintmax_t maxFileSize{5000000}; // 5Mo
     m_totalLineNumber += nbNewLines;
-    auto& currentFile = m_filesInfo.back();
+    auto &currentFile = m_filesInfo.back();
     currentFile.numberLines += nbNewLines;
-    if (std::filesystem::file_size(currentFile.filePath) >= maxFileSize) createNewFile();
+    if (std::filesystem::file_size(currentFile.filePath) >= maxFileSize)
+        createNewFile();
     write();
 }
 
 LogInfo LogDataFile::parseLogInfo(std::string_view line) const
 {
-    constexpr std::string_view fileNameLabel {"name"};
-    constexpr std::string_view lineNumberLabel {"lines"};
+    constexpr std::string_view fileNameLabel{"name"};
+    constexpr std::string_view lineNumberLabel{"lines"};
     size_t nextEqualSign = line.find('=');
-    LogInfo info {};
+    LogInfo info{};
     while (nextEqualSign != std::string::npos)
     {
         auto startId = line.rfind(' ', nextEqualSign) + 1;
@@ -130,19 +132,22 @@ LogInfo LogDataFile::parseLogInfo(std::string_view line) const
 
 void LogDataFile::createNewFile()
 {
-    constexpr std::string_view baseFileName {"part"};
-    constexpr std::string_view fileStem {".ptLog"};
+    constexpr std::string_view baseFileName{"part"};
+    constexpr std::string_view fileStem{".ptLog"};
     std::filesystem::path path = m_baseFolder;
+    if (!std::filesystem::exists(path))
+        std::filesystem::create_directories(path);
     path.append(baseFileName.data() + std::to_string(++m_numberOfFiles) + fileStem.data());
-    m_filesInfo.push_back(LogInfo {path, 0});
-    if (m_currentLog.is_open()) m_currentLog.close();
+    m_filesInfo.push_back(LogInfo{path, 0});
+    if (m_currentLog.is_open())
+        m_currentLog.close();
     m_currentLog.open(path.c_str());
 }
 
 void LogDataFile::parseDataLogInfo(std::string_view line)
 {
-    constexpr std::string_view lineNumberLabel {"totalLines"};
-    constexpr std::string_view fileNumber {"files"};
+    constexpr std::string_view lineNumberLabel{"totalLines"};
+    constexpr std::string_view fileNumber{"files"};
 
     size_t nextEqualSign = line.find('=');
     while (nextEqualSign != std::string::npos)
@@ -159,9 +164,9 @@ void LogDataFile::parseDataLogInfo(std::string_view line)
     }
 }
 
-Logger::Logger(const std::filesystem::path& logFilePath) : m_data(logFilePath)
+Logger::Logger(const std::filesystem::path &logFilePath) : m_data(logFilePath)
 {
-    m_loggingThread = std::thread {&Logger::flush, this};
+    m_loggingThread = std::thread{&Logger::flush, this};
 }
 
 Logger::~Logger()
@@ -181,7 +186,7 @@ std::string Logger::currentDate()
     return strTls::currentDateTimeToString("[%Y-%m-%d %T]");
 }
 
-void Logger::setSpecificLogDate(const std::string& date)
+void Logger::setSpecificLogDate(const std::string &date)
 {
     m_specificDate = date;
 }
@@ -192,7 +197,8 @@ void Logger::flush()
     while (m_isRunning)
     {
         std::unique_lock<std::mutex> lock(m_mutex);
-        m_condition.wait_for(lock, 10s, [&] { return !m_logQueue.empty() || !m_isRunning; });
+        m_condition.wait_for(lock, 10s, [&]
+                             { return !m_logQueue.empty() || !m_isRunning; });
         if (!m_logQueue.empty())
         {
             int nbNewLines = m_logQueue.size();
