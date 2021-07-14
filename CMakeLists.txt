@@ -6,6 +6,7 @@ set(LIB_NAME PTTK)
 project(${LIB_NAME})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_DEBUG_POSTFIX "d")
 
 option(PTTK_BUILD_CMD_LOG_PARSER "Build the PTTK Log parser command line executable" ON)
 option(PTTK_BUILD_LOG_GENERATOR "Build the PTTK Log generator (for parser tests)" OFF)
