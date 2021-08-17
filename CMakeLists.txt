@@ -46,6 +46,8 @@ set(PTTK_SRC
 	src/pttkpath.cpp
 	include/pttk/contiguousarray.h
 	include/pttk/logpriority.h
+  src/file/xml/xmlnode.cpp
+  src/file/xml/xmlreader.cpp
 )
 
 # Make relative paths absolute (needed later on)
